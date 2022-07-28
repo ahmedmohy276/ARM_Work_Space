@@ -1,0 +1,8 @@
+23:05:08 **** Incremental Build of configuration Debug for project RTOSDemo ****
+Info: Internal Builder is used for build
+gcc -D_WIN32_WINNT=0x0601 "-IE:\\IMT ARM Embedded System Diploma\\ARM_WS\\RTOSDemo\\Trace_Recorder_Configuration" "-IE:\\IMT ARM Embedded System Diploma\\ARM_WS\\RTOSDemo" "-IE:\\FreeRTOS\\Demo\\Common\\include" -O0 -g3 -Wall -Wextra -c -fmessage-length=0 -Wcast-qual -o "DemosModifiedForLowTickRate\\recmutex.o" "..\\DemosModifiedForLowTickRate\\recmutex.c" 
+..\DemosModifiedForLowTickRate\recmutex.c:65:22: fatal error: FreeRTOS.h: No such file or directory
+compilation terminated.
+
+23:05:09 Build Finished (took 300ms)
+

@@ -1,0 +1,11 @@
+23:04:31 **** Incremental Build of configuration Debug for project Hello_TFT ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "Hello_TFT.elf"
+   text	   data	    bss	    dec	    hex	filename
+  46779	    176	    428	  47383	   b917	Hello_TFT.elf
+Finished building: Hello_TFT.siz
+ 
+
+23:04:32 Build Finished (took 667ms)
+

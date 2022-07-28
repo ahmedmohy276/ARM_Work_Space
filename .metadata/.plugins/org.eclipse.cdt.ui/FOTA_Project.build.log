@@ -1,0 +1,11 @@
+23:04:18 **** Incremental Build of configuration Debug for project FOTA_Project ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "FOTA_Project.elf"
+   text	   data	    bss	    dec	    hex	filename
+   8903	    196	  15736	  24835	   6103	FOTA_Project.elf
+Finished building: FOTA_Project.siz
+ 
+
+23:04:19 Build Finished (took 633ms)
+

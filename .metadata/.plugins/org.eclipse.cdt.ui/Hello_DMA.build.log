@@ -1,0 +1,11 @@
+23:04:25 **** Incremental Build of configuration Debug for project Hello_DMA ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "Hello_DMA.elf"
+   text	   data	    bss	    dec	    hex	filename
+   4851	    176	    440	   5467	   155b	Hello_DMA.elf
+Finished building: Hello_DMA.siz
+ 
+
+23:04:25 Build Finished (took 458ms)
+

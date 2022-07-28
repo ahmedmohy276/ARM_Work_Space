@@ -1,0 +1,1655 @@
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"DIO_program.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.MGPIO_voidLockSequence,"ax",%progbits
+  16              		.align	1
+  17              		.syntax unified
+  18              		.thumb
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	MGPIO_voidLockSequence:
+  23              	.LFB8:
+  24              		.file 1 "../src/DIO_program.c"
+   1:../src/DIO_program.c **** /****************************************************************/
+   2:../src/DIO_program.c **** /*	Author   : Ahmed Mohy									   	*/
+   3:../src/DIO_program.c **** /*	Date     : 25 DEC 2021										*/
+   4:../src/DIO_program.c **** /*	Version  : V01												*/
+   5:../src/DIO_program.c **** /****************************************************************/
+   6:../src/DIO_program.c **** 
+   7:../src/DIO_program.c **** #include "STD_TYPES.h"
+   8:../src/DIO_program.c **** #include "BIT_MATH.h"
+   9:../src/DIO_program.c **** 
+  10:../src/DIO_program.c **** #include "DIO_interface.h"
+  11:../src/DIO_program.c **** #include "DIO_private.h"
+  12:../src/DIO_program.c **** #include "DIO_config.h"
+  13:../src/DIO_program.c **** 
+  14:../src/DIO_program.c **** 
+  15:../src/DIO_program.c **** 
+  16:../src/DIO_program.c **** void MGPIO_voidSetPinDirection(u8 Copy_u8Port , u8 Copy_u8Pin , u8 Copy_u8Mode)
+  17:../src/DIO_program.c **** {
+  18:../src/DIO_program.c **** 	switch (Copy_u8Port)
+  19:../src/DIO_program.c **** 	{
+  20:../src/DIO_program.c **** 		case PORTA :
+  21:../src/DIO_program.c **** 			if (Copy_u8Pin <= 7)
+  22:../src/DIO_program.c **** 			{
+  23:../src/DIO_program.c **** 				GPIOA->CRL &= ~((0XF) << (Copy_u8Pin*4));			// Clear 4 bits mode of the pin
+  24:../src/DIO_program.c **** 				GPIOA->CRL |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+  25:../src/DIO_program.c **** 			}
+  26:../src/DIO_program.c **** 			
+  27:../src/DIO_program.c **** 			else if (Copy_u8Pin <= 15)
+  28:../src/DIO_program.c **** 			{
+  29:../src/DIO_program.c **** 				Copy_u8Pin -= 8;
+  30:../src/DIO_program.c **** 				GPIOA->CRH &= ~((0XF) << (Copy_u8Pin*4));			// Clear 4 bits mode of the pin
+  31:../src/DIO_program.c **** 				GPIOA->CRH |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+  32:../src/DIO_program.c **** 			}
+  33:../src/DIO_program.c **** 			break;
+  34:../src/DIO_program.c **** 			
+  35:../src/DIO_program.c **** 		case PORTB :
+  36:../src/DIO_program.c **** 			if (Copy_u8Pin <= 7)
+  37:../src/DIO_program.c **** 			{
+  38:../src/DIO_program.c **** 				GPIOB->CRL &= ~((0XF) << (Copy_u8Pin*4));			// Clear 4 bits mode of the pin
+  39:../src/DIO_program.c **** 				GPIOB->CRL |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+  40:../src/DIO_program.c **** 			}
+  41:../src/DIO_program.c **** 			
+  42:../src/DIO_program.c **** 			else if (Copy_u8Pin <= 15)
+  43:../src/DIO_program.c **** 			{
+  44:../src/DIO_program.c **** 				Copy_u8Pin -= 8;
+  45:../src/DIO_program.c **** 				GPIOB->CRH &= ~((0XF) << (Copy_u8Pin*4));			// Clear 4 bits mode of the pin
+  46:../src/DIO_program.c **** 				GPIOB->CRH |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+  47:../src/DIO_program.c **** 			}
+  48:../src/DIO_program.c **** 			break;
+  49:../src/DIO_program.c **** 		
+  50:../src/DIO_program.c **** 		case PORTC :
+  51:../src/DIO_program.c **** 			if (Copy_u8Pin <= 7)
+  52:../src/DIO_program.c **** 			{
+  53:../src/DIO_program.c **** 				GPIOC->CRL &= ~((0XF) << (Copy_u8Pin*4));			// Clear 4 bits mode of the pin
+  54:../src/DIO_program.c **** 				GPIOC->CRL |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+  55:../src/DIO_program.c **** 			}
+  56:../src/DIO_program.c **** 			
+  57:../src/DIO_program.c **** 			else if (Copy_u8Pin <= 15)
+  58:../src/DIO_program.c **** 			{
+  59:../src/DIO_program.c **** 				Copy_u8Pin -= 8;
+  60:../src/DIO_program.c **** 				GPIOC->CRH &= ~((0XF) << (Copy_u8Pin*4));			// Clear 4 bits mode of the pin
+  61:../src/DIO_program.c **** 				GPIOC->CRH |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+  62:../src/DIO_program.c **** 			}
+  63:../src/DIO_program.c **** 			break;
+  64:../src/DIO_program.c **** 			
+  65:../src/DIO_program.c **** 		default : 		break;
+  66:../src/DIO_program.c **** 	}
+  67:../src/DIO_program.c **** }
+  68:../src/DIO_program.c **** 
+  69:../src/DIO_program.c **** 
+  70:../src/DIO_program.c **** void MGPIO_voidSetPinValue(u8 Copy_u8Port , u8 Copy_u8Pin , u8 Copy_u8Value)
+  71:../src/DIO_program.c **** {
+  72:../src/DIO_program.c **** 	switch (Copy_u8Port)
+  73:../src/DIO_program.c **** 		{
+  74:../src/DIO_program.c **** 			case PORTA :
+  75:../src/DIO_program.c **** 				if (Copy_u8Value == GPIO_LOW)
+  76:../src/DIO_program.c **** 				{
+  77:../src/DIO_program.c **** 					GPIOA->BRR = (1 << Copy_u8Pin);
+  78:../src/DIO_program.c **** 				}
+  79:../src/DIO_program.c **** 
+  80:../src/DIO_program.c **** 				else if (Copy_u8Value == GPIO_HIGH)
+  81:../src/DIO_program.c **** 				{
+  82:../src/DIO_program.c **** 					GPIOA->BSRR = (1 << Copy_u8Pin);
+  83:../src/DIO_program.c **** 				}
+  84:../src/DIO_program.c **** 				break;
+  85:../src/DIO_program.c **** 
+  86:../src/DIO_program.c **** 			case PORTB :
+  87:../src/DIO_program.c **** 				if (Copy_u8Value == GPIO_LOW)
+  88:../src/DIO_program.c **** 				{
+  89:../src/DIO_program.c **** 					GPIOB->BRR = (1 << Copy_u8Pin);
+  90:../src/DIO_program.c **** 				}
+  91:../src/DIO_program.c **** 
+  92:../src/DIO_program.c **** 				else if (Copy_u8Value == GPIO_HIGH)
+  93:../src/DIO_program.c **** 				{
+  94:../src/DIO_program.c **** 					GPIOB->BSRR = (1 << Copy_u8Pin);
+  95:../src/DIO_program.c **** 				}
+  96:../src/DIO_program.c **** 				break;
+  97:../src/DIO_program.c **** 
+  98:../src/DIO_program.c **** 			case PORTC :
+  99:../src/DIO_program.c **** 				if (Copy_u8Value == GPIO_LOW)
+ 100:../src/DIO_program.c **** 				{
+ 101:../src/DIO_program.c **** 					GPIOC->BRR = (1 << Copy_u8Pin);
+ 102:../src/DIO_program.c **** 				}
+ 103:../src/DIO_program.c **** 
+ 104:../src/DIO_program.c **** 				else if (Copy_u8Value == GPIO_HIGH)
+ 105:../src/DIO_program.c **** 				{
+ 106:../src/DIO_program.c **** 					GPIOC->BSRR = (1 << Copy_u8Pin);
+ 107:../src/DIO_program.c **** 				}
+ 108:../src/DIO_program.c **** 				break;
+ 109:../src/DIO_program.c **** 
+ 110:../src/DIO_program.c **** 			default : 		break;
+ 111:../src/DIO_program.c **** 		}
+ 112:../src/DIO_program.c **** }
+ 113:../src/DIO_program.c **** 
+ 114:../src/DIO_program.c **** 
+ 115:../src/DIO_program.c **** void MGPIO_voidSetPin(u8 Copy_u8Port , u8 Copy_u8Pin)
+ 116:../src/DIO_program.c **** {
+ 117:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 118:../src/DIO_program.c **** 	{
+ 119:../src/DIO_program.c **** 		case PORTA :
+ 120:../src/DIO_program.c **** 			/* Using ODR  register is slower because it is under sequence of read modify write */
+ 121:../src/DIO_program.c **** 			/* this operation takes 3 instructions */
+ 122:../src/DIO_program.c **** 			//SET_BIT(GPIOA->ODR,Copy_u8Pin);
+ 123:../src/DIO_program.c **** 			/* writing 1 to 16 lower bits of BSRR register it set the pin, writing 0 do nothing  */
+ 124:../src/DIO_program.c **** 			/* this operation takes only one instruction so it is more speed than the above */
+ 125:../src/DIO_program.c **** 			GPIOA->BSRR = (1 << Copy_u8Pin);
+ 126:../src/DIO_program.c **** 			break;
+ 127:../src/DIO_program.c **** 			
+ 128:../src/DIO_program.c **** 		case PORTB :
+ 129:../src/DIO_program.c **** 			//SET_BIT(GPIOB->ODR,Copy_u8Pin);
+ 130:../src/DIO_program.c **** 			GPIOB->BSRR = (1 << Copy_u8Pin);
+ 131:../src/DIO_program.c **** 			break;
+ 132:../src/DIO_program.c **** 			
+ 133:../src/DIO_program.c **** 		case PORTC :
+ 134:../src/DIO_program.c **** 			//SET_BIT(GPIOC->ODR,Copy_u8Pin);
+ 135:../src/DIO_program.c **** 			GPIOC->BSRR = (1 << Copy_u8Pin);
+ 136:../src/DIO_program.c **** 			break;
+ 137:../src/DIO_program.c **** 			
+ 138:../src/DIO_program.c **** 		default : 		break;
+ 139:../src/DIO_program.c **** 	}
+ 140:../src/DIO_program.c **** }
+ 141:../src/DIO_program.c **** 
+ 142:../src/DIO_program.c **** 
+ 143:../src/DIO_program.c **** void MGPIO_voidClearPin(u8 Copy_u8Port , u8 Copy_u8Pin)
+ 144:../src/DIO_program.c **** {
+ 145:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 146:../src/DIO_program.c **** 	{
+ 147:../src/DIO_program.c **** 		case PORTA :
+ 148:../src/DIO_program.c **** 			/* Using ODR  register is slower because it is under sequence of read modify write */
+ 149:../src/DIO_program.c **** 			/* this operation takes 3 instructions */
+ 150:../src/DIO_program.c **** 			//CLR_BIT(GPIOA->ODR,Copy_u8Pin);
+ 151:../src/DIO_program.c **** 			/* writing 1 to 16 lower bits of BRR register it reset the pin, writing 0 do nothing  */
+ 152:../src/DIO_program.c **** 			/* this operation takes only one instruction so it is more speed than the above */
+ 153:../src/DIO_program.c **** 			GPIOA->BRR = (1 << Copy_u8Pin);
+ 154:../src/DIO_program.c **** 			
+ 155:../src/DIO_program.c **** 			break;
+ 156:../src/DIO_program.c **** 			
+ 157:../src/DIO_program.c **** 		case PORTB :
+ 158:../src/DIO_program.c **** 			//CLR_BIT(GPIOB->ODR,Copy_u8Pin);
+ 159:../src/DIO_program.c **** 			GPIOB->BRR = (1 << Copy_u8Pin);
+ 160:../src/DIO_program.c **** 			break;
+ 161:../src/DIO_program.c **** 			
+ 162:../src/DIO_program.c **** 		case PORTC :
+ 163:../src/DIO_program.c **** 			//CLR_BIT(GPIOC->ODR,Copy_u8Pin);
+ 164:../src/DIO_program.c **** 			GPIOC->BRR = (1 << Copy_u8Pin);
+ 165:../src/DIO_program.c **** 			break;
+ 166:../src/DIO_program.c **** 			
+ 167:../src/DIO_program.c **** 		default : 		break;
+ 168:../src/DIO_program.c **** 	}
+ 169:../src/DIO_program.c **** }
+ 170:../src/DIO_program.c **** 
+ 171:../src/DIO_program.c **** 
+ 172:../src/DIO_program.c **** u8 MGPIO_u8GetPinValue(u8 Copy_u8Port , u8 Copy_u8Pin)
+ 173:../src/DIO_program.c **** {
+ 174:../src/DIO_program.c **** 	u8 Loc_u8Resilt = 0;
+ 175:../src/DIO_program.c **** 	
+ 176:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 177:../src/DIO_program.c **** 	{
+ 178:../src/DIO_program.c **** 		case PORTA :
+ 179:../src/DIO_program.c **** 			Loc_u8Resilt = GET_BIT(GPIOA->IDR,Copy_u8Pin);
+ 180:../src/DIO_program.c **** 			break;
+ 181:../src/DIO_program.c **** 			
+ 182:../src/DIO_program.c **** 		case PORTB :
+ 183:../src/DIO_program.c **** 			Loc_u8Resilt = GET_BIT(GPIOB->IDR,Copy_u8Pin);
+ 184:../src/DIO_program.c **** 			break;
+ 185:../src/DIO_program.c **** 			
+ 186:../src/DIO_program.c **** 		case PORTC :
+ 187:../src/DIO_program.c **** 			Loc_u8Resilt = GET_BIT(GPIOC->IDR,Copy_u8Pin);
+ 188:../src/DIO_program.c **** 			break;
+ 189:../src/DIO_program.c **** 			
+ 190:../src/DIO_program.c **** 		default : 		break;
+ 191:../src/DIO_program.c **** 	}
+ 192:../src/DIO_program.c **** 	
+ 193:../src/DIO_program.c **** 	return Loc_u8Resilt;
+ 194:../src/DIO_program.c **** }
+ 195:../src/DIO_program.c **** 
+ 196:../src/DIO_program.c **** 
+ 197:../src/DIO_program.c **** void MGPIO_voidSetPortDirection(u8 Copy_u8Port , u8 Copy_u8Mode)
+ 198:../src/DIO_program.c **** {
+ 199:../src/DIO_program.c ****     u32 Loc_u32ModeLow = 0;
+ 200:../src/DIO_program.c ****     u32 Loc_u32ModeHigh = 0;
+ 201:../src/DIO_program.c **** 	for (u8 i=0;i<=7;i++)
+ 202:../src/DIO_program.c **** 		{
+ 203:../src/DIO_program.c **** 			Loc_u32ModeLow |= (u64)(Copy_u8Mode << (i*4));
+ 204:../src/DIO_program.c **** 			Loc_u32ModeHigh |= (u64)(Copy_u8Mode << (i*4));
+ 205:../src/DIO_program.c **** 		}
+ 206:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 207:../src/DIO_program.c **** 	{
+ 208:../src/DIO_program.c **** 		case PORTA :
+ 209:../src/DIO_program.c **** 			GPIOA->CRL = Loc_u32ModeLow;
+ 210:../src/DIO_program.c **** 			GPIOA->CRH = Loc_u32ModeHigh;
+ 211:../src/DIO_program.c **** 			break;
+ 212:../src/DIO_program.c **** 			
+ 213:../src/DIO_program.c **** 		case PORTB :
+ 214:../src/DIO_program.c **** 			GPIOB->CRL = Loc_u32ModeLow;
+ 215:../src/DIO_program.c **** 			GPIOB->CRH = Loc_u32ModeHigh;
+ 216:../src/DIO_program.c **** 			break;
+ 217:../src/DIO_program.c **** 			
+ 218:../src/DIO_program.c **** 		case PORTC :
+ 219:../src/DIO_program.c **** 			GPIOC->CRL = Loc_u32ModeLow;
+ 220:../src/DIO_program.c **** 			GPIOC->CRH = Loc_u32ModeHigh;
+ 221:../src/DIO_program.c **** 			break;
+ 222:../src/DIO_program.c **** 			
+ 223:../src/DIO_program.c **** 		default : 		break;
+ 224:../src/DIO_program.c **** 	}
+ 225:../src/DIO_program.c **** }
+ 226:../src/DIO_program.c **** 
+ 227:../src/DIO_program.c **** 
+ 228:../src/DIO_program.c **** void MGPIO_voidSetPortValue(u8 Copy_u8Port,u16 Copy_u16Val)
+ 229:../src/DIO_program.c **** {
+ 230:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 231:../src/DIO_program.c **** 	{
+ 232:../src/DIO_program.c **** 		case PORTA :
+ 233:../src/DIO_program.c **** 			GPIOA->ODR = Copy_u16Val;
+ 234:../src/DIO_program.c **** 			break;
+ 235:../src/DIO_program.c **** 			
+ 236:../src/DIO_program.c **** 		case PORTB :
+ 237:../src/DIO_program.c **** 			GPIOB->ODR = Copy_u16Val;
+ 238:../src/DIO_program.c **** 			break;
+ 239:../src/DIO_program.c **** 			
+ 240:../src/DIO_program.c **** 		case PORTC :
+ 241:../src/DIO_program.c **** 			GPIOC->ODR = Copy_u16Val;
+ 242:../src/DIO_program.c **** 			break;
+ 243:../src/DIO_program.c **** 			
+ 244:../src/DIO_program.c **** 		default : 		break;
+ 245:../src/DIO_program.c **** 	}
+ 246:../src/DIO_program.c **** }
+ 247:../src/DIO_program.c **** 
+ 248:../src/DIO_program.c **** 
+ 249:../src/DIO_program.c **** u16 MGPIO_u16GetPortValue(u8 Copy_u8Port)
+ 250:../src/DIO_program.c **** {
+ 251:../src/DIO_program.c **** 	u16 Loc_u16Result = 0;
+ 252:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 253:../src/DIO_program.c **** 	{
+ 254:../src/DIO_program.c **** 		case PORTA :
+ 255:../src/DIO_program.c **** 			Loc_u16Result = GPIOA->IDR;
+ 256:../src/DIO_program.c **** 			break;
+ 257:../src/DIO_program.c **** 			
+ 258:../src/DIO_program.c **** 		case PORTB :
+ 259:../src/DIO_program.c **** 			Loc_u16Result = GPIOB->IDR;
+ 260:../src/DIO_program.c **** 			break;
+ 261:../src/DIO_program.c **** 			
+ 262:../src/DIO_program.c **** 		case PORTC :
+ 263:../src/DIO_program.c **** 			Loc_u16Result = GPIOC->IDR;
+ 264:../src/DIO_program.c **** 			break;
+ 265:../src/DIO_program.c **** 			
+ 266:../src/DIO_program.c **** 		default : 		break;
+ 267:../src/DIO_program.c **** 	}
+ 268:../src/DIO_program.c **** 	
+ 269:../src/DIO_program.c **** 	return Loc_u16Result;
+ 270:../src/DIO_program.c **** }
+ 271:../src/DIO_program.c **** 
+ 272:../src/DIO_program.c **** 
+ 273:../src/DIO_program.c **** static void MGPIO_voidLockSequence(u8 Copy_u8Port)
+ 274:../src/DIO_program.c **** {
+  25              		.loc 1 274 0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 0
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  29              		@ link register save eliminated.
+  30              	.LVL0:
+ 275:../src/DIO_program.c **** 	switch (Copy_u8Port)
+  31              		.loc 1 275 0
+  32 0000 0128     		cmp	r0, #1
+  33 0002 13D0     		beq	.L3
+  34 0004 10B1     		cbz	r0, .L4
+  35 0006 0228     		cmp	r0, #2
+  36 0008 20D0     		beq	.L5
+  37 000a 7047     		bx	lr
+  38              	.L4:
+ 276:../src/DIO_program.c **** 	{
+ 277:../src/DIO_program.c **** 		case PORTA :
+ 278:../src/DIO_program.c **** 			/* lock sequence */
+ 279:../src/DIO_program.c **** 			SET_BIT(GPIOA->LCKR,16); 
+  39              		.loc 1 279 0
+  40 000c 174B     		ldr	r3, .L6
+  41 000e 9A69     		ldr	r2, [r3, #24]
+  42 0010 42F48032 		orr	r2, r2, #65536
+  43 0014 9A61     		str	r2, [r3, #24]
+ 280:../src/DIO_program.c **** 			CLR_BIT(GPIOA->LCKR,16); 
+  44              		.loc 1 280 0
+  45 0016 9A69     		ldr	r2, [r3, #24]
+  46 0018 22F48032 		bic	r2, r2, #65536
+  47 001c 9A61     		str	r2, [r3, #24]
+ 281:../src/DIO_program.c **** 			SET_BIT(GPIOA->LCKR,16); 
+  48              		.loc 1 281 0
+  49 001e 9A69     		ldr	r2, [r3, #24]
+  50 0020 42F48032 		orr	r2, r2, #65536
+  51 0024 9A61     		str	r2, [r3, #24]
+ 282:../src/DIO_program.c **** 			if (GET_BIT(GPIOA->LCKR,16) != 0)
+  52              		.loc 1 282 0
+  53 0026 9A69     		ldr	r2, [r3, #24]
+ 283:../src/DIO_program.c **** 			{
+ 284:../src/DIO_program.c **** 				//return error ---------> it must be 0
+ 285:../src/DIO_program.c **** 			}
+ 286:../src/DIO_program.c **** 			if (GET_BIT(GPIOA->LCKR,16) != 1)
+  54              		.loc 1 286 0
+  55 0028 9B69     		ldr	r3, [r3, #24]
+  56 002a 7047     		bx	lr
+  57              	.L3:
+ 287:../src/DIO_program.c **** 			{
+ 288:../src/DIO_program.c **** 				//return error ---------> it must be 1
+ 289:../src/DIO_program.c **** 			} 
+ 290:../src/DIO_program.c **** 			break;
+ 291:../src/DIO_program.c **** 			
+ 292:../src/DIO_program.c **** 		case PORTB :
+ 293:../src/DIO_program.c **** 			/* lock sequence */
+ 294:../src/DIO_program.c **** 			SET_BIT(GPIOB->LCKR,16); 
+  58              		.loc 1 294 0
+  59 002c 104B     		ldr	r3, .L6+4
+  60 002e 9A69     		ldr	r2, [r3, #24]
+  61 0030 42F48032 		orr	r2, r2, #65536
+  62 0034 9A61     		str	r2, [r3, #24]
+ 295:../src/DIO_program.c **** 			CLR_BIT(GPIOB->LCKR,16); 
+  63              		.loc 1 295 0
+  64 0036 9A69     		ldr	r2, [r3, #24]
+  65 0038 22F48032 		bic	r2, r2, #65536
+  66 003c 9A61     		str	r2, [r3, #24]
+ 296:../src/DIO_program.c **** 			SET_BIT(GPIOB->LCKR,16); 
+  67              		.loc 1 296 0
+  68 003e 9A69     		ldr	r2, [r3, #24]
+  69 0040 42F48032 		orr	r2, r2, #65536
+  70 0044 9A61     		str	r2, [r3, #24]
+ 297:../src/DIO_program.c **** 			if (GET_BIT(GPIOB->LCKR,16) != 0)
+  71              		.loc 1 297 0
+  72 0046 9A69     		ldr	r2, [r3, #24]
+ 298:../src/DIO_program.c **** 			{
+ 299:../src/DIO_program.c **** 				//return error ---------> it must be 0
+ 300:../src/DIO_program.c **** 			}
+ 301:../src/DIO_program.c **** 			if (GET_BIT(GPIOB->LCKR,16) != 1)
+  73              		.loc 1 301 0
+  74 0048 9B69     		ldr	r3, [r3, #24]
+  75 004a 7047     		bx	lr
+  76              	.L5:
+ 302:../src/DIO_program.c **** 			{
+ 303:../src/DIO_program.c **** 				//return error ---------> it must be 1
+ 304:../src/DIO_program.c **** 			} 
+ 305:../src/DIO_program.c **** 			break;
+ 306:../src/DIO_program.c **** 			
+ 307:../src/DIO_program.c **** 		case PORTC :
+ 308:../src/DIO_program.c **** 			/* lock sequence */
+ 309:../src/DIO_program.c **** 			SET_BIT(GPIOC->LCKR,16); 
+  77              		.loc 1 309 0
+  78 004c 094B     		ldr	r3, .L6+8
+  79 004e 9A69     		ldr	r2, [r3, #24]
+  80 0050 42F48032 		orr	r2, r2, #65536
+  81 0054 9A61     		str	r2, [r3, #24]
+ 310:../src/DIO_program.c **** 			CLR_BIT(GPIOC->LCKR,16); 
+  82              		.loc 1 310 0
+  83 0056 9A69     		ldr	r2, [r3, #24]
+  84 0058 22F48032 		bic	r2, r2, #65536
+  85 005c 9A61     		str	r2, [r3, #24]
+ 311:../src/DIO_program.c **** 			SET_BIT(GPIOC->LCKR,16); 
+  86              		.loc 1 311 0
+  87 005e 9A69     		ldr	r2, [r3, #24]
+  88 0060 42F48032 		orr	r2, r2, #65536
+  89 0064 9A61     		str	r2, [r3, #24]
+ 312:../src/DIO_program.c **** 			if (GET_BIT(GPIOC->LCKR,16) != 0)
+  90              		.loc 1 312 0
+  91 0066 9A69     		ldr	r2, [r3, #24]
+ 313:../src/DIO_program.c **** 			{
+ 314:../src/DIO_program.c **** 				//return error ---------> it must be 0
+ 315:../src/DIO_program.c **** 			}
+ 316:../src/DIO_program.c **** 			if (GET_BIT(GPIOC->LCKR,16) != 1)
+  92              		.loc 1 316 0
+  93 0068 9B69     		ldr	r3, [r3, #24]
+ 317:../src/DIO_program.c **** 			{
+ 318:../src/DIO_program.c **** 				//return error ---------> it must be 1
+ 319:../src/DIO_program.c **** 			} 
+ 320:../src/DIO_program.c **** 			break;
+ 321:../src/DIO_program.c **** 			
+ 322:../src/DIO_program.c **** 		default : 		break;
+ 323:../src/DIO_program.c **** 	}
+ 324:../src/DIO_program.c **** }
+  94              		.loc 1 324 0
+  95 006a 7047     		bx	lr
+  96              	.L7:
+  97              		.align	2
+  98              	.L6:
+  99 006c 00080140 		.word	1073809408
+ 100 0070 000C0140 		.word	1073810432
+ 101 0074 00100140 		.word	1073811456
+ 102              		.cfi_endproc
+ 103              	.LFE8:
+ 105              		.section	.text.MGPIO_voidSetPinDirection,"ax",%progbits
+ 106              		.align	1
+ 107              		.global	MGPIO_voidSetPinDirection
+ 108              		.syntax unified
+ 109              		.thumb
+ 110              		.thumb_func
+ 111              		.fpu softvfp
+ 113              	MGPIO_voidSetPinDirection:
+ 114              	.LFB0:
+  17:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 115              		.loc 1 17 0
+ 116              		.cfi_startproc
+ 117              		@ args = 0, pretend = 0, frame = 0
+ 118              		@ frame_needed = 0, uses_anonymous_args = 0
+ 119              		@ link register save eliminated.
+ 120              	.LVL1:
+ 121 0000 10B4     		push	{r4}
+ 122              		.cfi_def_cfa_offset 4
+ 123              		.cfi_offset 4, -4
+  18:../src/DIO_program.c **** 	{
+ 124              		.loc 1 18 0
+ 125 0002 0128     		cmp	r0, #1
+ 126 0004 27D0     		beq	.L10
+ 127 0006 18B1     		cbz	r0, .L11
+ 128 0008 0228     		cmp	r0, #2
+ 129 000a 47D0     		beq	.L12
+ 130              	.LVL2:
+ 131              	.L8:
+  67:../src/DIO_program.c **** 
+ 132              		.loc 1 67 0
+ 133 000c 10BC     		pop	{r4}
+ 134              		.cfi_remember_state
+ 135              		.cfi_restore 4
+ 136              		.cfi_def_cfa_offset 0
+ 137 000e 7047     		bx	lr
+ 138              	.LVL3:
+ 139              	.L11:
+ 140              		.cfi_restore_state
+  21:../src/DIO_program.c **** 			{
+ 141              		.loc 1 21 0
+ 142 0010 0729     		cmp	r1, #7
+ 143 0012 12D9     		bls	.L17
+  27:../src/DIO_program.c **** 			{
+ 144              		.loc 1 27 0
+ 145 0014 0F29     		cmp	r1, #15
+ 146 0016 F9D8     		bhi	.L8
+  29:../src/DIO_program.c **** 				GPIOA->CRH &= ~((0XF) << (Copy_u8Pin*4));			// Clear 4 bits mode of the pin
+ 147              		.loc 1 29 0
+ 148 0018 A1F10804 		sub	r4, r1, #8
+ 149 001c E4B2     		uxtb	r4, r4
+ 150              	.LVL4:
+  30:../src/DIO_program.c **** 				GPIOA->CRH |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+ 151              		.loc 1 30 0
+ 152 001e 314B     		ldr	r3, .L20
+ 153 0020 5968     		ldr	r1, [r3, #4]
+ 154 0022 A400     		lsls	r4, r4, #2
+ 155              	.LVL5:
+ 156 0024 0F20     		movs	r0, #15
+ 157              	.LVL6:
+ 158 0026 A040     		lsls	r0, r0, r4
+ 159 0028 21EA0001 		bic	r1, r1, r0
+ 160 002c 5960     		str	r1, [r3, #4]
+  31:../src/DIO_program.c **** 			}
+ 161              		.loc 1 31 0
+ 162 002e 5868     		ldr	r0, [r3, #4]
+ 163 0030 02FA04F1 		lsl	r1, r2, r4
+ 164 0034 0143     		orrs	r1, r1, r0
+ 165 0036 5960     		str	r1, [r3, #4]
+ 166 0038 E8E7     		b	.L8
+ 167              	.LVL7:
+ 168              	.L17:
+  23:../src/DIO_program.c **** 				GPIOA->CRL |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+ 169              		.loc 1 23 0
+ 170 003a 2A4B     		ldr	r3, .L20
+ 171 003c 1868     		ldr	r0, [r3]
+ 172              	.LVL8:
+ 173 003e 8900     		lsls	r1, r1, #2
+ 174              	.LVL9:
+ 175 0040 0F24     		movs	r4, #15
+ 176 0042 8C40     		lsls	r4, r4, r1
+ 177 0044 20EA0400 		bic	r0, r0, r4
+ 178 0048 1860     		str	r0, [r3]
+  24:../src/DIO_program.c **** 			}
+ 179              		.loc 1 24 0
+ 180 004a 1868     		ldr	r0, [r3]
+ 181 004c 02FA01F1 		lsl	r1, r2, r1
+ 182 0050 0143     		orrs	r1, r1, r0
+ 183 0052 1960     		str	r1, [r3]
+ 184 0054 DAE7     		b	.L8
+ 185              	.LVL10:
+ 186              	.L10:
+  36:../src/DIO_program.c **** 			{
+ 187              		.loc 1 36 0
+ 188 0056 0729     		cmp	r1, #7
+ 189 0058 12D9     		bls	.L18
+  42:../src/DIO_program.c **** 			{
+ 190              		.loc 1 42 0
+ 191 005a 0F29     		cmp	r1, #15
+ 192 005c D6D8     		bhi	.L8
+  44:../src/DIO_program.c **** 				GPIOB->CRH &= ~((0XF) << (Copy_u8Pin*4));			// Clear 4 bits mode of the pin
+ 193              		.loc 1 44 0
+ 194 005e A1F10800 		sub	r0, r1, #8
+ 195              	.LVL11:
+ 196 0062 C0B2     		uxtb	r0, r0
+ 197              	.LVL12:
+  45:../src/DIO_program.c **** 				GPIOB->CRH |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+ 198              		.loc 1 45 0
+ 199 0064 204B     		ldr	r3, .L20+4
+ 200 0066 5968     		ldr	r1, [r3, #4]
+ 201 0068 8000     		lsls	r0, r0, #2
+ 202              	.LVL13:
+ 203 006a 0F24     		movs	r4, #15
+ 204 006c 8440     		lsls	r4, r4, r0
+ 205 006e 21EA0401 		bic	r1, r1, r4
+ 206 0072 5960     		str	r1, [r3, #4]
+  46:../src/DIO_program.c **** 			}
+ 207              		.loc 1 46 0
+ 208 0074 5C68     		ldr	r4, [r3, #4]
+ 209 0076 02FA00F1 		lsl	r1, r2, r0
+ 210 007a 2143     		orrs	r1, r1, r4
+ 211 007c 5960     		str	r1, [r3, #4]
+ 212 007e C5E7     		b	.L8
+ 213              	.LVL14:
+ 214              	.L18:
+  38:../src/DIO_program.c **** 				GPIOB->CRL |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+ 215              		.loc 1 38 0
+ 216 0080 194B     		ldr	r3, .L20+4
+ 217 0082 1868     		ldr	r0, [r3]
+ 218              	.LVL15:
+ 219 0084 8900     		lsls	r1, r1, #2
+ 220              	.LVL16:
+ 221 0086 0F24     		movs	r4, #15
+ 222 0088 8C40     		lsls	r4, r4, r1
+ 223 008a 20EA0400 		bic	r0, r0, r4
+ 224 008e 1860     		str	r0, [r3]
+  39:../src/DIO_program.c **** 			}
+ 225              		.loc 1 39 0
+ 226 0090 1868     		ldr	r0, [r3]
+ 227 0092 02FA01F1 		lsl	r1, r2, r1
+ 228 0096 0143     		orrs	r1, r1, r0
+ 229 0098 1960     		str	r1, [r3]
+ 230 009a B7E7     		b	.L8
+ 231              	.LVL17:
+ 232              	.L12:
+  51:../src/DIO_program.c **** 			{
+ 233              		.loc 1 51 0
+ 234 009c 0729     		cmp	r1, #7
+ 235 009e 12D9     		bls	.L19
+  57:../src/DIO_program.c **** 			{
+ 236              		.loc 1 57 0
+ 237 00a0 0F29     		cmp	r1, #15
+ 238 00a2 B3D8     		bhi	.L8
+  59:../src/DIO_program.c **** 				GPIOC->CRH &= ~((0XF) << (Copy_u8Pin*4));			// Clear 4 bits mode of the pin
+ 239              		.loc 1 59 0
+ 240 00a4 A1F10803 		sub	r3, r1, #8
+ 241 00a8 DBB2     		uxtb	r3, r3
+ 242              	.LVL18:
+  60:../src/DIO_program.c **** 				GPIOC->CRH |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+ 243              		.loc 1 60 0
+ 244 00aa 1048     		ldr	r0, .L20+8
+ 245              	.LVL19:
+ 246 00ac 4168     		ldr	r1, [r0, #4]
+ 247 00ae 9B00     		lsls	r3, r3, #2
+ 248              	.LVL20:
+ 249 00b0 0F24     		movs	r4, #15
+ 250 00b2 9C40     		lsls	r4, r4, r3
+ 251 00b4 21EA0401 		bic	r1, r1, r4
+ 252 00b8 4160     		str	r1, [r0, #4]
+  61:../src/DIO_program.c **** 			}
+ 253              		.loc 1 61 0
+ 254 00ba 4468     		ldr	r4, [r0, #4]
+ 255 00bc 02FA03F1 		lsl	r1, r2, r3
+ 256 00c0 2143     		orrs	r1, r1, r4
+ 257 00c2 4160     		str	r1, [r0, #4]
+  67:../src/DIO_program.c **** 
+ 258              		.loc 1 67 0
+ 259 00c4 A2E7     		b	.L8
+ 260              	.LVL21:
+ 261              	.L19:
+  53:../src/DIO_program.c **** 				GPIOC->CRL |= ((Copy_u8Mode) << (Copy_u8Pin*4));	// Set pin mode
+ 262              		.loc 1 53 0
+ 263 00c6 094B     		ldr	r3, .L20+8
+ 264 00c8 1868     		ldr	r0, [r3]
+ 265              	.LVL22:
+ 266 00ca 8900     		lsls	r1, r1, #2
+ 267              	.LVL23:
+ 268 00cc 0F24     		movs	r4, #15
+ 269 00ce 8C40     		lsls	r4, r4, r1
+ 270 00d0 20EA0400 		bic	r0, r0, r4
+ 271 00d4 1860     		str	r0, [r3]
+  54:../src/DIO_program.c **** 			}
+ 272              		.loc 1 54 0
+ 273 00d6 1868     		ldr	r0, [r3]
+ 274 00d8 02FA01F1 		lsl	r1, r2, r1
+ 275 00dc 0143     		orrs	r1, r1, r0
+ 276 00de 1960     		str	r1, [r3]
+ 277 00e0 94E7     		b	.L8
+ 278              	.L21:
+ 279 00e2 00BF     		.align	2
+ 280              	.L20:
+ 281 00e4 00080140 		.word	1073809408
+ 282 00e8 000C0140 		.word	1073810432
+ 283 00ec 00100140 		.word	1073811456
+ 284              		.cfi_endproc
+ 285              	.LFE0:
+ 287              		.section	.text.MGPIO_voidSetPinValue,"ax",%progbits
+ 288              		.align	1
+ 289              		.global	MGPIO_voidSetPinValue
+ 290              		.syntax unified
+ 291              		.thumb
+ 292              		.thumb_func
+ 293              		.fpu softvfp
+ 295              	MGPIO_voidSetPinValue:
+ 296              	.LFB1:
+  71:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 297              		.loc 1 71 0
+ 298              		.cfi_startproc
+ 299              		@ args = 0, pretend = 0, frame = 0
+ 300              		@ frame_needed = 0, uses_anonymous_args = 0
+ 301              		@ link register save eliminated.
+ 302              	.LVL24:
+  72:../src/DIO_program.c **** 		{
+ 303              		.loc 1 72 0
+ 304 0000 0128     		cmp	r0, #1
+ 305 0002 13D0     		beq	.L24
+ 306 0004 10B1     		cbz	r0, .L25
+ 307 0006 0228     		cmp	r0, #2
+ 308 0008 1FD0     		beq	.L26
+ 309 000a 7047     		bx	lr
+ 310              	.L25:
+  75:../src/DIO_program.c **** 				{
+ 311              		.loc 1 75 0
+ 312 000c 12B1     		cbz	r2, .L30
+  80:../src/DIO_program.c **** 				{
+ 313              		.loc 1 80 0
+ 314 000e 012A     		cmp	r2, #1
+ 315 0010 06D0     		beq	.L31
+ 316              	.LVL25:
+ 317              	.L22:
+ 112:../src/DIO_program.c **** 
+ 318              		.loc 1 112 0
+ 319 0012 7047     		bx	lr
+ 320              	.LVL26:
+ 321              	.L30:
+  77:../src/DIO_program.c **** 				}
+ 322              		.loc 1 77 0
+ 323 0014 0123     		movs	r3, #1
+ 324 0016 03FA01F1 		lsl	r1, r3, r1
+ 325              	.LVL27:
+ 326 001a 134B     		ldr	r3, .L34
+ 327 001c 5961     		str	r1, [r3, #20]
+ 328 001e 7047     		bx	lr
+ 329              	.LVL28:
+ 330              	.L31:
+  82:../src/DIO_program.c **** 				}
+ 331              		.loc 1 82 0
+ 332 0020 0123     		movs	r3, #1
+ 333 0022 03FA01F1 		lsl	r1, r3, r1
+ 334              	.LVL29:
+ 335 0026 104B     		ldr	r3, .L34
+ 336 0028 1961     		str	r1, [r3, #16]
+ 337 002a 7047     		bx	lr
+ 338              	.LVL30:
+ 339              	.L24:
+  87:../src/DIO_program.c **** 				{
+ 340              		.loc 1 87 0
+ 341 002c 3AB1     		cbz	r2, .L32
+  92:../src/DIO_program.c **** 				{
+ 342              		.loc 1 92 0
+ 343 002e 012A     		cmp	r2, #1
+ 344 0030 EFD1     		bne	.L22
+  94:../src/DIO_program.c **** 				}
+ 345              		.loc 1 94 0
+ 346 0032 0123     		movs	r3, #1
+ 347 0034 03FA01F1 		lsl	r1, r3, r1
+ 348              	.LVL31:
+ 349 0038 0C4B     		ldr	r3, .L34+4
+ 350 003a 1961     		str	r1, [r3, #16]
+ 351 003c 7047     		bx	lr
+ 352              	.LVL32:
+ 353              	.L32:
+  89:../src/DIO_program.c **** 				}
+ 354              		.loc 1 89 0
+ 355 003e 0123     		movs	r3, #1
+ 356 0040 03FA01F1 		lsl	r1, r3, r1
+ 357              	.LVL33:
+ 358 0044 094B     		ldr	r3, .L34+4
+ 359 0046 5961     		str	r1, [r3, #20]
+ 360 0048 7047     		bx	lr
+ 361              	.LVL34:
+ 362              	.L26:
+  99:../src/DIO_program.c **** 				{
+ 363              		.loc 1 99 0
+ 364 004a 3AB1     		cbz	r2, .L33
+ 104:../src/DIO_program.c **** 				{
+ 365              		.loc 1 104 0
+ 366 004c 012A     		cmp	r2, #1
+ 367 004e E0D1     		bne	.L22
+ 106:../src/DIO_program.c **** 				}
+ 368              		.loc 1 106 0
+ 369 0050 0123     		movs	r3, #1
+ 370 0052 03FA01F1 		lsl	r1, r3, r1
+ 371              	.LVL35:
+ 372 0056 064B     		ldr	r3, .L34+8
+ 373 0058 1961     		str	r1, [r3, #16]
+ 112:../src/DIO_program.c **** 
+ 374              		.loc 1 112 0
+ 375 005a DAE7     		b	.L22
+ 376              	.LVL36:
+ 377              	.L33:
+ 101:../src/DIO_program.c **** 				}
+ 378              		.loc 1 101 0
+ 379 005c 0123     		movs	r3, #1
+ 380 005e 03FA01F1 		lsl	r1, r3, r1
+ 381              	.LVL37:
+ 382 0062 034B     		ldr	r3, .L34+8
+ 383 0064 5961     		str	r1, [r3, #20]
+ 384 0066 7047     		bx	lr
+ 385              	.L35:
+ 386              		.align	2
+ 387              	.L34:
+ 388 0068 00080140 		.word	1073809408
+ 389 006c 000C0140 		.word	1073810432
+ 390 0070 00100140 		.word	1073811456
+ 391              		.cfi_endproc
+ 392              	.LFE1:
+ 394              		.section	.text.MGPIO_voidSetPin,"ax",%progbits
+ 395              		.align	1
+ 396              		.global	MGPIO_voidSetPin
+ 397              		.syntax unified
+ 398              		.thumb
+ 399              		.thumb_func
+ 400              		.fpu softvfp
+ 402              	MGPIO_voidSetPin:
+ 403              	.LFB2:
+ 116:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 404              		.loc 1 116 0
+ 405              		.cfi_startproc
+ 406              		@ args = 0, pretend = 0, frame = 0
+ 407              		@ frame_needed = 0, uses_anonymous_args = 0
+ 408              		@ link register save eliminated.
+ 409              	.LVL38:
+ 117:../src/DIO_program.c **** 	{
+ 410              		.loc 1 117 0
+ 411 0000 0128     		cmp	r0, #1
+ 412 0002 09D0     		beq	.L38
+ 413 0004 10B1     		cbz	r0, .L39
+ 414 0006 0228     		cmp	r0, #2
+ 415 0008 0CD0     		beq	.L40
+ 416 000a 7047     		bx	lr
+ 417              	.L39:
+ 125:../src/DIO_program.c **** 			break;
+ 418              		.loc 1 125 0
+ 419 000c 0123     		movs	r3, #1
+ 420 000e 03FA01F1 		lsl	r1, r3, r1
+ 421              	.LVL39:
+ 422 0012 074B     		ldr	r3, .L41
+ 423 0014 1961     		str	r1, [r3, #16]
+ 126:../src/DIO_program.c **** 			
+ 424              		.loc 1 126 0
+ 425 0016 7047     		bx	lr
+ 426              	.LVL40:
+ 427              	.L38:
+ 130:../src/DIO_program.c **** 			break;
+ 428              		.loc 1 130 0
+ 429 0018 0123     		movs	r3, #1
+ 430 001a 03FA01F1 		lsl	r1, r3, r1
+ 431              	.LVL41:
+ 432 001e 054B     		ldr	r3, .L41+4
+ 433 0020 1961     		str	r1, [r3, #16]
+ 131:../src/DIO_program.c **** 			
+ 434              		.loc 1 131 0
+ 435 0022 7047     		bx	lr
+ 436              	.LVL42:
+ 437              	.L40:
+ 135:../src/DIO_program.c **** 			break;
+ 438              		.loc 1 135 0
+ 439 0024 0123     		movs	r3, #1
+ 440 0026 03FA01F1 		lsl	r1, r3, r1
+ 441              	.LVL43:
+ 442 002a 034B     		ldr	r3, .L41+8
+ 443 002c 1961     		str	r1, [r3, #16]
+ 140:../src/DIO_program.c **** 
+ 444              		.loc 1 140 0
+ 445 002e 7047     		bx	lr
+ 446              	.L42:
+ 447              		.align	2
+ 448              	.L41:
+ 449 0030 00080140 		.word	1073809408
+ 450 0034 000C0140 		.word	1073810432
+ 451 0038 00100140 		.word	1073811456
+ 452              		.cfi_endproc
+ 453              	.LFE2:
+ 455              		.section	.text.MGPIO_voidClearPin,"ax",%progbits
+ 456              		.align	1
+ 457              		.global	MGPIO_voidClearPin
+ 458              		.syntax unified
+ 459              		.thumb
+ 460              		.thumb_func
+ 461              		.fpu softvfp
+ 463              	MGPIO_voidClearPin:
+ 464              	.LFB3:
+ 144:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 465              		.loc 1 144 0
+ 466              		.cfi_startproc
+ 467              		@ args = 0, pretend = 0, frame = 0
+ 468              		@ frame_needed = 0, uses_anonymous_args = 0
+ 469              		@ link register save eliminated.
+ 470              	.LVL44:
+ 145:../src/DIO_program.c **** 	{
+ 471              		.loc 1 145 0
+ 472 0000 0128     		cmp	r0, #1
+ 473 0002 09D0     		beq	.L45
+ 474 0004 10B1     		cbz	r0, .L46
+ 475 0006 0228     		cmp	r0, #2
+ 476 0008 0CD0     		beq	.L47
+ 477 000a 7047     		bx	lr
+ 478              	.L46:
+ 153:../src/DIO_program.c **** 			
+ 479              		.loc 1 153 0
+ 480 000c 0123     		movs	r3, #1
+ 481 000e 03FA01F1 		lsl	r1, r3, r1
+ 482              	.LVL45:
+ 483 0012 074B     		ldr	r3, .L48
+ 484 0014 5961     		str	r1, [r3, #20]
+ 155:../src/DIO_program.c **** 			
+ 485              		.loc 1 155 0
+ 486 0016 7047     		bx	lr
+ 487              	.LVL46:
+ 488              	.L45:
+ 159:../src/DIO_program.c **** 			break;
+ 489              		.loc 1 159 0
+ 490 0018 0123     		movs	r3, #1
+ 491 001a 03FA01F1 		lsl	r1, r3, r1
+ 492              	.LVL47:
+ 493 001e 054B     		ldr	r3, .L48+4
+ 494 0020 5961     		str	r1, [r3, #20]
+ 160:../src/DIO_program.c **** 			
+ 495              		.loc 1 160 0
+ 496 0022 7047     		bx	lr
+ 497              	.LVL48:
+ 498              	.L47:
+ 164:../src/DIO_program.c **** 			break;
+ 499              		.loc 1 164 0
+ 500 0024 0123     		movs	r3, #1
+ 501 0026 03FA01F1 		lsl	r1, r3, r1
+ 502              	.LVL49:
+ 503 002a 034B     		ldr	r3, .L48+8
+ 504 002c 5961     		str	r1, [r3, #20]
+ 169:../src/DIO_program.c **** 
+ 505              		.loc 1 169 0
+ 506 002e 7047     		bx	lr
+ 507              	.L49:
+ 508              		.align	2
+ 509              	.L48:
+ 510 0030 00080140 		.word	1073809408
+ 511 0034 000C0140 		.word	1073810432
+ 512 0038 00100140 		.word	1073811456
+ 513              		.cfi_endproc
+ 514              	.LFE3:
+ 516              		.section	.text.MGPIO_u8GetPinValue,"ax",%progbits
+ 517              		.align	1
+ 518              		.global	MGPIO_u8GetPinValue
+ 519              		.syntax unified
+ 520              		.thumb
+ 521              		.thumb_func
+ 522              		.fpu softvfp
+ 524              	MGPIO_u8GetPinValue:
+ 525              	.LFB4:
+ 173:../src/DIO_program.c **** 	u8 Loc_u8Resilt = 0;
+ 526              		.loc 1 173 0
+ 527              		.cfi_startproc
+ 528              		@ args = 0, pretend = 0, frame = 0
+ 529              		@ frame_needed = 0, uses_anonymous_args = 0
+ 530              		@ link register save eliminated.
+ 531              	.LVL50:
+ 176:../src/DIO_program.c **** 	{
+ 532              		.loc 1 176 0
+ 533 0000 0128     		cmp	r0, #1
+ 534 0002 0AD0     		beq	.L52
+ 535 0004 18B1     		cbz	r0, .L53
+ 536 0006 0228     		cmp	r0, #2
+ 537 0008 0DD0     		beq	.L54
+ 174:../src/DIO_program.c **** 	
+ 538              		.loc 1 174 0
+ 539 000a 0020     		movs	r0, #0
+ 540              	.LVL51:
+ 194:../src/DIO_program.c **** 
+ 541              		.loc 1 194 0
+ 542 000c 7047     		bx	lr
+ 543              	.LVL52:
+ 544              	.L53:
+ 179:../src/DIO_program.c **** 			break;
+ 545              		.loc 1 179 0
+ 546 000e 094B     		ldr	r3, .L57
+ 547 0010 9868     		ldr	r0, [r3, #8]
+ 548              	.LVL53:
+ 549 0012 C840     		lsrs	r0, r0, r1
+ 550 0014 00F00100 		and	r0, r0, #1
+ 551              	.LVL54:
+ 180:../src/DIO_program.c **** 			
+ 552              		.loc 1 180 0
+ 553 0018 7047     		bx	lr
+ 554              	.LVL55:
+ 555              	.L52:
+ 183:../src/DIO_program.c **** 			break;
+ 556              		.loc 1 183 0
+ 557 001a 074B     		ldr	r3, .L57+4
+ 558 001c 9868     		ldr	r0, [r3, #8]
+ 559              	.LVL56:
+ 560 001e C840     		lsrs	r0, r0, r1
+ 561 0020 00F00100 		and	r0, r0, #1
+ 562              	.LVL57:
+ 184:../src/DIO_program.c **** 			
+ 563              		.loc 1 184 0
+ 564 0024 7047     		bx	lr
+ 565              	.LVL58:
+ 566              	.L54:
+ 187:../src/DIO_program.c **** 			break;
+ 567              		.loc 1 187 0
+ 568 0026 054B     		ldr	r3, .L57+8
+ 569 0028 9868     		ldr	r0, [r3, #8]
+ 570              	.LVL59:
+ 571 002a C840     		lsrs	r0, r0, r1
+ 572 002c 00F00100 		and	r0, r0, #1
+ 573              	.LVL60:
+ 188:../src/DIO_program.c **** 			
+ 574              		.loc 1 188 0
+ 575 0030 7047     		bx	lr
+ 576              	.L58:
+ 577 0032 00BF     		.align	2
+ 578              	.L57:
+ 579 0034 00080140 		.word	1073809408
+ 580 0038 000C0140 		.word	1073810432
+ 581 003c 00100140 		.word	1073811456
+ 582              		.cfi_endproc
+ 583              	.LFE4:
+ 585              		.section	.text.MGPIO_voidSetPortDirection,"ax",%progbits
+ 586              		.align	1
+ 587              		.global	MGPIO_voidSetPortDirection
+ 588              		.syntax unified
+ 589              		.thumb
+ 590              		.thumb_func
+ 591              		.fpu softvfp
+ 593              	MGPIO_voidSetPortDirection:
+ 594              	.LFB5:
+ 198:../src/DIO_program.c ****     u32 Loc_u32ModeLow = 0;
+ 595              		.loc 1 198 0
+ 596              		.cfi_startproc
+ 597              		@ args = 0, pretend = 0, frame = 0
+ 598              		@ frame_needed = 0, uses_anonymous_args = 0
+ 599              		@ link register save eliminated.
+ 600              	.LVL61:
+ 601 0000 10B4     		push	{r4}
+ 602              		.cfi_def_cfa_offset 4
+ 603              		.cfi_offset 4, -4
+ 604              	.LVL62:
+ 605              	.LBB2:
+ 201:../src/DIO_program.c **** 		{
+ 606              		.loc 1 201 0
+ 607 0002 0023     		movs	r3, #0
+ 608              	.LBE2:
+ 199:../src/DIO_program.c ****     u32 Loc_u32ModeHigh = 0;
+ 609              		.loc 1 199 0
+ 610 0004 1C46     		mov	r4, r3
+ 611              	.LBB3:
+ 201:../src/DIO_program.c **** 		{
+ 612              		.loc 1 201 0
+ 613 0006 05E0     		b	.L60
+ 614              	.LVL63:
+ 615              	.L61:
+ 203:../src/DIO_program.c **** 			Loc_u32ModeHigh |= (u64)(Copy_u8Mode << (i*4));
+ 616              		.loc 1 203 0 discriminator 3
+ 617 0008 9A00     		lsls	r2, r3, #2
+ 618 000a 01FA02F2 		lsl	r2, r1, r2
+ 619 000e 1443     		orrs	r4, r4, r2
+ 620              	.LVL64:
+ 201:../src/DIO_program.c **** 		{
+ 621              		.loc 1 201 0 discriminator 3
+ 622 0010 0133     		adds	r3, r3, #1
+ 623              	.LVL65:
+ 624 0012 DBB2     		uxtb	r3, r3
+ 625              	.LVL66:
+ 626              	.L60:
+ 201:../src/DIO_program.c **** 		{
+ 627              		.loc 1 201 0 is_stmt 0 discriminator 1
+ 628 0014 072B     		cmp	r3, #7
+ 629 0016 F7D9     		bls	.L61
+ 630              	.LBE3:
+ 206:../src/DIO_program.c **** 	{
+ 631              		.loc 1 206 0 is_stmt 1
+ 632 0018 0128     		cmp	r0, #1
+ 633 001a 08D0     		beq	.L63
+ 634 001c 18B1     		cbz	r0, .L64
+ 635 001e 0228     		cmp	r0, #2
+ 636 0020 09D0     		beq	.L65
+ 637              	.LVL67:
+ 638              	.L59:
+ 225:../src/DIO_program.c **** 
+ 639              		.loc 1 225 0
+ 640 0022 10BC     		pop	{r4}
+ 641              		.cfi_remember_state
+ 642              		.cfi_restore 4
+ 643              		.cfi_def_cfa_offset 0
+ 644              	.LVL68:
+ 645 0024 7047     		bx	lr
+ 646              	.LVL69:
+ 647              	.L64:
+ 648              		.cfi_restore_state
+ 209:../src/DIO_program.c **** 			GPIOA->CRH = Loc_u32ModeHigh;
+ 649              		.loc 1 209 0
+ 650 0026 064B     		ldr	r3, .L67
+ 651              	.LVL70:
+ 652 0028 1C60     		str	r4, [r3]
+ 210:../src/DIO_program.c **** 			break;
+ 653              		.loc 1 210 0
+ 654 002a 5C60     		str	r4, [r3, #4]
+ 211:../src/DIO_program.c **** 			
+ 655              		.loc 1 211 0
+ 656 002c F9E7     		b	.L59
+ 657              	.LVL71:
+ 658              	.L63:
+ 214:../src/DIO_program.c **** 			GPIOB->CRH = Loc_u32ModeHigh;
+ 659              		.loc 1 214 0
+ 660 002e 054B     		ldr	r3, .L67+4
+ 661              	.LVL72:
+ 662 0030 1C60     		str	r4, [r3]
+ 215:../src/DIO_program.c **** 			break;
+ 663              		.loc 1 215 0
+ 664 0032 5C60     		str	r4, [r3, #4]
+ 216:../src/DIO_program.c **** 			
+ 665              		.loc 1 216 0
+ 666 0034 F5E7     		b	.L59
+ 667              	.LVL73:
+ 668              	.L65:
+ 219:../src/DIO_program.c **** 			GPIOC->CRH = Loc_u32ModeHigh;
+ 669              		.loc 1 219 0
+ 670 0036 044B     		ldr	r3, .L67+8
+ 671              	.LVL74:
+ 672 0038 1C60     		str	r4, [r3]
+ 220:../src/DIO_program.c **** 			break;
+ 673              		.loc 1 220 0
+ 674 003a 5C60     		str	r4, [r3, #4]
+ 225:../src/DIO_program.c **** 
+ 675              		.loc 1 225 0
+ 676 003c F1E7     		b	.L59
+ 677              	.L68:
+ 678 003e 00BF     		.align	2
+ 679              	.L67:
+ 680 0040 00080140 		.word	1073809408
+ 681 0044 000C0140 		.word	1073810432
+ 682 0048 00100140 		.word	1073811456
+ 683              		.cfi_endproc
+ 684              	.LFE5:
+ 686              		.section	.text.MGPIO_voidSetPortValue,"ax",%progbits
+ 687              		.align	1
+ 688              		.global	MGPIO_voidSetPortValue
+ 689              		.syntax unified
+ 690              		.thumb
+ 691              		.thumb_func
+ 692              		.fpu softvfp
+ 694              	MGPIO_voidSetPortValue:
+ 695              	.LFB6:
+ 229:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 696              		.loc 1 229 0
+ 697              		.cfi_startproc
+ 698              		@ args = 0, pretend = 0, frame = 0
+ 699              		@ frame_needed = 0, uses_anonymous_args = 0
+ 700              		@ link register save eliminated.
+ 701              	.LVL75:
+ 230:../src/DIO_program.c **** 	{
+ 702              		.loc 1 230 0
+ 703 0000 0128     		cmp	r0, #1
+ 704 0002 06D0     		beq	.L71
+ 705 0004 10B1     		cbz	r0, .L72
+ 706 0006 0228     		cmp	r0, #2
+ 707 0008 06D0     		beq	.L73
+ 708 000a 7047     		bx	lr
+ 709              	.L72:
+ 233:../src/DIO_program.c **** 			break;
+ 710              		.loc 1 233 0
+ 711 000c 044B     		ldr	r3, .L74
+ 712 000e D960     		str	r1, [r3, #12]
+ 234:../src/DIO_program.c **** 			
+ 713              		.loc 1 234 0
+ 714 0010 7047     		bx	lr
+ 715              	.L71:
+ 237:../src/DIO_program.c **** 			break;
+ 716              		.loc 1 237 0
+ 717 0012 044B     		ldr	r3, .L74+4
+ 718 0014 D960     		str	r1, [r3, #12]
+ 238:../src/DIO_program.c **** 			
+ 719              		.loc 1 238 0
+ 720 0016 7047     		bx	lr
+ 721              	.L73:
+ 241:../src/DIO_program.c **** 			break;
+ 722              		.loc 1 241 0
+ 723 0018 034B     		ldr	r3, .L74+8
+ 724 001a D960     		str	r1, [r3, #12]
+ 246:../src/DIO_program.c **** 
+ 725              		.loc 1 246 0
+ 726 001c 7047     		bx	lr
+ 727              	.L75:
+ 728 001e 00BF     		.align	2
+ 729              	.L74:
+ 730 0020 00080140 		.word	1073809408
+ 731 0024 000C0140 		.word	1073810432
+ 732 0028 00100140 		.word	1073811456
+ 733              		.cfi_endproc
+ 734              	.LFE6:
+ 736              		.section	.text.MGPIO_u16GetPortValue,"ax",%progbits
+ 737              		.align	1
+ 738              		.global	MGPIO_u16GetPortValue
+ 739              		.syntax unified
+ 740              		.thumb
+ 741              		.thumb_func
+ 742              		.fpu softvfp
+ 744              	MGPIO_u16GetPortValue:
+ 745              	.LFB7:
+ 250:../src/DIO_program.c **** 	u16 Loc_u16Result = 0;
+ 746              		.loc 1 250 0
+ 747              		.cfi_startproc
+ 748              		@ args = 0, pretend = 0, frame = 0
+ 749              		@ frame_needed = 0, uses_anonymous_args = 0
+ 750              		@ link register save eliminated.
+ 751              	.LVL76:
+ 252:../src/DIO_program.c **** 	{
+ 752              		.loc 1 252 0
+ 753 0000 0128     		cmp	r0, #1
+ 754 0002 08D0     		beq	.L78
+ 755 0004 18B1     		cbz	r0, .L79
+ 756 0006 0228     		cmp	r0, #2
+ 757 0008 09D0     		beq	.L80
+ 251:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 758              		.loc 1 251 0
+ 759 000a 0020     		movs	r0, #0
+ 760              	.LVL77:
+ 270:../src/DIO_program.c **** 
+ 761              		.loc 1 270 0
+ 762 000c 7047     		bx	lr
+ 763              	.LVL78:
+ 764              	.L79:
+ 255:../src/DIO_program.c **** 			break;
+ 765              		.loc 1 255 0
+ 766 000e 064B     		ldr	r3, .L83
+ 767 0010 9868     		ldr	r0, [r3, #8]
+ 768              	.LVL79:
+ 769 0012 80B2     		uxth	r0, r0
+ 770              	.LVL80:
+ 256:../src/DIO_program.c **** 			
+ 771              		.loc 1 256 0
+ 772 0014 7047     		bx	lr
+ 773              	.LVL81:
+ 774              	.L78:
+ 259:../src/DIO_program.c **** 			break;
+ 775              		.loc 1 259 0
+ 776 0016 054B     		ldr	r3, .L83+4
+ 777 0018 9868     		ldr	r0, [r3, #8]
+ 778              	.LVL82:
+ 779 001a 80B2     		uxth	r0, r0
+ 780              	.LVL83:
+ 260:../src/DIO_program.c **** 			
+ 781              		.loc 1 260 0
+ 782 001c 7047     		bx	lr
+ 783              	.LVL84:
+ 784              	.L80:
+ 263:../src/DIO_program.c **** 			break;
+ 785              		.loc 1 263 0
+ 786 001e 044B     		ldr	r3, .L83+8
+ 787 0020 9868     		ldr	r0, [r3, #8]
+ 788              	.LVL85:
+ 789 0022 80B2     		uxth	r0, r0
+ 790              	.LVL86:
+ 264:../src/DIO_program.c **** 			
+ 791              		.loc 1 264 0
+ 792 0024 7047     		bx	lr
+ 793              	.L84:
+ 794 0026 00BF     		.align	2
+ 795              	.L83:
+ 796 0028 00080140 		.word	1073809408
+ 797 002c 000C0140 		.word	1073810432
+ 798 0030 00100140 		.word	1073811456
+ 799              		.cfi_endproc
+ 800              	.LFE7:
+ 802              		.section	.text.MGPIO_voidLockPin,"ax",%progbits
+ 803              		.align	1
+ 804              		.global	MGPIO_voidLockPin
+ 805              		.syntax unified
+ 806              		.thumb
+ 807              		.thumb_func
+ 808              		.fpu softvfp
+ 810              	MGPIO_voidLockPin:
+ 811              	.LFB9:
+ 325:../src/DIO_program.c **** 
+ 326:../src/DIO_program.c **** 
+ 327:../src/DIO_program.c **** void MGPIO_voidLockPin(u8 Copy_u8Port , u8 Copy_u8Pin)
+ 328:../src/DIO_program.c **** {
+ 812              		.loc 1 328 0
+ 813              		.cfi_startproc
+ 814              		@ args = 0, pretend = 0, frame = 0
+ 815              		@ frame_needed = 0, uses_anonymous_args = 0
+ 816              	.LVL87:
+ 817 0000 10B5     		push	{r4, lr}
+ 818              		.cfi_def_cfa_offset 8
+ 819              		.cfi_offset 4, -8
+ 820              		.cfi_offset 14, -4
+ 329:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 821              		.loc 1 329 0
+ 822 0002 0128     		cmp	r0, #1
+ 823 0004 0DD0     		beq	.L87
+ 824 0006 10B1     		cbz	r0, .L88
+ 825 0008 0228     		cmp	r0, #2
+ 826 000a 14D0     		beq	.L89
+ 827              	.LVL88:
+ 828              	.L85:
+ 330:../src/DIO_program.c **** 	{
+ 331:../src/DIO_program.c **** 		case PORTA :
+ 332:../src/DIO_program.c **** 			SET_BIT(GPIOA->LCKR,Copy_u8Pin);   		// Lock pin configuration
+ 333:../src/DIO_program.c **** 			/* lock sequence */
+ 334:../src/DIO_program.c **** 			MGPIO_voidLockSequence(Copy_u8Port);
+ 335:../src/DIO_program.c **** 			break;
+ 336:../src/DIO_program.c **** 			
+ 337:../src/DIO_program.c **** 		case PORTB :
+ 338:../src/DIO_program.c **** 			SET_BIT(GPIOB->LCKR,Copy_u8Pin);		// Lock pin configuration
+ 339:../src/DIO_program.c **** 			/* lock sequence */
+ 340:../src/DIO_program.c **** 			MGPIO_voidLockSequence(Copy_u8Port);
+ 341:../src/DIO_program.c **** 			break;
+ 342:../src/DIO_program.c **** 			
+ 343:../src/DIO_program.c **** 		case PORTC :
+ 344:../src/DIO_program.c **** 			SET_BIT(GPIOC->LCKR,Copy_u8Pin);		// Lock pin configuration
+ 345:../src/DIO_program.c **** 			/* lock sequence */
+ 346:../src/DIO_program.c **** 			MGPIO_voidLockSequence(Copy_u8Port);
+ 347:../src/DIO_program.c **** 			break;
+ 348:../src/DIO_program.c **** 			
+ 349:../src/DIO_program.c **** 		default : 		break;
+ 350:../src/DIO_program.c **** 	}
+ 351:../src/DIO_program.c **** }
+ 829              		.loc 1 351 0
+ 830 000c 10BD     		pop	{r4, pc}
+ 831              	.LVL89:
+ 832              	.L88:
+ 332:../src/DIO_program.c **** 			/* lock sequence */
+ 833              		.loc 1 332 0
+ 834 000e 0F4C     		ldr	r4, .L91
+ 835 0010 A369     		ldr	r3, [r4, #24]
+ 836 0012 0122     		movs	r2, #1
+ 837 0014 02FA01F1 		lsl	r1, r2, r1
+ 838              	.LVL90:
+ 839 0018 1943     		orrs	r1, r1, r3
+ 840 001a A161     		str	r1, [r4, #24]
+ 334:../src/DIO_program.c **** 			break;
+ 841              		.loc 1 334 0
+ 842 001c FFF7FEFF 		bl	MGPIO_voidLockSequence
+ 843              	.LVL91:
+ 335:../src/DIO_program.c **** 			
+ 844              		.loc 1 335 0
+ 845 0020 F4E7     		b	.L85
+ 846              	.LVL92:
+ 847              	.L87:
+ 338:../src/DIO_program.c **** 			/* lock sequence */
+ 848              		.loc 1 338 0
+ 849 0022 0B4C     		ldr	r4, .L91+4
+ 850 0024 A369     		ldr	r3, [r4, #24]
+ 851 0026 0122     		movs	r2, #1
+ 852 0028 02FA01F1 		lsl	r1, r2, r1
+ 853              	.LVL93:
+ 854 002c 1943     		orrs	r1, r1, r3
+ 855 002e A161     		str	r1, [r4, #24]
+ 340:../src/DIO_program.c **** 			break;
+ 856              		.loc 1 340 0
+ 857 0030 FFF7FEFF 		bl	MGPIO_voidLockSequence
+ 858              	.LVL94:
+ 341:../src/DIO_program.c **** 			
+ 859              		.loc 1 341 0
+ 860 0034 EAE7     		b	.L85
+ 861              	.LVL95:
+ 862              	.L89:
+ 344:../src/DIO_program.c **** 			/* lock sequence */
+ 863              		.loc 1 344 0
+ 864 0036 074C     		ldr	r4, .L91+8
+ 865 0038 A369     		ldr	r3, [r4, #24]
+ 866 003a 0122     		movs	r2, #1
+ 867 003c 02FA01F1 		lsl	r1, r2, r1
+ 868              	.LVL96:
+ 869 0040 1943     		orrs	r1, r1, r3
+ 870 0042 A161     		str	r1, [r4, #24]
+ 346:../src/DIO_program.c **** 			break;
+ 871              		.loc 1 346 0
+ 872 0044 FFF7FEFF 		bl	MGPIO_voidLockSequence
+ 873              	.LVL97:
+ 874              		.loc 1 351 0
+ 875 0048 E0E7     		b	.L85
+ 876              	.L92:
+ 877 004a 00BF     		.align	2
+ 878              	.L91:
+ 879 004c 00080140 		.word	1073809408
+ 880 0050 000C0140 		.word	1073810432
+ 881 0054 00100140 		.word	1073811456
+ 882              		.cfi_endproc
+ 883              	.LFE9:
+ 885              		.section	.text.MGPIO_voidUnlockPin,"ax",%progbits
+ 886              		.align	1
+ 887              		.global	MGPIO_voidUnlockPin
+ 888              		.syntax unified
+ 889              		.thumb
+ 890              		.thumb_func
+ 891              		.fpu softvfp
+ 893              	MGPIO_voidUnlockPin:
+ 894              	.LFB10:
+ 352:../src/DIO_program.c **** 
+ 353:../src/DIO_program.c **** 
+ 354:../src/DIO_program.c **** 
+ 355:../src/DIO_program.c **** void MGPIO_voidUnlockPin(u8 Copy_u8Port , u8 Copy_u8Pin)
+ 356:../src/DIO_program.c **** {
+ 895              		.loc 1 356 0
+ 896              		.cfi_startproc
+ 897              		@ args = 0, pretend = 0, frame = 0
+ 898              		@ frame_needed = 0, uses_anonymous_args = 0
+ 899              	.LVL98:
+ 900 0000 10B5     		push	{r4, lr}
+ 901              		.cfi_def_cfa_offset 8
+ 902              		.cfi_offset 4, -8
+ 903              		.cfi_offset 14, -4
+ 357:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 904              		.loc 1 357 0
+ 905 0002 0128     		cmp	r0, #1
+ 906 0004 0ED0     		beq	.L95
+ 907 0006 10B1     		cbz	r0, .L96
+ 908 0008 0228     		cmp	r0, #2
+ 909 000a 16D0     		beq	.L97
+ 910              	.LVL99:
+ 911              	.L93:
+ 358:../src/DIO_program.c **** 	{
+ 359:../src/DIO_program.c **** 		case PORTA :
+ 360:../src/DIO_program.c **** 			CLR_BIT(GPIOA->LCKR,Copy_u8Pin);   		// Lock pin configuration
+ 361:../src/DIO_program.c **** 			/* lock sequence */
+ 362:../src/DIO_program.c **** 			MGPIO_voidLockSequence(Copy_u8Port);
+ 363:../src/DIO_program.c **** 			break;
+ 364:../src/DIO_program.c **** 			
+ 365:../src/DIO_program.c **** 		case PORTB :
+ 366:../src/DIO_program.c **** 			CLR_BIT(GPIOB->LCKR,Copy_u8Pin);		// Lock pin configuration
+ 367:../src/DIO_program.c **** 			/* lock sequence */
+ 368:../src/DIO_program.c **** 			MGPIO_voidLockSequence(Copy_u8Port);
+ 369:../src/DIO_program.c **** 			break;
+ 370:../src/DIO_program.c **** 			
+ 371:../src/DIO_program.c **** 		case PORTC :
+ 372:../src/DIO_program.c **** 			CLR_BIT(GPIOC->LCKR,Copy_u8Pin);		// Lock pin configuration
+ 373:../src/DIO_program.c **** 			MGPIO_voidLockSequence(Copy_u8Port);
+ 374:../src/DIO_program.c **** 			break;
+ 375:../src/DIO_program.c **** 			
+ 376:../src/DIO_program.c **** 		default : 		break;
+ 377:../src/DIO_program.c **** 	}
+ 378:../src/DIO_program.c **** }
+ 912              		.loc 1 378 0
+ 913 000c 10BD     		pop	{r4, pc}
+ 914              	.LVL100:
+ 915              	.L96:
+ 360:../src/DIO_program.c **** 			/* lock sequence */
+ 916              		.loc 1 360 0
+ 917 000e 104C     		ldr	r4, .L99
+ 918 0010 A369     		ldr	r3, [r4, #24]
+ 919 0012 0122     		movs	r2, #1
+ 920 0014 02FA01F1 		lsl	r1, r2, r1
+ 921              	.LVL101:
+ 922 0018 23EA0101 		bic	r1, r3, r1
+ 923 001c A161     		str	r1, [r4, #24]
+ 362:../src/DIO_program.c **** 			break;
+ 924              		.loc 1 362 0
+ 925 001e FFF7FEFF 		bl	MGPIO_voidLockSequence
+ 926              	.LVL102:
+ 363:../src/DIO_program.c **** 			
+ 927              		.loc 1 363 0
+ 928 0022 F3E7     		b	.L93
+ 929              	.LVL103:
+ 930              	.L95:
+ 366:../src/DIO_program.c **** 			/* lock sequence */
+ 931              		.loc 1 366 0
+ 932 0024 0B4C     		ldr	r4, .L99+4
+ 933 0026 A369     		ldr	r3, [r4, #24]
+ 934 0028 0122     		movs	r2, #1
+ 935 002a 02FA01F1 		lsl	r1, r2, r1
+ 936              	.LVL104:
+ 937 002e 23EA0101 		bic	r1, r3, r1
+ 938 0032 A161     		str	r1, [r4, #24]
+ 368:../src/DIO_program.c **** 			break;
+ 939              		.loc 1 368 0
+ 940 0034 FFF7FEFF 		bl	MGPIO_voidLockSequence
+ 941              	.LVL105:
+ 369:../src/DIO_program.c **** 			
+ 942              		.loc 1 369 0
+ 943 0038 E8E7     		b	.L93
+ 944              	.LVL106:
+ 945              	.L97:
+ 372:../src/DIO_program.c **** 			MGPIO_voidLockSequence(Copy_u8Port);
+ 946              		.loc 1 372 0
+ 947 003a 074C     		ldr	r4, .L99+8
+ 948 003c A369     		ldr	r3, [r4, #24]
+ 949 003e 0122     		movs	r2, #1
+ 950 0040 02FA01F1 		lsl	r1, r2, r1
+ 951              	.LVL107:
+ 952 0044 23EA0101 		bic	r1, r3, r1
+ 953 0048 A161     		str	r1, [r4, #24]
+ 373:../src/DIO_program.c **** 			break;
+ 954              		.loc 1 373 0
+ 955 004a FFF7FEFF 		bl	MGPIO_voidLockSequence
+ 956              	.LVL108:
+ 957              		.loc 1 378 0
+ 958 004e DDE7     		b	.L93
+ 959              	.L100:
+ 960              		.align	2
+ 961              	.L99:
+ 962 0050 00080140 		.word	1073809408
+ 963 0054 000C0140 		.word	1073810432
+ 964 0058 00100140 		.word	1073811456
+ 965              		.cfi_endproc
+ 966              	.LFE10:
+ 968              		.section	.text.MGPIO_voidSetPullResistor,"ax",%progbits
+ 969              		.align	1
+ 970              		.global	MGPIO_voidSetPullResistor
+ 971              		.syntax unified
+ 972              		.thumb
+ 973              		.thumb_func
+ 974              		.fpu softvfp
+ 976              	MGPIO_voidSetPullResistor:
+ 977              	.LFB11:
+ 379:../src/DIO_program.c **** 
+ 380:../src/DIO_program.c **** 
+ 381:../src/DIO_program.c **** void MGPIO_voidSetPullResistor(u8 Copy_u8Port , u8 Copy_u8Pin , u8 Copy_u8PullType)
+ 382:../src/DIO_program.c **** {
+ 978              		.loc 1 382 0
+ 979              		.cfi_startproc
+ 980              		@ args = 0, pretend = 0, frame = 0
+ 981              		@ frame_needed = 0, uses_anonymous_args = 0
+ 982              	.LVL109:
+ 983 0000 70B5     		push	{r4, r5, r6, lr}
+ 984              		.cfi_def_cfa_offset 16
+ 985              		.cfi_offset 4, -16
+ 986              		.cfi_offset 5, -12
+ 987              		.cfi_offset 6, -8
+ 988              		.cfi_offset 14, -4
+ 989 0002 0446     		mov	r4, r0
+ 990 0004 0E46     		mov	r6, r1
+ 991 0006 1546     		mov	r5, r2
+ 383:../src/DIO_program.c **** 	/* set pin configuration as input pull */
+ 384:../src/DIO_program.c **** 	MGPIO_voidSetPinDirection(Copy_u8Port , Copy_u8Pin , GPIO_INPUT_PULL_UP_DOWN);
+ 992              		.loc 1 384 0
+ 993 0008 0822     		movs	r2, #8
+ 994              	.LVL110:
+ 995 000a FFF7FEFF 		bl	MGPIO_voidSetPinDirection
+ 996              	.LVL111:
+ 385:../src/DIO_program.c **** 	switch (Copy_u8Port)
+ 997              		.loc 1 385 0
+ 998 000e 012C     		cmp	r4, #1
+ 999 0010 13D0     		beq	.L103
+ 1000 0012 14B1     		cbz	r4, .L104
+ 1001 0014 022C     		cmp	r4, #2
+ 1002 0016 20D0     		beq	.L105
+ 1003              	.L101:
+ 386:../src/DIO_program.c **** 	{
+ 387:../src/DIO_program.c **** 		case PORTA :
+ 388:../src/DIO_program.c **** 			if (Copy_u8PullType == GPIO_PULL_UP)
+ 389:../src/DIO_program.c **** 			{
+ 390:../src/DIO_program.c **** 				GPIOA->BSRR = (1 << Copy_u8Pin);
+ 391:../src/DIO_program.c **** 			}
+ 392:../src/DIO_program.c **** 			
+ 393:../src/DIO_program.c **** 			else if (Copy_u8PullType == GPIO_PULL_DOWN)
+ 394:../src/DIO_program.c **** 			{
+ 395:../src/DIO_program.c **** 				GPIOA->BRR = (1 << Copy_u8Pin);
+ 396:../src/DIO_program.c **** 			}
+ 397:../src/DIO_program.c **** 			break;
+ 398:../src/DIO_program.c **** 			
+ 399:../src/DIO_program.c **** 		case PORTB :
+ 400:../src/DIO_program.c **** 			if (Copy_u8PullType == GPIO_PULL_UP)
+ 401:../src/DIO_program.c **** 			{
+ 402:../src/DIO_program.c **** 				GPIOB->BSRR = (1 << Copy_u8Pin);
+ 403:../src/DIO_program.c **** 			}
+ 404:../src/DIO_program.c **** 			
+ 405:../src/DIO_program.c **** 			else if (Copy_u8PullType == GPIO_PULL_DOWN)
+ 406:../src/DIO_program.c **** 			{
+ 407:../src/DIO_program.c **** 				GPIOB->BRR = (1 << Copy_u8Pin);
+ 408:../src/DIO_program.c **** 			}
+ 409:../src/DIO_program.c **** 			break;
+ 410:../src/DIO_program.c **** 			
+ 411:../src/DIO_program.c **** 		case PORTC :
+ 412:../src/DIO_program.c **** 			if (Copy_u8PullType == GPIO_PULL_UP)
+ 413:../src/DIO_program.c **** 			{
+ 414:../src/DIO_program.c **** 				GPIOC->BSRR = (1 << Copy_u8Pin);
+ 415:../src/DIO_program.c **** 			}
+ 416:../src/DIO_program.c **** 			
+ 417:../src/DIO_program.c **** 			else if (Copy_u8PullType == GPIO_PULL_DOWN)
+ 418:../src/DIO_program.c **** 			{
+ 419:../src/DIO_program.c **** 				GPIOC->BRR = (1 << Copy_u8Pin);
+ 420:../src/DIO_program.c **** 			}
+ 421:../src/DIO_program.c **** 			break;
+ 422:../src/DIO_program.c **** 			
+ 423:../src/DIO_program.c **** 		default : 		break;
+ 424:../src/DIO_program.c **** 	}
+ 425:../src/DIO_program.c **** }
+ 1004              		.loc 1 425 0
+ 1005 0018 70BD     		pop	{r4, r5, r6, pc}
+ 1006              	.L104:
+ 388:../src/DIO_program.c **** 			{
+ 1007              		.loc 1 388 0
+ 1008 001a 012D     		cmp	r5, #1
+ 1009 001c 07D0     		beq	.L110
+ 393:../src/DIO_program.c **** 			{
+ 1010              		.loc 1 393 0
+ 1011 001e 002D     		cmp	r5, #0
+ 1012 0020 FAD1     		bne	.L101
+ 395:../src/DIO_program.c **** 			}
+ 1013              		.loc 1 395 0
+ 1014 0022 0123     		movs	r3, #1
+ 1015 0024 03FA06F6 		lsl	r6, r3, r6
+ 1016 0028 144B     		ldr	r3, .L113
+ 1017 002a 5E61     		str	r6, [r3, #20]
+ 1018 002c F4E7     		b	.L101
+ 1019              	.L110:
+ 390:../src/DIO_program.c **** 			}
+ 1020              		.loc 1 390 0
+ 1021 002e 0123     		movs	r3, #1
+ 1022 0030 03FA06F6 		lsl	r6, r3, r6
+ 1023 0034 114B     		ldr	r3, .L113
+ 1024 0036 1E61     		str	r6, [r3, #16]
+ 1025 0038 EEE7     		b	.L101
+ 1026              	.L103:
+ 400:../src/DIO_program.c **** 			{
+ 1027              		.loc 1 400 0
+ 1028 003a 012D     		cmp	r5, #1
+ 1029 003c 07D0     		beq	.L111
+ 405:../src/DIO_program.c **** 			{
+ 1030              		.loc 1 405 0
+ 1031 003e 002D     		cmp	r5, #0
+ 1032 0040 EAD1     		bne	.L101
+ 407:../src/DIO_program.c **** 			}
+ 1033              		.loc 1 407 0
+ 1034 0042 0123     		movs	r3, #1
+ 1035 0044 03FA06F6 		lsl	r6, r3, r6
+ 1036 0048 0D4B     		ldr	r3, .L113+4
+ 1037 004a 5E61     		str	r6, [r3, #20]
+ 1038 004c E4E7     		b	.L101
+ 1039              	.L111:
+ 402:../src/DIO_program.c **** 			}
+ 1040              		.loc 1 402 0
+ 1041 004e 0123     		movs	r3, #1
+ 1042 0050 03FA06F6 		lsl	r6, r3, r6
+ 1043 0054 0A4B     		ldr	r3, .L113+4
+ 1044 0056 1E61     		str	r6, [r3, #16]
+ 1045 0058 DEE7     		b	.L101
+ 1046              	.L105:
+ 412:../src/DIO_program.c **** 			{
+ 1047              		.loc 1 412 0
+ 1048 005a 012D     		cmp	r5, #1
+ 1049 005c 07D0     		beq	.L112
+ 417:../src/DIO_program.c **** 			{
+ 1050              		.loc 1 417 0
+ 1051 005e 002D     		cmp	r5, #0
+ 1052 0060 DAD1     		bne	.L101
+ 419:../src/DIO_program.c **** 			}
+ 1053              		.loc 1 419 0
+ 1054 0062 0123     		movs	r3, #1
+ 1055 0064 03FA06F6 		lsl	r6, r3, r6
+ 1056 0068 064B     		ldr	r3, .L113+8
+ 1057 006a 5E61     		str	r6, [r3, #20]
+ 1058              		.loc 1 425 0
+ 1059 006c D4E7     		b	.L101
+ 1060              	.L112:
+ 414:../src/DIO_program.c **** 			}
+ 1061              		.loc 1 414 0
+ 1062 006e 0123     		movs	r3, #1
+ 1063 0070 03FA06F6 		lsl	r6, r3, r6
+ 1064 0074 034B     		ldr	r3, .L113+8
+ 1065 0076 1E61     		str	r6, [r3, #16]
+ 1066 0078 CEE7     		b	.L101
+ 1067              	.L114:
+ 1068 007a 00BF     		.align	2
+ 1069              	.L113:
+ 1070 007c 00080140 		.word	1073809408
+ 1071 0080 000C0140 		.word	1073810432
+ 1072 0084 00100140 		.word	1073811456
+ 1073              		.cfi_endproc
+ 1074              	.LFE11:
+ 1076              		.text
+ 1077              	.Letext0:
+ 1078              		.file 2 "../include/STD_TYPES.h"
+ 1079              		.file 3 "../include/DIO_private.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 DIO_program.c
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:16     .text.MGPIO_voidLockSequence:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:22     .text.MGPIO_voidLockSequence:00000000 MGPIO_voidLockSequence
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:99     .text.MGPIO_voidLockSequence:0000006c $d
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:106    .text.MGPIO_voidSetPinDirection:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:113    .text.MGPIO_voidSetPinDirection:00000000 MGPIO_voidSetPinDirection
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:281    .text.MGPIO_voidSetPinDirection:000000e4 $d
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:288    .text.MGPIO_voidSetPinValue:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:295    .text.MGPIO_voidSetPinValue:00000000 MGPIO_voidSetPinValue
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:388    .text.MGPIO_voidSetPinValue:00000068 $d
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:395    .text.MGPIO_voidSetPin:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:402    .text.MGPIO_voidSetPin:00000000 MGPIO_voidSetPin
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:449    .text.MGPIO_voidSetPin:00000030 $d
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:456    .text.MGPIO_voidClearPin:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:463    .text.MGPIO_voidClearPin:00000000 MGPIO_voidClearPin
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:510    .text.MGPIO_voidClearPin:00000030 $d
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:517    .text.MGPIO_u8GetPinValue:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:524    .text.MGPIO_u8GetPinValue:00000000 MGPIO_u8GetPinValue
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:579    .text.MGPIO_u8GetPinValue:00000034 $d
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:586    .text.MGPIO_voidSetPortDirection:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:593    .text.MGPIO_voidSetPortDirection:00000000 MGPIO_voidSetPortDirection
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:680    .text.MGPIO_voidSetPortDirection:00000040 $d
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:687    .text.MGPIO_voidSetPortValue:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:694    .text.MGPIO_voidSetPortValue:00000000 MGPIO_voidSetPortValue
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:730    .text.MGPIO_voidSetPortValue:00000020 $d
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:737    .text.MGPIO_u16GetPortValue:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:744    .text.MGPIO_u16GetPortValue:00000000 MGPIO_u16GetPortValue
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:796    .text.MGPIO_u16GetPortValue:00000028 $d
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:803    .text.MGPIO_voidLockPin:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:810    .text.MGPIO_voidLockPin:00000000 MGPIO_voidLockPin
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:879    .text.MGPIO_voidLockPin:0000004c $d
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:886    .text.MGPIO_voidUnlockPin:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:893    .text.MGPIO_voidUnlockPin:00000000 MGPIO_voidUnlockPin
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:962    .text.MGPIO_voidUnlockPin:00000050 $d
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:969    .text.MGPIO_voidSetPullResistor:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:976    .text.MGPIO_voidSetPullResistor:00000000 MGPIO_voidSetPullResistor
+C:\Users\ahmed\AppData\Local\Temp\cci2wpMn.s:1070   .text.MGPIO_voidSetPullResistor:0000007c $d
+                           .group:00000000 wm4.0.c450a18b2a29049e2cbb4137d58ca9b1
+                           .group:00000000 wm4.BIT_MATH.h.8.e5e1c22317042a824b84ac5f7a29c479
+                           .group:00000000 wm4.DIO_interface.h.9.f0ca16af2cc5ab3368f83eb1659d3e70
+                           .group:00000000 wm4.DIO_private.h.9.626d01a4dd4bf2532f0cbf5d5a941060
+
+NO UNDEFINED SYMBOLS

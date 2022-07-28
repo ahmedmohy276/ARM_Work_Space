@@ -1,0 +1,11 @@
+21:16:25 **** Incremental Build of configuration Debug for project SMI800L_Send_Receive_Message_Driver ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "SMI800L_Send_Receive_Message_Driver.elf"
+   text	   data	    bss	    dec	    hex	filename
+   6747	    184	    420	   7351	   1cb7	SMI800L_Send_Receive_Message_Driver.elf
+Finished building: SMI800L_Send_Receive_Message_Driver.siz
+ 
+
+21:16:26 Build Finished (took 445ms)
+

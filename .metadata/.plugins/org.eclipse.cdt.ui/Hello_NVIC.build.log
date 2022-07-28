@@ -1,0 +1,11 @@
+23:04:29 **** Incremental Build of configuration Debug for project Hello_NVIC ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "Hello_NVIC.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5175	    176	    476	   5827	   16c3	Hello_NVIC.elf
+Finished building: Hello_NVIC.siz
+ 
+
+23:04:30 Build Finished (took 459ms)
+

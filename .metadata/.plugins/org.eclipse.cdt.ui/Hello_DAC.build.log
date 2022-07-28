@@ -1,0 +1,11 @@
+23:04:24 **** Incremental Build of configuration Debug for project Hello_DAC ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "Hello_DAC.elf"
+   text	   data	    bss	    dec	    hex	filename
+  43178	    176	    428	  43782	   ab06	Hello_DAC.elf
+Finished building: Hello_DAC.siz
+ 
+
+23:04:24 Build Finished (took 551ms)
+

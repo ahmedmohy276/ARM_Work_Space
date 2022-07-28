@@ -1,0 +1,95 @@
+23:04:19 **** Incremental Build of configuration Debug for project FreeRTOS_LAB1 ****
+make all 
+Building file: ../system/src/stm32f1-stdperiph/stm32f10x_gpio.c
+Invoking: Cross ARM GNU C Compiler
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -DDEBUG -DUSE_FULL_ASSERT -DTRACE -DOS_USE_TRACE_SEMIHOSTING_DEBUG -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DHSE_VALUE=8000000 -I"../include" -I"../system/include" -I"../system/include/cmsis" -I"../system/include/stm32f1-stdperiph" -std=gnu11 -MMD -MP -MF"system/src/stm32f1-stdperiph/stm32f10x_gpio.d" -MT"system/src/stm32f1-stdperiph/stm32f10x_gpio.o" -c -o "system/src/stm32f1-stdperiph/stm32f10x_gpio.o" "../system/src/stm32f1-stdperiph/stm32f10x_gpio.c"
+In file included from ../system/include/stm32f1-stdperiph/stm32f10x_gpio.h:23:0,
+                 from ../system/src/stm32f1-stdperiph/stm32f10x_gpio.c:17:
+../system/include/stm32f1-stdperiph/stm32f10x.h:218:2: error: #error bad __TARGET_PROCESSOR
+ #error bad __TARGET_PROCESSOR
+  ^~~~~
+In file included from ../system/src/stm32f1-stdperiph/stm32f10x_gpio.c:17:0:
+../system/include/stm32f1-stdperiph/stm32f10x_gpio.h:232:26: error: unknown type name 'FunctionalState'
+ void GPIO_EventOutputCmd(FunctionalState NewState);
+                          ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_gpio.h:233:42: error: unknown type name 'FunctionalState'
+ void GPIO_PinRemapConfig(u32 GPIO_Remap, FunctionalState NewState);
+                                          ^~~~~~~~~~~~~~~
+In file included from ../system/src/stm32f1-stdperiph/stm32f10x_gpio.c:18:0:
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:256:1: error: unknown type name 'ErrorStatus'
+ ErrorStatus RCC_WaitForHSEStartUp(void);
+ ^~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:258:17: error: unknown type name 'FunctionalState'
+ void RCC_HSICmd(FunctionalState NewState);
+                 ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:260:17: error: unknown type name 'FunctionalState'
+ void RCC_PLLCmd(FunctionalState NewState);
+                 ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:266:30: error: unknown type name 'FunctionalState'
+ void RCC_ITConfig(u8 RCC_IT, FunctionalState NewState);
+                              ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:270:17: error: unknown type name 'FunctionalState'
+ void RCC_LSICmd(FunctionalState NewState);
+                 ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:272:20: error: unknown type name 'FunctionalState'
+ void RCC_RTCCLKCmd(FunctionalState NewState);
+                    ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:274:47: error: unknown type name 'FunctionalState'
+ void RCC_AHBPeriphClockCmd(u32 RCC_AHBPeriph, FunctionalState NewState);
+                                               ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:275:49: error: unknown type name 'FunctionalState'
+ void RCC_APB2PeriphClockCmd(u32 RCC_APB2Periph, FunctionalState NewState);
+                                                 ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:276:49: error: unknown type name 'FunctionalState'
+ void RCC_APB1PeriphClockCmd(u32 RCC_APB1Periph, FunctionalState NewState);
+                                                 ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:277:49: error: unknown type name 'FunctionalState'
+ void RCC_APB2PeriphResetCmd(u32 RCC_APB2Periph, FunctionalState NewState);
+                                                 ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:278:49: error: unknown type name 'FunctionalState'
+ void RCC_APB1PeriphResetCmd(u32 RCC_APB1Periph, FunctionalState NewState);
+                                                 ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:279:25: error: unknown type name 'FunctionalState'
+ void RCC_BackupResetCmd(FunctionalState NewState);
+                         ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:280:33: error: unknown type name 'FunctionalState'
+ void RCC_ClockSecuritySystemCmd(FunctionalState NewState);
+                                 ^~~~~~~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:282:1: error: unknown type name 'FlagStatus'
+ FlagStatus RCC_GetFlagStatus(u8 RCC_FLAG);
+ ^~~~~~~~~~
+../system/include/stm32f1-stdperiph/stm32f10x_rcc.h:284:1: error: unknown type name 'ITStatus'
+ ITStatus RCC_GetITStatus(u8 RCC_IT);
+ ^~~~~~~~
+../system/src/stm32f1-stdperiph/stm32f10x_gpio.c: In function 'GPIO_DeInit':
+../system/src/stm32f1-stdperiph/stm32f10x_gpio.c:59:7: warning: implicit declaration of function 'RCC_APB2PeriphResetCmd'; did you mean 'RCC_APB2Periph_ADC1'? [-Wimplicit-function-declaration]
+       RCC_APB2PeriphResetCmd(RCC_APB2Periph_GPIOA, ENABLE);
+       ^~~~~~~~~~~~~~~~~~~~~~
+       RCC_APB2Periph_ADC1
+../system/src/stm32f1-stdperiph/stm32f10x_gpio.c:59:52: error: 'ENABLE' undeclared (first use in this function)
+       RCC_APB2PeriphResetCmd(RCC_APB2Periph_GPIOA, ENABLE);
+                                                    ^~~~~~
+../system/src/stm32f1-stdperiph/stm32f10x_gpio.c:59:52: note: each undeclared identifier is reported only once for each function it appears in
+../system/src/stm32f1-stdperiph/stm32f10x_gpio.c:60:52: error: 'DISABLE' undeclared (first use in this function); did you mean 'ENABLE'?
+       RCC_APB2PeriphResetCmd(RCC_APB2Periph_GPIOA, DISABLE);
+                                                    ^~~~~~~
+                                                    ENABLE
+../system/src/stm32f1-stdperiph/stm32f10x_gpio.c: In function 'GPIO_AFIODeInit':
+../system/src/stm32f1-stdperiph/stm32f10x_gpio.c:109:47: error: 'ENABLE' undeclared (first use in this function)
+   RCC_APB2PeriphResetCmd(RCC_APB2Periph_AFIO, ENABLE);
+                                               ^~~~~~
+../system/src/stm32f1-stdperiph/stm32f10x_gpio.c:110:47: error: 'DISABLE' undeclared (first use in this function); did you mean 'ENABLE'?
+   RCC_APB2PeriphResetCmd(RCC_APB2Periph_AFIO, DISABLE);
+                                               ^~~~~~~
+                                               ENABLE
+../system/src/stm32f1-stdperiph/stm32f10x_gpio.c: At top level:
+../system/src/stm32f1-stdperiph/stm32f10x_gpio.c:473:26: error: unknown type name 'FunctionalState'
+ void GPIO_EventOutputCmd(FunctionalState NewState)
+                          ^~~~~~~~~~~~~~~
+../system/src/stm32f1-stdperiph/stm32f10x_gpio.c:516:42: error: unknown type name 'FunctionalState'
+ void GPIO_PinRemapConfig(u32 GPIO_Remap, FunctionalState NewState)
+                                          ^~~~~~~~~~~~~~~
+make: *** [system/src/stm32f1-stdperiph/subdir.mk:35: system/src/stm32f1-stdperiph/stm32f10x_gpio.o] Error 1
+
+23:04:19 Build Finished (took 691ms)
+

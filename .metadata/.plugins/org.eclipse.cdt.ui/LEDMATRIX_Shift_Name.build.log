@@ -1,0 +1,11 @@
+23:04:33 **** Incremental Build of configuration Debug for project LEDMATRIX_Shift_Name ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "LEDMATRIX_Shift_Name.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5759	    176	    432	   6367	   18df	LEDMATRIX_Shift_Name.elf
+Finished building: LEDMATRIX_Shift_Name.siz
+ 
+
+23:04:34 Build Finished (took 476ms)
+

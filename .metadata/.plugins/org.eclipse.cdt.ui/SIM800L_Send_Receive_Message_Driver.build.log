@@ -1,0 +1,11 @@
+23:04:35 **** Incremental Build of configuration Debug for project SIM800L_Send_Receive_Message_Driver ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "SIM800L_Send_Receive_Message_Driver.elf"
+   text	   data	    bss	    dec	    hex	filename
+   6747	    184	    420	   7351	   1cb7	SIM800L_Send_Receive_Message_Driver.elf
+Finished building: SIM800L_Send_Receive_Message_Driver.siz
+ 
+
+23:04:35 Build Finished (took 457ms)
+

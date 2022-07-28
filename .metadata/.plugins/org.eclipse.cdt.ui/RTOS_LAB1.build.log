@@ -1,0 +1,13 @@
+14:16:51 **** Incremental Build of configuration Debug for project RTOS_LAB1 ****
+make all 
+Building target: RTOS_LAB1.elf
+Invoking: Cross ARM GNU C++ Linker
+arm-none-eabi-g++ -mcpu=cortex-m3 -mthumb -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -T mem.ld -T libs.ld -T sections.ld -nostartfiles -Xlinker --gc-sections -L"../ldscripts" -Wl,-Map,"RTOS_LAB1.map" --specs=nano.specs -o "RTOS_LAB1.elf"  ./system/src/stm32f1-stdperiph/misc.o ./system/src/stm32f1-stdperiph/stm32f10x_gpio.o ./system/src/stm32f1-stdperiph/stm32f10x_rcc.o  ./system/src/newlib/_cxx.o ./system/src/newlib/_exit.o ./system/src/newlib/_sbrk.o ./system/src/newlib/_startup.o ./system/src/newlib/_syscalls.o ./system/src/newlib/assert.o  ./system/src/diag/Trace.o ./system/src/diag/trace_impl.o  ./system/src/cortexm/_initialize_hardware.o ./system/src/cortexm/_reset_hardware.o ./system/src/cortexm/exception_handlers.o  ./system/src/cmsis/system_stm32f10x.o ./system/src/cmsis/vectors_stm32f10x.o  ./src/DIO_program.o ./src/RCC_program.o ./src/SEVSEG_program.o ./src/croutine.o ./src/event_groups.o ./src/heap_1.o ./src/list.o ./src/main.o ./src/port.o ./src/queue.o ./src/stream_buffer.o ./src/tasks.o ./src/timers.o   
+./src/tasks.o: In function `xTaskIncrementTick':
+E:\IMT ARM Embedded System Diploma\ARM_WS\RTOS_LAB1\Debug/../src/tasks.c:2860: undefined reference to `vApplicationTickHook'
+E:\IMT ARM Embedded System Diploma\ARM_WS\RTOS_LAB1\Debug/../src/tasks.c:2890: undefined reference to `vApplicationTickHook'
+collect2.exe: error: ld returned 1 exit status
+make: *** [makefile:64: RTOS_LAB1.elf] Error 1
+
+14:16:52 Build Finished (took 829ms)
+

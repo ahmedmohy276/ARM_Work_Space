@@ -1,0 +1,11 @@
+23:04:23 **** Incremental Build of configuration Debug for project Hello_Bootloader ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "Hello_Bootloader.elf"
+   text	   data	    bss	    dec	    hex	filename
+   6987	    184	    732	   7903	   1edf	Hello_Bootloader.elf
+Finished building: Hello_Bootloader.siz
+ 
+
+23:04:23 Build Finished (took 598ms)
+

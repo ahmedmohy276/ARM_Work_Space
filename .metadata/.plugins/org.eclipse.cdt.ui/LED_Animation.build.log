@@ -1,0 +1,11 @@
+23:04:34 **** Incremental Build of configuration Debug for project LED_Animation ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "LED_Animation.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5611	    176	    420	   6207	   183f	LED_Animation.elf
+Finished building: LED_Animation.siz
+ 
+
+23:04:34 Build Finished (took 449ms)
+

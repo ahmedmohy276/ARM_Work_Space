@@ -1,0 +1,11 @@
+23:04:26 **** Incremental Build of configuration Debug for project Hello_ESP ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "Hello_ESP.elf"
+   text	   data	    bss	    dec	    hex	filename
+   7071	    184	    412	   7667	   1df3	Hello_ESP.elf
+Finished building: Hello_ESP.siz
+ 
+
+23:04:26 Build Finished (took 449ms)
+

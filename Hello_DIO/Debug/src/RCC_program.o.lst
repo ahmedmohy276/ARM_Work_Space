@@ -1,0 +1,355 @@
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"RCC_program.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.MRCC_voidInitSysClock,"ax",%progbits
+  16              		.align	1
+  17              		.global	MRCC_voidInitSysClock
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	MRCC_voidInitSysClock:
+  24              	.LFB0:
+  25              		.file 1 "../src/RCC_program.c"
+   1:../src/RCC_program.c **** /*****************************************************************************/
+   2:../src/RCC_program.c **** /* Author    : Ahmed Mohy													 */
+   3:../src/RCC_program.c **** /* Date      : 24 DEC 2021													 */
+   4:../src/RCC_program.c **** /* Version   : V01														     */
+   5:../src/RCC_program.c **** /*****************************************************************************/
+   6:../src/RCC_program.c **** 
+   7:../src/RCC_program.c **** #include "STD_TYPES.h"
+   8:../src/RCC_program.c **** #include "BIT_MATH.h"
+   9:../src/RCC_program.c **** 
+  10:../src/RCC_program.c **** #include "RCC_interface.h"
+  11:../src/RCC_program.c **** #include "RCC_private.h"
+  12:../src/RCC_program.c **** #include "RCC_config.h"
+  13:../src/RCC_program.c **** 
+  14:../src/RCC_program.c **** 
+  15:../src/RCC_program.c **** void MRCC_voidInitSysClock(void)
+  16:../src/RCC_program.c **** {
+  26              		.loc 1 16 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+  17:../src/RCC_program.c **** 	#if		RCC_CLOCK_TYPE == RCC_HSE_CRYSTAL
+  18:../src/RCC_program.c **** 		RCC_CR = 0X00010000;								/* Enable HSE with no bypass */
+  31              		.loc 1 18 0
+  32 0000 034B     		ldr	r3, .L2
+  33 0002 4FF48032 		mov	r2, #65536
+  34 0006 1A60     		str	r2, [r3]
+  19:../src/RCC_program.c **** 		RCC_CFGR = 0X00000001;								/* Select system clock switch */
+  35              		.loc 1 19 0
+  36 0008 0433     		adds	r3, r3, #4
+  37 000a 0122     		movs	r2, #1
+  38 000c 1A60     		str	r2, [r3]
+  20:../src/RCC_program.c **** 		
+  21:../src/RCC_program.c **** 	#elif 	RCC_CLOCK_TYPE == RCC_HSE_RC
+  22:../src/RCC_program.c **** 		RCC_CR = 0X00050000;								/* Enable HSE with bypass */
+  23:../src/RCC_program.c **** 		RCC_CFGR = 0X00000001;								/* Select system clock switch */
+  24:../src/RCC_program.c **** 		
+  25:../src/RCC_program.c **** 	#elif 	RCC_CLOCK_TYPE == RCC_HSI
+  26:../src/RCC_program.c **** 		RCC_CR = 0X00000081;								/* Enable HSi + Trimming = 0 */
+  27:../src/RCC_program.c **** 		RCC_CFGR = 0X00000000;								/* Select system clock switch */
+  28:../src/RCC_program.c **** 		
+  29:../src/RCC_program.c **** 	#elif 	RCC_CLOCK_TYPE == RCC_PLL
+  30:../src/RCC_program.c **** 		#if		RCC_PLL_INPUT == RCC_PLL_IN_HSI_DIV_2
+  31:../src/RCC_program.c **** 			RCC_CFGR &= ~(0XF << 18);						/* Clear PLLMUL bits */
+  32:../src/RCC_program.c **** 			RCC_CFGR |= ((RCC_PLL_MUL_VAL - 2) << 18);		/* Set value of PLLMUL val */
+  33:../src/RCC_program.c **** 			CLR_BIT(RCC_CFGR,16);							/* set PLL input clock to HSI/2 */
+  34:../src/RCC_program.c **** 			CLR_BIT(RCC_CFGR,0);							/* Select system clock switch */
+  35:../src/RCC_program.c **** 			CLR_BIT(RCC_CFGR,1);
+  36:../src/RCC_program.c **** 			
+  37:../src/RCC_program.c **** 			RCC_CR = 0X01000081;						   /* enable PLL and HSI clock + Trimming = 0 */
+  38:../src/RCC_program.c **** 			
+  39:../src/RCC_program.c **** 		#elif 	RCC_PLL_INPUT == RCC_PLL_IN_HSE_DIV_2
+  40:../src/RCC_program.c **** 			RCC_CFGR &= ~(0XF << 18);						/* Clear PLLMUL bits */
+  41:../src/RCC_program.c **** 			RCC_CFGR |= ((RCC_PLL_MUL_VAL - 2) << 18);		/* Set value of PLLMUL val */
+  42:../src/RCC_program.c **** 			SET_BIT(RCC_CFGR,16);							/* set PLL input clock to HSE */
+  43:../src/RCC_program.c **** 			SET_BIT(RCC_CFGR,17);							/* HSE prescaler = 2 */
+  44:../src/RCC_program.c **** 			SET_BIT(RCC_CFGR,0);							/* Select system clock switch */
+  45:../src/RCC_program.c **** 			CLR_BIT(RCC_CFGR,1);
+  46:../src/RCC_program.c **** 			
+  47:../src/RCC_program.c **** 			#if		RCC_PLL_IN_HSE_TYPE	== RCC_PLL_IN_HSE_CRYSTAL
+  48:../src/RCC_program.c **** 				RCC_CR = 0X01010000;						/* enable PLL and HSE clock with no bypass */
+  49:../src/RCC_program.c **** 				
+  50:../src/RCC_program.c **** 			#elif	RCC_PLL_IN_HSE_TYPE	== RCC_PLL_IN_HSE_RC
+  51:../src/RCC_program.c **** 				RCC_CR = 0X01050000;						/* enable PLL and HSE clock with bypass */
+  52:../src/RCC_program.c **** 			
+  53:../src/RCC_program.c **** 			#else
+  54:../src/RCC_program.c **** 				#error("you entered non valid value")
+  55:../src/RCC_program.c **** 			#endif
+  56:../src/RCC_program.c **** 			
+  57:../src/RCC_program.c **** 		#elif 	RCC_PLL_INPUT == RCC_PLL_IN_HSE
+  58:../src/RCC_program.c **** 			RCC_CFGR &= ~(0XF << 18);						/* Clear PLLMUL bits */
+  59:../src/RCC_program.c **** 			RCC_CFGR |= ((RCC_PLL_MUL_VAL - 2) << 18);		/* Set value of PLLMUL val */
+  60:../src/RCC_program.c **** 			SET_BIT(RCC_CFGR,16);							/* set PLL input clock to HSE */
+  61:../src/RCC_program.c **** 			CLR_BIT(RCC_CFGR,17);							/* HSE prescaler = 1 */
+  62:../src/RCC_program.c **** 			SET_BIT(RCC_CFGR,0);							/* Select system clock switch */
+  63:../src/RCC_program.c **** 			CLR_BIT(RCC_CFGR,1);
+  64:../src/RCC_program.c **** 			
+  65:../src/RCC_program.c **** 			#if		RCC_PLL_IN_HSE_TYPE	== RCC_PLL_IN_HSE_CRYSTAL
+  66:../src/RCC_program.c **** 				RCC_CR = 0X01010000;						/* enable PLL and HSE clock with no bypass */
+  67:../src/RCC_program.c **** 				
+  68:../src/RCC_program.c **** 			#elif	RCC_PLL_IN_HSE_TYPE	== RCC_PLL_IN_HSE_RC
+  69:../src/RCC_program.c **** 				RCC_CR = 0X01050000;						/* enable PLL and HSE clock with bypass */
+  70:../src/RCC_program.c **** 				
+  71:../src/RCC_program.c **** 			#else
+  72:../src/RCC_program.c **** 				#error("you entered non valid value")
+  73:../src/RCC_program.c **** 			#endif
+  74:../src/RCC_program.c **** 			
+  75:../src/RCC_program.c **** 		#else
+  76:../src/RCC_program.c **** 			#error("you entered non valid value")
+  77:../src/RCC_program.c **** 		#endif
+  78:../src/RCC_program.c **** 	#else
+  79:../src/RCC_program.c **** 		#error("you entered non valid clock type")
+  80:../src/RCC_program.c **** 	#endif
+  81:../src/RCC_program.c **** }
+  39              		.loc 1 81 0
+  40 000e 7047     		bx	lr
+  41              	.L3:
+  42              		.align	2
+  43              	.L2:
+  44 0010 00100240 		.word	1073876992
+  45              		.cfi_endproc
+  46              	.LFE0:
+  48              		.section	.text.MRCC_voidEnableClock,"ax",%progbits
+  49              		.align	1
+  50              		.global	MRCC_voidEnableClock
+  51              		.syntax unified
+  52              		.thumb
+  53              		.thumb_func
+  54              		.fpu softvfp
+  56              	MRCC_voidEnableClock:
+  57              	.LFB1:
+  82:../src/RCC_program.c **** 
+  83:../src/RCC_program.c **** 
+  84:../src/RCC_program.c **** void MRCC_voidEnableClock(u8 Copy_u8BusId,u8 Copy_u8PerId)
+  85:../src/RCC_program.c **** {
+  58              		.loc 1 85 0
+  59              		.cfi_startproc
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+  62              		@ link register save eliminated.
+  63              	.LVL0:
+  86:../src/RCC_program.c **** 	if (Copy_u8PerId <= 31)
+  64              		.loc 1 86 0
+  65 0000 1F29     		cmp	r1, #31
+  66 0002 1CD8     		bhi	.L4
+  87:../src/RCC_program.c **** 	{
+  88:../src/RCC_program.c **** 		switch (Copy_u8BusId)
+  67              		.loc 1 88 0
+  68 0004 0128     		cmp	r0, #1
+  69 0006 0BD0     		beq	.L6
+  70 0008 10B1     		cbz	r0, .L7
+  71 000a 0228     		cmp	r0, #2
+  72 000c 10D0     		beq	.L8
+  73 000e 7047     		bx	lr
+  74              	.L7:
+  89:../src/RCC_program.c **** 		{
+  90:../src/RCC_program.c **** 			case RCC_ABH   :
+  91:../src/RCC_program.c **** 				SET_BIT(RCC_AHBENR,Copy_u8PerId);
+  75              		.loc 1 91 0
+  76 0010 0B48     		ldr	r0, .L9
+  77              	.LVL1:
+  78 0012 0368     		ldr	r3, [r0]
+  79 0014 0122     		movs	r2, #1
+  80 0016 02FA01F1 		lsl	r1, r2, r1
+  81              	.LVL2:
+  82 001a 1943     		orrs	r1, r1, r3
+  83 001c 0160     		str	r1, [r0]
+  92:../src/RCC_program.c **** 				break;
+  84              		.loc 1 92 0
+  85 001e 7047     		bx	lr
+  86              	.LVL3:
+  87              	.L6:
+  93:../src/RCC_program.c **** 				
+  94:../src/RCC_program.c **** 			case RCC_APB1  :
+  95:../src/RCC_program.c **** 				SET_BIT(RCC_APB1ENR,Copy_u8PerId);
+  88              		.loc 1 95 0
+  89 0020 0848     		ldr	r0, .L9+4
+  90              	.LVL4:
+  91 0022 0368     		ldr	r3, [r0]
+  92 0024 0122     		movs	r2, #1
+  93 0026 02FA01F1 		lsl	r1, r2, r1
+  94              	.LVL5:
+  95 002a 1943     		orrs	r1, r1, r3
+  96 002c 0160     		str	r1, [r0]
+  96:../src/RCC_program.c **** 				break;
+  97              		.loc 1 96 0
+  98 002e 7047     		bx	lr
+  99              	.LVL6:
+ 100              	.L8:
+  97:../src/RCC_program.c **** 				
+  98:../src/RCC_program.c **** 			case RCC_APB2  :
+  99:../src/RCC_program.c **** 				SET_BIT(RCC_APB2ENR,Copy_u8PerId);
+ 101              		.loc 1 99 0
+ 102 0030 0548     		ldr	r0, .L9+8
+ 103              	.LVL7:
+ 104 0032 0368     		ldr	r3, [r0]
+ 105 0034 0122     		movs	r2, #1
+ 106 0036 02FA01F1 		lsl	r1, r2, r1
+ 107              	.LVL8:
+ 108 003a 1943     		orrs	r1, r1, r3
+ 109 003c 0160     		str	r1, [r0]
+ 110              	.L4:
+ 100:../src/RCC_program.c **** 				break;
+ 101:../src/RCC_program.c **** 				
+ 102:../src/RCC_program.c **** 			default        : 
+ 103:../src/RCC_program.c **** 				/* Return error */ 
+ 104:../src/RCC_program.c **** 				break;
+ 105:../src/RCC_program.c **** 		}
+ 106:../src/RCC_program.c **** 	}
+ 107:../src/RCC_program.c **** 	
+ 108:../src/RCC_program.c **** 	else
+ 109:../src/RCC_program.c **** 	{
+ 110:../src/RCC_program.c **** 		/* Return error */
+ 111:../src/RCC_program.c **** 	}
+ 112:../src/RCC_program.c **** }
+ 111              		.loc 1 112 0
+ 112 003e 7047     		bx	lr
+ 113              	.L10:
+ 114              		.align	2
+ 115              	.L9:
+ 116 0040 14100240 		.word	1073877012
+ 117 0044 1C100240 		.word	1073877020
+ 118 0048 18100240 		.word	1073877016
+ 119              		.cfi_endproc
+ 120              	.LFE1:
+ 122              		.section	.text.MRCC_voidDisableClock,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	MRCC_voidDisableClock
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 128              		.fpu softvfp
+ 130              	MRCC_voidDisableClock:
+ 131              	.LFB2:
+ 113:../src/RCC_program.c **** 
+ 114:../src/RCC_program.c **** 
+ 115:../src/RCC_program.c **** 
+ 116:../src/RCC_program.c **** 
+ 117:../src/RCC_program.c **** void MRCC_voidDisableClock(u8 Copy_u8BusId,u8 Copy_u8PerId)
+ 118:../src/RCC_program.c **** {
+ 132              		.loc 1 118 0
+ 133              		.cfi_startproc
+ 134              		@ args = 0, pretend = 0, frame = 0
+ 135              		@ frame_needed = 0, uses_anonymous_args = 0
+ 136              		@ link register save eliminated.
+ 137              	.LVL9:
+ 119:../src/RCC_program.c **** 	if (Copy_u8PerId <= 31)
+ 138              		.loc 1 119 0
+ 139 0000 1F29     		cmp	r1, #31
+ 140 0002 1FD8     		bhi	.L11
+ 120:../src/RCC_program.c **** 	{
+ 121:../src/RCC_program.c **** 		switch (Copy_u8BusId)
+ 141              		.loc 1 121 0
+ 142 0004 0128     		cmp	r0, #1
+ 143 0006 0CD0     		beq	.L13
+ 144 0008 10B1     		cbz	r0, .L14
+ 145 000a 0228     		cmp	r0, #2
+ 146 000c 12D0     		beq	.L15
+ 147 000e 7047     		bx	lr
+ 148              	.L14:
+ 122:../src/RCC_program.c **** 		{
+ 123:../src/RCC_program.c **** 			case RCC_ABH   :
+ 124:../src/RCC_program.c **** 				CLR_BIT(RCC_AHBENR,Copy_u8PerId);
+ 149              		.loc 1 124 0
+ 150 0010 0D48     		ldr	r0, .L16
+ 151              	.LVL10:
+ 152 0012 0368     		ldr	r3, [r0]
+ 153 0014 0122     		movs	r2, #1
+ 154 0016 02FA01F1 		lsl	r1, r2, r1
+ 155              	.LVL11:
+ 156 001a 23EA0101 		bic	r1, r3, r1
+ 157 001e 0160     		str	r1, [r0]
+ 125:../src/RCC_program.c **** 				break;
+ 158              		.loc 1 125 0
+ 159 0020 7047     		bx	lr
+ 160              	.LVL12:
+ 161              	.L13:
+ 126:../src/RCC_program.c **** 				
+ 127:../src/RCC_program.c **** 			case RCC_APB1  :
+ 128:../src/RCC_program.c **** 				CLR_BIT(RCC_APB1ENR,Copy_u8PerId);
+ 162              		.loc 1 128 0
+ 163 0022 0A48     		ldr	r0, .L16+4
+ 164              	.LVL13:
+ 165 0024 0368     		ldr	r3, [r0]
+ 166 0026 0122     		movs	r2, #1
+ 167 0028 02FA01F1 		lsl	r1, r2, r1
+ 168              	.LVL14:
+ 169 002c 23EA0101 		bic	r1, r3, r1
+ 170 0030 0160     		str	r1, [r0]
+ 129:../src/RCC_program.c **** 				break;
+ 171              		.loc 1 129 0
+ 172 0032 7047     		bx	lr
+ 173              	.LVL15:
+ 174              	.L15:
+ 130:../src/RCC_program.c **** 				
+ 131:../src/RCC_program.c **** 			case RCC_APB2  :
+ 132:../src/RCC_program.c **** 				CLR_BIT(RCC_APB2ENR,Copy_u8PerId);
+ 175              		.loc 1 132 0
+ 176 0034 0648     		ldr	r0, .L16+8
+ 177              	.LVL16:
+ 178 0036 0368     		ldr	r3, [r0]
+ 179 0038 0122     		movs	r2, #1
+ 180 003a 02FA01F1 		lsl	r1, r2, r1
+ 181              	.LVL17:
+ 182 003e 23EA0101 		bic	r1, r3, r1
+ 183 0042 0160     		str	r1, [r0]
+ 184              	.L11:
+ 133:../src/RCC_program.c **** 				break;
+ 134:../src/RCC_program.c **** 				
+ 135:../src/RCC_program.c **** 			default        : 
+ 136:../src/RCC_program.c **** 				/* Return error */ 
+ 137:../src/RCC_program.c **** 				break;
+ 138:../src/RCC_program.c **** 		}
+ 139:../src/RCC_program.c **** 	}
+ 140:../src/RCC_program.c **** 	
+ 141:../src/RCC_program.c **** 	else
+ 142:../src/RCC_program.c **** 	{
+ 143:../src/RCC_program.c **** 		/* Return error */
+ 144:../src/RCC_program.c **** 	}
+ 145:../src/RCC_program.c **** }...
+ 185              		.loc 1 145 0
+ 186 0044 7047     		bx	lr
+ 187              	.L17:
+ 188 0046 00BF     		.align	2
+ 189              	.L16:
+ 190 0048 14100240 		.word	1073877012
+ 191 004c 1C100240 		.word	1073877020
+ 192 0050 18100240 		.word	1073877016
+ 193              		.cfi_endproc
+ 194              	.LFE2:
+ 196              		.text
+ 197              	.Letext0:
+ 198              		.file 2 "../include/STD_TYPES.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 RCC_program.c
+C:\Users\ahmed\AppData\Local\Temp\ccyCKCLR.s:16     .text.MRCC_voidInitSysClock:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\ccyCKCLR.s:23     .text.MRCC_voidInitSysClock:00000000 MRCC_voidInitSysClock
+C:\Users\ahmed\AppData\Local\Temp\ccyCKCLR.s:44     .text.MRCC_voidInitSysClock:00000010 $d
+C:\Users\ahmed\AppData\Local\Temp\ccyCKCLR.s:49     .text.MRCC_voidEnableClock:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\ccyCKCLR.s:56     .text.MRCC_voidEnableClock:00000000 MRCC_voidEnableClock
+C:\Users\ahmed\AppData\Local\Temp\ccyCKCLR.s:116    .text.MRCC_voidEnableClock:00000040 $d
+C:\Users\ahmed\AppData\Local\Temp\ccyCKCLR.s:123    .text.MRCC_voidDisableClock:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\ccyCKCLR.s:130    .text.MRCC_voidDisableClock:00000000 MRCC_voidDisableClock
+C:\Users\ahmed\AppData\Local\Temp\ccyCKCLR.s:190    .text.MRCC_voidDisableClock:00000048 $d
+                           .group:00000000 wm4.0.c450a18b2a29049e2cbb4137d58ca9b1
+                           .group:00000000 wm4.BIT_MATH.h.8.e5e1c22317042a824b84ac5f7a29c479
+                           .group:00000000 wm4.RCC_interface.h.8.9040eeaa27e5251734c88140dc2adec0
+                           .group:00000000 wm4.RCC_private.h.8.d4b9a509720807a84f448b4877a21b32
+                           .group:00000000 wm4.RCC_config.h.8.0c68743ae359af0befc7677803e9df46
+
+NO UNDEFINED SYMBOLS

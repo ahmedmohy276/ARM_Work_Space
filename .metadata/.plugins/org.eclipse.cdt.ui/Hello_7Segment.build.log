@@ -1,0 +1,11 @@
+23:04:21 **** Incremental Build of configuration Debug for project Hello_7Segment ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "Hello_7Segment.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5267	    188	    424	   5879	   16f7	Hello_7Segment.elf
+Finished building: Hello_7Segment.siz
+ 
+
+23:04:22 Build Finished (took 471ms)
+

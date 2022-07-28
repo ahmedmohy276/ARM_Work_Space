@@ -1,0 +1,643 @@
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"trace_impl.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text._trace_write_semihosting_debug,"ax",%progbits
+  16              		.align	1
+  17              		.syntax unified
+  18              		.thumb
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	_trace_write_semihosting_debug:
+  23              	.LFB67:
+  24              		.file 1 "../system/src/diag/trace_impl.c"
+   1:../system/src/diag/trace_impl.c **** /*
+   2:../system/src/diag/trace_impl.c ****  * This file is part of the µOS++ distribution.
+   3:../system/src/diag/trace_impl.c ****  *   (https://github.com/micro-os-plus)
+   4:../system/src/diag/trace_impl.c ****  * Copyright (c) 2014 Liviu Ionescu.
+   5:../system/src/diag/trace_impl.c ****  *
+   6:../system/src/diag/trace_impl.c ****  * Permission is hereby granted, free of charge, to any person
+   7:../system/src/diag/trace_impl.c ****  * obtaining a copy of this software and associated documentation
+   8:../system/src/diag/trace_impl.c ****  * files (the "Software"), to deal in the Software without
+   9:../system/src/diag/trace_impl.c ****  * restriction, including without limitation the rights to use,
+  10:../system/src/diag/trace_impl.c ****  * copy, modify, merge, publish, distribute, sublicense, and/or
+  11:../system/src/diag/trace_impl.c ****  * sell copies of the Software, and to permit persons to whom
+  12:../system/src/diag/trace_impl.c ****  * the Software is furnished to do so, subject to the following
+  13:../system/src/diag/trace_impl.c ****  * conditions:
+  14:../system/src/diag/trace_impl.c ****  *
+  15:../system/src/diag/trace_impl.c ****  * The above copyright notice and this permission notice shall be
+  16:../system/src/diag/trace_impl.c ****  * included in all copies or substantial portions of the Software.
+  17:../system/src/diag/trace_impl.c ****  *
+  18:../system/src/diag/trace_impl.c ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  19:../system/src/diag/trace_impl.c ****  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  20:../system/src/diag/trace_impl.c ****  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+  21:../system/src/diag/trace_impl.c ****  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+  22:../system/src/diag/trace_impl.c ****  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+  23:../system/src/diag/trace_impl.c ****  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  24:../system/src/diag/trace_impl.c ****  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+  25:../system/src/diag/trace_impl.c ****  * OTHER DEALINGS IN THE SOFTWARE.
+  26:../system/src/diag/trace_impl.c ****  */
+  27:../system/src/diag/trace_impl.c **** 
+  28:../system/src/diag/trace_impl.c **** // ----------------------------------------------------------------------------
+  29:../system/src/diag/trace_impl.c **** 
+  30:../system/src/diag/trace_impl.c **** #if defined(TRACE)
+  31:../system/src/diag/trace_impl.c **** 
+  32:../system/src/diag/trace_impl.c **** #include "cmsis_device.h"
+  33:../system/src/diag/trace_impl.c **** #include "diag/Trace.h"
+  34:../system/src/diag/trace_impl.c **** 
+  35:../system/src/diag/trace_impl.c **** // ----------------------------------------------------------------------------
+  36:../system/src/diag/trace_impl.c **** 
+  37:../system/src/diag/trace_impl.c **** // One of these definitions must be passed via the compiler command line
+  38:../system/src/diag/trace_impl.c **** // Note: small Cortex-M0/M0+ might implement a simplified debug interface.
+  39:../system/src/diag/trace_impl.c **** 
+  40:../system/src/diag/trace_impl.c **** //#define OS_USE_TRACE_ITM
+  41:../system/src/diag/trace_impl.c **** //#define OS_USE_TRACE_SEMIHOSTING_DEBUG
+  42:../system/src/diag/trace_impl.c **** //#define OS_USE_TRACE_SEMIHOSTING_STDOUT
+  43:../system/src/diag/trace_impl.c **** 
+  44:../system/src/diag/trace_impl.c **** #if !(defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
+  45:../system/src/diag/trace_impl.c **** #if defined(OS_USE_TRACE_ITM)
+  46:../system/src/diag/trace_impl.c **** #undef OS_USE_TRACE_ITM
+  47:../system/src/diag/trace_impl.c **** #warning "ITM unavailable"
+  48:../system/src/diag/trace_impl.c **** #endif // defined(OS_USE_TRACE_ITM)
+  49:../system/src/diag/trace_impl.c **** #endif // !(defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
+  50:../system/src/diag/trace_impl.c **** 
+  51:../system/src/diag/trace_impl.c **** #if defined(OS_DEBUG_SEMIHOSTING_FAULTS)
+  52:../system/src/diag/trace_impl.c **** #if defined(OS_USE_TRACE_SEMIHOSTING_STDOUT) || defined(OS_USE_TRACE_SEMIHOSTING_DEBUG)
+  53:../system/src/diag/trace_impl.c **** #error "Cannot debug semihosting using semihosting trace; use OS_USE_TRACE_ITM"
+  54:../system/src/diag/trace_impl.c **** #endif
+  55:../system/src/diag/trace_impl.c **** #endif
+  56:../system/src/diag/trace_impl.c **** 
+  57:../system/src/diag/trace_impl.c **** // ----------------------------------------------------------------------------
+  58:../system/src/diag/trace_impl.c **** 
+  59:../system/src/diag/trace_impl.c **** // Forward definitions.
+  60:../system/src/diag/trace_impl.c **** 
+  61:../system/src/diag/trace_impl.c **** #if defined(OS_USE_TRACE_ITM)
+  62:../system/src/diag/trace_impl.c **** static ssize_t
+  63:../system/src/diag/trace_impl.c **** _trace_write_itm (const char* buf, size_t nbyte);
+  64:../system/src/diag/trace_impl.c **** #endif
+  65:../system/src/diag/trace_impl.c **** 
+  66:../system/src/diag/trace_impl.c **** #if defined(OS_USE_TRACE_SEMIHOSTING_STDOUT)
+  67:../system/src/diag/trace_impl.c **** static ssize_t
+  68:../system/src/diag/trace_impl.c **** _trace_write_semihosting_stdout(const char* buf, size_t nbyte);
+  69:../system/src/diag/trace_impl.c **** #endif
+  70:../system/src/diag/trace_impl.c **** 
+  71:../system/src/diag/trace_impl.c **** #if defined(OS_USE_TRACE_SEMIHOSTING_DEBUG)
+  72:../system/src/diag/trace_impl.c **** static ssize_t
+  73:../system/src/diag/trace_impl.c **** _trace_write_semihosting_debug(const char* buf, size_t nbyte);
+  74:../system/src/diag/trace_impl.c **** #endif
+  75:../system/src/diag/trace_impl.c **** 
+  76:../system/src/diag/trace_impl.c **** // ----------------------------------------------------------------------------
+  77:../system/src/diag/trace_impl.c **** 
+  78:../system/src/diag/trace_impl.c **** void
+  79:../system/src/diag/trace_impl.c **** trace_initialize(void)
+  80:../system/src/diag/trace_impl.c **** {
+  81:../system/src/diag/trace_impl.c ****   // For regular ITM / semihosting, no inits required.
+  82:../system/src/diag/trace_impl.c **** }
+  83:../system/src/diag/trace_impl.c **** 
+  84:../system/src/diag/trace_impl.c **** // ----------------------------------------------------------------------------
+  85:../system/src/diag/trace_impl.c **** 
+  86:../system/src/diag/trace_impl.c **** // This function is called from _write() for fd==1 or fd==2 and from some
+  87:../system/src/diag/trace_impl.c **** // of the trace_* functions.
+  88:../system/src/diag/trace_impl.c **** 
+  89:../system/src/diag/trace_impl.c **** ssize_t
+  90:../system/src/diag/trace_impl.c **** trace_write (const char* buf __attribute__((unused)),
+  91:../system/src/diag/trace_impl.c **** 	     size_t nbyte __attribute__((unused)))
+  92:../system/src/diag/trace_impl.c **** {
+  93:../system/src/diag/trace_impl.c **** #if defined(OS_USE_TRACE_ITM)
+  94:../system/src/diag/trace_impl.c ****   return _trace_write_itm (buf, nbyte);
+  95:../system/src/diag/trace_impl.c **** #elif defined(OS_USE_TRACE_SEMIHOSTING_STDOUT)
+  96:../system/src/diag/trace_impl.c ****   return _trace_write_semihosting_stdout(buf, nbyte);
+  97:../system/src/diag/trace_impl.c **** #elif defined(OS_USE_TRACE_SEMIHOSTING_DEBUG)
+  98:../system/src/diag/trace_impl.c ****   return _trace_write_semihosting_debug(buf, nbyte);
+  99:../system/src/diag/trace_impl.c **** #endif
+ 100:../system/src/diag/trace_impl.c **** 
+ 101:../system/src/diag/trace_impl.c ****   return -1;
+ 102:../system/src/diag/trace_impl.c **** }
+ 103:../system/src/diag/trace_impl.c **** 
+ 104:../system/src/diag/trace_impl.c **** // ----------------------------------------------------------------------------
+ 105:../system/src/diag/trace_impl.c **** 
+ 106:../system/src/diag/trace_impl.c **** #if defined(OS_USE_TRACE_ITM)
+ 107:../system/src/diag/trace_impl.c **** 
+ 108:../system/src/diag/trace_impl.c **** #if defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)
+ 109:../system/src/diag/trace_impl.c **** 
+ 110:../system/src/diag/trace_impl.c **** // ITM is the ARM standard mechanism, running over SWD/SWO on Cortex-M3/M4
+ 111:../system/src/diag/trace_impl.c **** // devices, and is the recommended setting, if available.
+ 112:../system/src/diag/trace_impl.c **** //
+ 113:../system/src/diag/trace_impl.c **** // The JLink probe and the GDB server fully support SWD/SWO
+ 114:../system/src/diag/trace_impl.c **** // and the JLink Debugging plug-in enables it by default.
+ 115:../system/src/diag/trace_impl.c **** // The current OpenOCD does not include support to parse the SWO stream,
+ 116:../system/src/diag/trace_impl.c **** // so this configuration will not work on OpenOCD (will not crash, but
+ 117:../system/src/diag/trace_impl.c **** // nothing will be displayed in the output console).
+ 118:../system/src/diag/trace_impl.c **** 
+ 119:../system/src/diag/trace_impl.c **** #if !defined(OS_INTEGER_TRACE_ITM_STIMULUS_PORT)
+ 120:../system/src/diag/trace_impl.c **** #define OS_INTEGER_TRACE_ITM_STIMULUS_PORT     (0)
+ 121:../system/src/diag/trace_impl.c **** #endif
+ 122:../system/src/diag/trace_impl.c **** 
+ 123:../system/src/diag/trace_impl.c **** static ssize_t
+ 124:../system/src/diag/trace_impl.c **** _trace_write_itm (const char* buf, size_t nbyte)
+ 125:../system/src/diag/trace_impl.c **** {
+ 126:../system/src/diag/trace_impl.c ****   for (size_t i = 0; i < nbyte; i++)
+ 127:../system/src/diag/trace_impl.c ****     {
+ 128:../system/src/diag/trace_impl.c ****       // Check if ITM or the stimulus port are not enabled
+ 129:../system/src/diag/trace_impl.c ****       if (((ITM->TCR & ITM_TCR_ITMENA_Msk) == 0)
+ 130:../system/src/diag/trace_impl.c **** 	  || ((ITM->TER & (1UL << OS_INTEGER_TRACE_ITM_STIMULUS_PORT)) == 0))
+ 131:../system/src/diag/trace_impl.c **** 	{
+ 132:../system/src/diag/trace_impl.c **** 	  return (ssize_t)i; // return the number of sent characters (may be 0)
+ 133:../system/src/diag/trace_impl.c **** 	}
+ 134:../system/src/diag/trace_impl.c **** 
+ 135:../system/src/diag/trace_impl.c ****       // Wait until STIMx is ready...
+ 136:../system/src/diag/trace_impl.c ****       while (ITM->PORT[OS_INTEGER_TRACE_ITM_STIMULUS_PORT].u32 == 0)
+ 137:../system/src/diag/trace_impl.c **** 	;
+ 138:../system/src/diag/trace_impl.c ****       // then send data, one byte at a time
+ 139:../system/src/diag/trace_impl.c ****       ITM->PORT[OS_INTEGER_TRACE_ITM_STIMULUS_PORT].u8 = (uint8_t) (*buf++);
+ 140:../system/src/diag/trace_impl.c ****     }
+ 141:../system/src/diag/trace_impl.c **** 
+ 142:../system/src/diag/trace_impl.c ****   return (ssize_t)nbyte; // all characters successfully sent
+ 143:../system/src/diag/trace_impl.c **** }
+ 144:../system/src/diag/trace_impl.c **** 
+ 145:../system/src/diag/trace_impl.c **** #endif // defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)
+ 146:../system/src/diag/trace_impl.c **** 
+ 147:../system/src/diag/trace_impl.c **** #endif // OS_USE_TRACE_ITM
+ 148:../system/src/diag/trace_impl.c **** 
+ 149:../system/src/diag/trace_impl.c **** // ----------------------------------------------------------------------------
+ 150:../system/src/diag/trace_impl.c **** 
+ 151:../system/src/diag/trace_impl.c **** #if defined(OS_USE_TRACE_SEMIHOSTING_DEBUG) || defined(OS_USE_TRACE_SEMIHOSTING_STDOUT)
+ 152:../system/src/diag/trace_impl.c **** 
+ 153:../system/src/diag/trace_impl.c **** #include "arm/semihosting.h"
+ 154:../system/src/diag/trace_impl.c **** 
+ 155:../system/src/diag/trace_impl.c **** // Semihosting is the other output channel that can be used for the trace
+ 156:../system/src/diag/trace_impl.c **** // messages. It comes in two flavours: STDOUT and DEBUG. The STDOUT channel
+ 157:../system/src/diag/trace_impl.c **** // is the equivalent of the stdout in POSIX and in most cases it is forwarded
+ 158:../system/src/diag/trace_impl.c **** // to the GDB server stdout stream. The debug channel is a separate
+ 159:../system/src/diag/trace_impl.c **** // channel. STDOUT is buffered, so nothing is displayed until a \n;
+ 160:../system/src/diag/trace_impl.c **** // DEBUG is not buffered, but can be slow.
+ 161:../system/src/diag/trace_impl.c **** //
+ 162:../system/src/diag/trace_impl.c **** // Choosing between semihosting stdout and debug depends on the capabilities
+ 163:../system/src/diag/trace_impl.c **** // of your GDB server, and also on specific needs. It is recommended to test
+ 164:../system/src/diag/trace_impl.c **** // DEBUG first, and if too slow, try STDOUT.
+ 165:../system/src/diag/trace_impl.c **** //
+ 166:../system/src/diag/trace_impl.c **** // The JLink GDB server fully support semihosting, and both configurations
+ 167:../system/src/diag/trace_impl.c **** // are available; to activate it, use "monitor semihosting enable" or check
+ 168:../system/src/diag/trace_impl.c **** // the corresponding button in the JLink Debugging plug-in.
+ 169:../system/src/diag/trace_impl.c **** // In OpenOCD, support for semihosting can be enabled using
+ 170:../system/src/diag/trace_impl.c **** // "monitor arm semihosting enable".
+ 171:../system/src/diag/trace_impl.c **** //
+ 172:../system/src/diag/trace_impl.c **** // Note: Applications built with semihosting output active normally cannot
+ 173:../system/src/diag/trace_impl.c **** // be executed without the debugger connected and active, since they use
+ 174:../system/src/diag/trace_impl.c **** // BKPT to communicate with the host. However, with a carefully written
+ 175:../system/src/diag/trace_impl.c **** // HardFault_Handler, the semihosting BKPT calls can be processed, making
+ 176:../system/src/diag/trace_impl.c **** // possible to run semihosting applications as standalone, without being
+ 177:../system/src/diag/trace_impl.c **** // terminated with hardware faults.
+ 178:../system/src/diag/trace_impl.c **** 
+ 179:../system/src/diag/trace_impl.c **** #endif // OS_USE_TRACE_SEMIHOSTING_DEBUG_*
+ 180:../system/src/diag/trace_impl.c **** 
+ 181:../system/src/diag/trace_impl.c **** // ----------------------------------------------------------------------------
+ 182:../system/src/diag/trace_impl.c **** 
+ 183:../system/src/diag/trace_impl.c **** #if defined(OS_USE_TRACE_SEMIHOSTING_STDOUT)
+ 184:../system/src/diag/trace_impl.c **** 
+ 185:../system/src/diag/trace_impl.c **** static ssize_t
+ 186:../system/src/diag/trace_impl.c **** _trace_write_semihosting_stdout (const char* buf, size_t nbyte)
+ 187:../system/src/diag/trace_impl.c **** {
+ 188:../system/src/diag/trace_impl.c ****   static int handle;
+ 189:../system/src/diag/trace_impl.c ****   void* block[3];
+ 190:../system/src/diag/trace_impl.c ****   int ret;
+ 191:../system/src/diag/trace_impl.c **** 
+ 192:../system/src/diag/trace_impl.c ****   if (handle == 0)
+ 193:../system/src/diag/trace_impl.c ****     {
+ 194:../system/src/diag/trace_impl.c ****       // On the first call get the file handle from the host
+ 195:../system/src/diag/trace_impl.c ****       block[0] = ":tt"; // special filename to be used for stdin/out/err
+ 196:../system/src/diag/trace_impl.c ****       block[1] = (void*) 4; // mode "w"
+ 197:../system/src/diag/trace_impl.c ****       // length of ":tt", except null terminator
+ 198:../system/src/diag/trace_impl.c ****       block[2] = (void*) (sizeof(":tt") - 1);
+ 199:../system/src/diag/trace_impl.c **** 
+ 200:../system/src/diag/trace_impl.c ****       ret = call_host (SEMIHOSTING_SYS_OPEN, (void*) block);
+ 201:../system/src/diag/trace_impl.c ****       if (ret == -1)
+ 202:../system/src/diag/trace_impl.c ****         return -1;
+ 203:../system/src/diag/trace_impl.c **** 
+ 204:../system/src/diag/trace_impl.c ****       handle = ret;
+ 205:../system/src/diag/trace_impl.c ****     }
+ 206:../system/src/diag/trace_impl.c **** 
+ 207:../system/src/diag/trace_impl.c ****   block[0] = (void*) handle;
+ 208:../system/src/diag/trace_impl.c ****   block[1] = (void*) buf;
+ 209:../system/src/diag/trace_impl.c ****   block[2] = (void*) nbyte;
+ 210:../system/src/diag/trace_impl.c ****   // send character array to host file/device
+ 211:../system/src/diag/trace_impl.c ****   ret = call_host (SEMIHOSTING_SYS_WRITE, (void*) block);
+ 212:../system/src/diag/trace_impl.c ****   // this call returns the number of bytes NOT written (0 if all ok)
+ 213:../system/src/diag/trace_impl.c **** 
+ 214:../system/src/diag/trace_impl.c ****   // -1 is not a legal value, but SEGGER seems to return it
+ 215:../system/src/diag/trace_impl.c ****   if (ret == -1)
+ 216:../system/src/diag/trace_impl.c ****     return -1;
+ 217:../system/src/diag/trace_impl.c **** 
+ 218:../system/src/diag/trace_impl.c ****   // The compliant way of returning errors
+ 219:../system/src/diag/trace_impl.c ****   if (ret == (int) nbyte)
+ 220:../system/src/diag/trace_impl.c ****     return -1;
+ 221:../system/src/diag/trace_impl.c **** 
+ 222:../system/src/diag/trace_impl.c ****   // Return the number of bytes written
+ 223:../system/src/diag/trace_impl.c ****   return (ssize_t) (nbyte) - (ssize_t) ret;
+ 224:../system/src/diag/trace_impl.c **** }
+ 225:../system/src/diag/trace_impl.c **** 
+ 226:../system/src/diag/trace_impl.c **** #endif // OS_USE_TRACE_SEMIHOSTING_STDOUT
+ 227:../system/src/diag/trace_impl.c **** 
+ 228:../system/src/diag/trace_impl.c **** // ----------------------------------------------------------------------------
+ 229:../system/src/diag/trace_impl.c **** 
+ 230:../system/src/diag/trace_impl.c **** #if defined(OS_USE_TRACE_SEMIHOSTING_DEBUG)
+ 231:../system/src/diag/trace_impl.c **** 
+ 232:../system/src/diag/trace_impl.c **** #define OS_INTEGER_TRACE_TMP_ARRAY_SIZE  (16)
+ 233:../system/src/diag/trace_impl.c **** 
+ 234:../system/src/diag/trace_impl.c **** static ssize_t
+ 235:../system/src/diag/trace_impl.c **** _trace_write_semihosting_debug (const char* buf, size_t nbyte)
+ 236:../system/src/diag/trace_impl.c **** {
+  25              		.loc 1 236 0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 16
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  29              	.LVL0:
+  30 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+  31              		.cfi_def_cfa_offset 28
+  32              		.cfi_offset 4, -28
+  33              		.cfi_offset 5, -24
+  34              		.cfi_offset 6, -20
+  35              		.cfi_offset 7, -16
+  36              		.cfi_offset 8, -12
+  37              		.cfi_offset 9, -8
+  38              		.cfi_offset 14, -4
+  39 0004 85B0     		sub	sp, sp, #20
+  40              		.cfi_def_cfa_offset 48
+  41 0006 0446     		mov	r4, r0
+  42 0008 0F46     		mov	r7, r1
+ 237:../system/src/diag/trace_impl.c ****   // Since the single character debug channel is quite slow, try to
+ 238:../system/src/diag/trace_impl.c ****   // optimise and send a null terminated string, if possible.
+ 239:../system/src/diag/trace_impl.c ****   if (buf[nbyte] == '\0')
+  43              		.loc 1 239 0
+  44 000a 4356     		ldrsb	r3, [r0, r1]
+  45 000c 0BB1     		cbz	r3, .L9
+  46              	.LBB8:
+ 240:../system/src/diag/trace_impl.c ****     {
+ 241:../system/src/diag/trace_impl.c ****       // send string
+ 242:../system/src/diag/trace_impl.c ****       call_host (SEMIHOSTING_SYS_WRITE0, (void*) buf);
+ 243:../system/src/diag/trace_impl.c ****     }
+ 244:../system/src/diag/trace_impl.c ****   else
+ 245:../system/src/diag/trace_impl.c ****     {
+ 246:../system/src/diag/trace_impl.c ****       // If not, use a local buffer to speed things up
+ 247:../system/src/diag/trace_impl.c ****       char tmp[OS_INTEGER_TRACE_TMP_ARRAY_SIZE];
+ 248:../system/src/diag/trace_impl.c ****       size_t togo = nbyte;
+  47              		.loc 1 248 0
+  48 000e 0E46     		mov	r6, r1
+  49 0010 1EE0     		b	.L2
+  50              	.L9:
+  51              	.LVL1:
+  52              	.LBE8:
+  53              	.LBB13:
+  54              	.LBB14:
+  55              		.file 2 "../system/include/arm/semihosting.h"
+   1:../system/include/arm/semihosting.h **** /*
+   2:../system/include/arm/semihosting.h ****  * This file is part of the µOS++ distribution.
+   3:../system/include/arm/semihosting.h ****  *   (https://github.com/micro-os-plus)
+   4:../system/include/arm/semihosting.h ****  * Copyright (c) 2014 Liviu Ionescu.
+   5:../system/include/arm/semihosting.h ****  *
+   6:../system/include/arm/semihosting.h ****  * Permission is hereby granted, free of charge, to any person
+   7:../system/include/arm/semihosting.h ****  * obtaining a copy of this software and associated documentation
+   8:../system/include/arm/semihosting.h ****  * files (the "Software"), to deal in the Software without
+   9:../system/include/arm/semihosting.h ****  * restriction, including without limitation the rights to use,
+  10:../system/include/arm/semihosting.h ****  * copy, modify, merge, publish, distribute, sublicense, and/or
+  11:../system/include/arm/semihosting.h ****  * sell copies of the Software, and to permit persons to whom
+  12:../system/include/arm/semihosting.h ****  * the Software is furnished to do so, subject to the following
+  13:../system/include/arm/semihosting.h ****  * conditions:
+  14:../system/include/arm/semihosting.h ****  *
+  15:../system/include/arm/semihosting.h ****  * The above copyright notice and this permission notice shall be
+  16:../system/include/arm/semihosting.h ****  * included in all copies or substantial portions of the Software.
+  17:../system/include/arm/semihosting.h ****  *
+  18:../system/include/arm/semihosting.h ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  19:../system/include/arm/semihosting.h ****  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  20:../system/include/arm/semihosting.h ****  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+  21:../system/include/arm/semihosting.h ****  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+  22:../system/include/arm/semihosting.h ****  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+  23:../system/include/arm/semihosting.h ****  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  24:../system/include/arm/semihosting.h ****  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+  25:../system/include/arm/semihosting.h ****  * OTHER DEALINGS IN THE SOFTWARE.
+  26:../system/include/arm/semihosting.h ****  */
+  27:../system/include/arm/semihosting.h **** 
+  28:../system/include/arm/semihosting.h **** #ifndef ARM_SEMIHOSTING_H_
+  29:../system/include/arm/semihosting.h **** #define ARM_SEMIHOSTING_H_
+  30:../system/include/arm/semihosting.h **** 
+  31:../system/include/arm/semihosting.h **** // ----------------------------------------------------------------------------
+  32:../system/include/arm/semihosting.h **** 
+  33:../system/include/arm/semihosting.h **** // Semihosting operations.
+  34:../system/include/arm/semihosting.h **** enum OperationNumber
+  35:../system/include/arm/semihosting.h **** {
+  36:../system/include/arm/semihosting.h ****   // Regular operations
+  37:../system/include/arm/semihosting.h ****   SEMIHOSTING_EnterSVC = 0x17,
+  38:../system/include/arm/semihosting.h ****   SEMIHOSTING_ReportException = 0x18,
+  39:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_CLOSE = 0x02,
+  40:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_CLOCK = 0x10,
+  41:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_ELAPSED = 0x30,
+  42:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_ERRNO = 0x13,
+  43:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_FLEN = 0x0C,
+  44:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_GET_CMDLINE = 0x15,
+  45:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_HEAPINFO = 0x16,
+  46:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_ISERROR = 0x08,
+  47:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_ISTTY = 0x09,
+  48:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_OPEN = 0x01,
+  49:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_READ = 0x06,
+  50:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_READC = 0x07,
+  51:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_REMOVE = 0x0E,
+  52:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_RENAME = 0x0F,
+  53:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_SEEK = 0x0A,
+  54:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_SYSTEM = 0x12,
+  55:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_TICKFREQ = 0x31,
+  56:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_TIME = 0x11,
+  57:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_TMPNAM = 0x0D,
+  58:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_WRITE = 0x05,
+  59:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_WRITEC = 0x03,
+  60:../system/include/arm/semihosting.h ****   SEMIHOSTING_SYS_WRITE0 = 0x04,
+  61:../system/include/arm/semihosting.h **** 
+  62:../system/include/arm/semihosting.h ****   // Codes returned by SEMIHOSTING_ReportException
+  63:../system/include/arm/semihosting.h ****   ADP_Stopped_ApplicationExit = ((2 << 16) + 38),
+  64:../system/include/arm/semihosting.h ****   ADP_Stopped_RunTimeError = ((2 << 16) + 35),
+  65:../system/include/arm/semihosting.h **** 
+  66:../system/include/arm/semihosting.h **** };
+  67:../system/include/arm/semihosting.h **** 
+  68:../system/include/arm/semihosting.h **** // ----------------------------------------------------------------------------
+  69:../system/include/arm/semihosting.h **** 
+  70:../system/include/arm/semihosting.h **** // SWI numbers and reason codes for RDI (Angel) monitors.
+  71:../system/include/arm/semihosting.h **** #define AngelSWI_ARM                    0x123456
+  72:../system/include/arm/semihosting.h **** #ifdef __thumb__
+  73:../system/include/arm/semihosting.h **** #define AngelSWI                        0xAB
+  74:../system/include/arm/semihosting.h **** #else
+  75:../system/include/arm/semihosting.h **** #define AngelSWI                        AngelSWI_ARM
+  76:../system/include/arm/semihosting.h **** #endif
+  77:../system/include/arm/semihosting.h **** // For thumb only architectures use the BKPT instruction instead of SWI.
+  78:../system/include/arm/semihosting.h **** #if defined(__ARM_ARCH_7M__)     \
+  79:../system/include/arm/semihosting.h ****     || defined(__ARM_ARCH_7EM__) \
+  80:../system/include/arm/semihosting.h ****     || defined(__ARM_ARCH_6M__)
+  81:../system/include/arm/semihosting.h **** #define AngelSWIInsn                    "bkpt"
+  82:../system/include/arm/semihosting.h **** #define AngelSWIAsm                     bkpt
+  83:../system/include/arm/semihosting.h **** #else
+  84:../system/include/arm/semihosting.h **** #define AngelSWIInsn                    "swi"
+  85:../system/include/arm/semihosting.h **** #define AngelSWIAsm                     swi
+  86:../system/include/arm/semihosting.h **** #endif
+  87:../system/include/arm/semihosting.h **** 
+  88:../system/include/arm/semihosting.h **** #if defined(OS_DEBUG_SEMIHOSTING_FAULTS)
+  89:../system/include/arm/semihosting.h **** // Testing the local semihosting handler cannot use another BKPT, since this
+  90:../system/include/arm/semihosting.h **** // configuration cannot trigger HaedFault exceptions while the debugger is
+  91:../system/include/arm/semihosting.h **** // connected, so we use an illegal op code, that will trigger an
+  92:../system/include/arm/semihosting.h **** // UsageFault exception.
+  93:../system/include/arm/semihosting.h **** #define AngelSWITestFault       "setend be"
+  94:../system/include/arm/semihosting.h **** #define AngelSWITestFaultOpCode (0xB658)
+  95:../system/include/arm/semihosting.h **** #endif
+  96:../system/include/arm/semihosting.h **** 
+  97:../system/include/arm/semihosting.h **** static inline int
+  98:../system/include/arm/semihosting.h **** __attribute__ ((always_inline))
+  99:../system/include/arm/semihosting.h **** call_host (int reason, void* arg)
+ 100:../system/include/arm/semihosting.h **** {
+ 101:../system/include/arm/semihosting.h ****   int value;
+ 102:../system/include/arm/semihosting.h ****   asm volatile (
+  56              		.loc 2 102 0
+  57 0012 0425     		movs	r5, #4
+  58              		.syntax unified
+  59              	@ 102 "../system/include/arm/semihosting.h" 1
+  60 0014 2846     		 mov r0, r5  
+  61 0016 2146     	 mov r1, r4  
+  62 0018 ABBE     	 bkpt #171 
+  63 001a 0446     	 mov r4, r0
+  64              	@ 0 "" 2
+  65              	.LVL2:
+  66              		.thumb
+  67              		.syntax unified
+  68              	.L3:
+  69              	.LBE14:
+  70              	.LBE13:
+ 249:../system/src/diag/trace_impl.c ****       while (togo > 0)
+ 250:../system/src/diag/trace_impl.c ****         {
+ 251:../system/src/diag/trace_impl.c ****           unsigned int n = ((togo < sizeof(tmp)) ? togo : sizeof(tmp));
+ 252:../system/src/diag/trace_impl.c ****           unsigned int i = 0;
+ 253:../system/src/diag/trace_impl.c ****           for (; i < n; ++i, ++buf)
+ 254:../system/src/diag/trace_impl.c ****             {
+ 255:../system/src/diag/trace_impl.c ****               tmp[i] = *buf;
+ 256:../system/src/diag/trace_impl.c ****             }
+ 257:../system/src/diag/trace_impl.c ****           tmp[i] = '\0';
+ 258:../system/src/diag/trace_impl.c **** 
+ 259:../system/src/diag/trace_impl.c ****           call_host (SEMIHOSTING_SYS_WRITE0, (void*) tmp);
+ 260:../system/src/diag/trace_impl.c **** 
+ 261:../system/src/diag/trace_impl.c ****           togo -= n;
+ 262:../system/src/diag/trace_impl.c ****         }
+ 263:../system/src/diag/trace_impl.c ****     }
+ 264:../system/src/diag/trace_impl.c **** 
+ 265:../system/src/diag/trace_impl.c ****   // All bytes written
+ 266:../system/src/diag/trace_impl.c ****   return (ssize_t) nbyte;
+ 267:../system/src/diag/trace_impl.c **** }
+  71              		.loc 1 267 0
+  72 001c 3846     		mov	r0, r7
+  73 001e 05B0     		add	sp, sp, #20
+  74              		.cfi_remember_state
+  75              		.cfi_def_cfa_offset 28
+  76              		@ sp needed
+  77 0020 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+  78              	.LVL3:
+  79              	.L5:
+  80              		.cfi_restore_state
+  81              	.LBB15:
+  82              	.LBB9:
+ 255:../system/src/diag/trace_impl.c ****             }
+  83              		.loc 1 255 0 discriminator 2
+  84 0024 14F9011B 		ldrsb	r1, [r4], #1
+  85              	.LVL4:
+  86 0028 04AA     		add	r2, sp, #16
+  87 002a 1A44     		add	r2, r2, r3
+  88 002c 02F8101C 		strb	r1, [r2, #-16]
+ 253:../system/src/diag/trace_impl.c ****             {
+  89              		.loc 1 253 0 discriminator 2
+  90 0030 0133     		adds	r3, r3, #1
+  91              	.LVL5:
+  92              	.L4:
+ 253:../system/src/diag/trace_impl.c ****             {
+  93              		.loc 1 253 0 is_stmt 0 discriminator 1
+  94 0032 AB42     		cmp	r3, r5
+  95 0034 F6D3     		bcc	.L5
+ 257:../system/src/diag/trace_impl.c **** 
+  96              		.loc 1 257 0 is_stmt 1
+  97 0036 04AA     		add	r2, sp, #16
+  98 0038 1344     		add	r3, r3, r2
+  99              	.LVL6:
+ 100 003a 0022     		movs	r2, #0
+ 101 003c 03F8102C 		strb	r2, [r3, #-16]
+ 102              	.LVL7:
+ 103              	.LBB10:
+ 104              	.LBB11:
+ 105              		.loc 2 102 0
+ 106 0040 4FF00408 		mov	r8, #4
+ 107 0044 E946     		mov	r9, sp
+ 108              		.syntax unified
+ 109              	@ 102 "../system/include/arm/semihosting.h" 1
+ 110 0046 4046     		 mov r0, r8  
+ 111 0048 4946     	 mov r1, r9  
+ 112 004a ABBE     	 bkpt #171 
+ 113 004c 8046     	 mov r8, r0
+ 114              	@ 0 "" 2
+ 115              	.LVL8:
+ 116              		.thumb
+ 117              		.syntax unified
+ 118              	.LBE11:
+ 119              	.LBE10:
+ 261:../system/src/diag/trace_impl.c ****         }
+ 120              		.loc 1 261 0
+ 121 004e 761B     		subs	r6, r6, r5
+ 122              	.LVL9:
+ 123              	.L2:
+ 124              	.LBE9:
+ 249:../system/src/diag/trace_impl.c ****         {
+ 125              		.loc 1 249 0
+ 126 0050 002E     		cmp	r6, #0
+ 127 0052 E3D0     		beq	.L3
+ 128              	.LBB12:
+ 251:../system/src/diag/trace_impl.c ****           unsigned int i = 0;
+ 129              		.loc 1 251 0
+ 130 0054 3546     		mov	r5, r6
+ 131 0056 102E     		cmp	r6, #16
+ 132 0058 28BF     		it	cs
+ 133 005a 1025     		movcs	r5, #16
+ 134              	.LVL10:
+ 252:../system/src/diag/trace_impl.c ****           for (; i < n; ++i, ++buf)
+ 135              		.loc 1 252 0
+ 136 005c 0023     		movs	r3, #0
+ 253:../system/src/diag/trace_impl.c ****             {
+ 137              		.loc 1 253 0
+ 138 005e E8E7     		b	.L4
+ 139              	.LBE12:
+ 140              	.LBE15:
+ 141              		.cfi_endproc
+ 142              	.LFE67:
+ 144              		.section	.text.trace_initialize,"ax",%progbits
+ 145              		.align	1
+ 146              		.global	trace_initialize
+ 147              		.syntax unified
+ 148              		.thumb
+ 149              		.thumb_func
+ 150              		.fpu softvfp
+ 152              	trace_initialize:
+ 153              	.LFB63:
+  80:../system/src/diag/trace_impl.c ****   // For regular ITM / semihosting, no inits required.
+ 154              		.loc 1 80 0
+ 155              		.cfi_startproc
+ 156              		@ args = 0, pretend = 0, frame = 0
+ 157              		@ frame_needed = 0, uses_anonymous_args = 0
+ 158              		@ link register save eliminated.
+  82:../system/src/diag/trace_impl.c **** 
+ 159              		.loc 1 82 0
+ 160 0000 7047     		bx	lr
+ 161              		.cfi_endproc
+ 162              	.LFE63:
+ 164              		.section	.text.trace_write,"ax",%progbits
+ 165              		.align	1
+ 166              		.global	trace_write
+ 167              		.syntax unified
+ 168              		.thumb
+ 169              		.thumb_func
+ 170              		.fpu softvfp
+ 172              	trace_write:
+ 173              	.LFB64:
+  92:../system/src/diag/trace_impl.c **** #if defined(OS_USE_TRACE_ITM)
+ 174              		.loc 1 92 0
+ 175              		.cfi_startproc
+ 176              		@ args = 0, pretend = 0, frame = 0
+ 177              		@ frame_needed = 0, uses_anonymous_args = 0
+ 178              	.LVL11:
+ 179 0000 08B5     		push	{r3, lr}
+ 180              		.cfi_def_cfa_offset 8
+ 181              		.cfi_offset 3, -8
+ 182              		.cfi_offset 14, -4
+  98:../system/src/diag/trace_impl.c **** #endif
+ 183              		.loc 1 98 0
+ 184 0002 FFF7FEFF 		bl	_trace_write_semihosting_debug
+ 185              	.LVL12:
+ 102:../system/src/diag/trace_impl.c **** 
+ 186              		.loc 1 102 0
+ 187 0006 08BD     		pop	{r3, pc}
+ 188              		.cfi_endproc
+ 189              	.LFE64:
+ 191              		.text
+ 192              	.Letext0:
+ 193              		.file 3 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 194              		.file 4 "../system/include/cmsis/core_cm3.h"
+ 195              		.file 5 "../system/include/cmsis/system_stm32f10x.h"
+ 196              		.file 6 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 197              		.file 7 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 198              		.file 8 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 199              		.file 9 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+DEFINED SYMBOLS
+                            *ABS*:00000000 trace_impl.c
+C:\Users\ahmed\AppData\Local\Temp\ccV0cW5f.s:16     .text._trace_write_semihosting_debug:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\ccV0cW5f.s:22     .text._trace_write_semihosting_debug:00000000 _trace_write_semihosting_debug
+C:\Users\ahmed\AppData\Local\Temp\ccV0cW5f.s:145    .text.trace_initialize:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\ccV0cW5f.s:152    .text.trace_initialize:00000000 trace_initialize
+C:\Users\ahmed\AppData\Local\Temp\ccV0cW5f.s:165    .text.trace_write:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\ccV0cW5f.s:172    .text.trace_write:00000000 trace_write
+                           .group:00000000 wm4.0.c450a18b2a29049e2cbb4137d58ca9b1
+                           .group:00000000 wm4.stm32f10x.h.51.c58ea26c5150470d52680f0bbaa7049c
+                           .group:00000000 wm4.stdintgcc.h.29.6d480f4ba0f60596e88234283d42444f
+                           .group:00000000 wm4.core_cm3.h.82.57a0f9dd004efa579f86574376281d2f
+                           .group:00000000 wm4.cmsis_gcc.h.36.67d2dcde6a14ff518eedc1d545d89a76
+                           .group:00000000 wm4.core_cm3.h.183.ecfd9c316d6f10b73648f6e579b02c8b
+                           .group:00000000 wm4.stm32f10x.h.522.9a9f642c8c562acb4a63ad5d933b7c01
+                           .group:00000000 wm4.stm32f10x_adc.h.89.9f2b285fa0070185d48a05b61a05798c
+                           .group:00000000 wm4.stm32f10x_bkp.h.25.4622919f1e30efdad5eb44e12edd5513
+                           .group:00000000 wm4.stm32f10x_can.h.25.e5e43f6bbc8fc7c8aa30ef2bc5610ced
+                           .group:00000000 wm4.stm32f10x_cec.h.25.8f03450e7bbb704d96e7bc73ec0f66a7
+                           .group:00000000 wm4.stm32f10x_dac.h.25.6e7f2924f39c60c10815105b99b8b446
+                           .group:00000000 wm4.stm32f10x_dbgmcu.h.25.d3351200fc7f9c8615d1ae81d40db08a
+                           .group:00000000 wm4.stm32f10x_dma.h.25.94e36204daa98cae5dcc70a10a9694d5
+                           .group:00000000 wm4.stm32f10x_exti.h.25.f52c69aad7d1994be5b2c4e2b8f4c595
+                           .group:00000000 wm4.stm32f10x_flash.h.25.4be61fcb02863962a1e006449d310650
+                           .group:00000000 wm4.stm32f10x_fsmc.h.25.bca154da2699cdb6024c0c6c4fc5aa89
+                           .group:00000000 wm4.stm32f10x_gpio.h.25.80c981af0e637567395034c576cfb3ce
+                           .group:00000000 wm4.stm32f10x_i2c.h.25.b124ac2c620f8ebddd92b6d95ca62176
+                           .group:00000000 wm4.stm32f10x_iwdg.h.25.da9374ab9856795610487f312ccf3122
+                           .group:00000000 wm4.stm32f10x_pwr.h.25.37ef75009f751ef5fe27910e0bf00a62
+                           .group:00000000 wm4.stm32f10x_rcc.h.25.968bcf08d813e68e57c280a4da69fa5a
+                           .group:00000000 wm4.stm32f10x_rtc.h.25.361142606ba98ddcd10369f321f6e636
+                           .group:00000000 wm4.stm32f10x_sdio.h.25.fb0db079f5c1412c40f359319f7c40b0
+                           .group:00000000 wm4.stm32f10x_spi.h.25.3f6dfa4abe177efb3c6f5a717c06b323
+                           .group:00000000 wm4.stm32f10x_tim.h.25.f709106ba77b314e6b070693f89f3c56
+                           .group:00000000 wm4.stm32f10x_usart.h.25.2e65e396239d0cc41fd0bf6faa2a32cb
+                           .group:00000000 wm4.stm32f10x_wwdg.h.25.dde12201d86b5aa9ecaafb5eccdc6549
+                           .group:00000000 wm4.misc.h.25.068e106f368fa5369a681ef57c106f4b
+                           .group:00000000 wm4.stm32f10x.h.8317.9a8e476d96d33bb2df9a9ad0775bd4a7
+                           .group:00000000 wm4._newlib_version.h.4.3572908597b70d672d181fc7fc501c19
+                           .group:00000000 wm4.newlib.h.21.64e14ed41172bf448383d50cbb14725e
+                           .group:00000000 wm4.ieeefp.h.77.49bcce8a603f3d93a95080d6a3573782
+                           .group:00000000 wm4.features.h.22.5cdadbb3efe495d1c9e38350b8c376c7
+                           .group:00000000 wm4.config.h.220.6cac6a9685cfce5e83c17784171638d9
+                           .group:00000000 wm4._ansi.h.23.9f8fcfa20193763fcf364fb91705c94b
+                           .group:00000000 wm4.unistd.h.9.2709ac388e61c5728907bf928c890ff7
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4.stddef.h.137.87f4223e19f53e7620a07a017dcd2e0a
+                           .group:00000000 wm4.cdefs.h.47.d5f52c0838d768c139d665d47892271a
+                           .group:00000000 wm4.types.h.40.e8c16e7ec36ba55f133d0616070e25fc
+                           .group:00000000 wm4.stddef.h.39.79ae3d254e9e71fbd4877f77aa50f4ea
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4._types.h.125.5cf8a495f1f7ef36777ad868a1e32068
+                           .group:00000000 wm4.stddef.h.161.5349cb105733e8777bfb0cf53c4e3f34
+                           .group:00000000 wm4._types.h.184.7120b8bb2e0149e2359704f4e2251b68
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4._endian.h.31.65a10590763c3dde1ac4a7f66d7d4891
+                           .group:00000000 wm4.endian.h.9.49f3a4695c1b61e8a0808de3c4a106cb
+                           .group:00000000 wm4._timeval.h.30.0e8bfd94e85db17dda3286ee81496fe6
+                           .group:00000000 wm4.timespec.h.41.d855182eb0e690443ab8651bcedca6e1
+                           .group:00000000 wm4.select.h.30.bbece7fa40993a78092dcc5805132560
+                           .group:00000000 wm4.types.h.69.ed3eae3cf73030a737515151ebcab7a1
+                           .group:00000000 wm4.sched.h.22.c60982713a5c428609783c78f9c78d95
+                           .group:00000000 wm4._pthreadtypes.h.36.fcee9961c35163dde6267ef772ad1972
+                           .group:00000000 wm4.unistd.h.156.9a9035c10111809e94aa612639fe2ed9
+                           .group:00000000 wm4.semihosting.h.29.e1653dbea6634b93ff8fe25df9a0d7b2
+
+NO UNDEFINED SYMBOLS

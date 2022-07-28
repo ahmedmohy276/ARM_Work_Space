@@ -1,0 +1,11 @@
+23:04:24 **** Incremental Build of configuration Debug for project Hello_DIO ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "Hello_DIO.elf"
+   text	   data	    bss	    dec	    hex	filename
+   4971	    176	    420	   5567	   15bf	Hello_DIO.elf
+Finished building: Hello_DIO.siz
+ 
+
+23:04:25 Build Finished (took 462ms)
+

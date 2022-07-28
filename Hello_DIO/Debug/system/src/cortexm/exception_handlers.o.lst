@@ -1,0 +1,1556 @@
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"exception_handlers.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.after_vectors,"ax",%progbits
+  16              		.align	1
+  17              		.global	Reset_Handler
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	Reset_Handler:
+  24              	.LFB65:
+  25              		.file 1 "../system/src/cortexm/exception_handlers.c"
+   1:../system/src/cortexm/exception_handlers.c **** /*
+   2:../system/src/cortexm/exception_handlers.c ****  * This file is part of the µOS++ distribution.
+   3:../system/src/cortexm/exception_handlers.c ****  *   (https://github.com/micro-os-plus)
+   4:../system/src/cortexm/exception_handlers.c ****  * Copyright (c) 2014 Liviu Ionescu.
+   5:../system/src/cortexm/exception_handlers.c ****  *
+   6:../system/src/cortexm/exception_handlers.c ****  * Permission is hereby granted, free of charge, to any person
+   7:../system/src/cortexm/exception_handlers.c ****  * obtaining a copy of this software and associated documentation
+   8:../system/src/cortexm/exception_handlers.c ****  * files (the "Software"), to deal in the Software without
+   9:../system/src/cortexm/exception_handlers.c ****  * restriction, including without limitation the rights to use,
+  10:../system/src/cortexm/exception_handlers.c ****  * copy, modify, merge, publish, distribute, sublicense, and/or
+  11:../system/src/cortexm/exception_handlers.c ****  * sell copies of the Software, and to permit persons to whom
+  12:../system/src/cortexm/exception_handlers.c ****  * the Software is furnished to do so, subject to the following
+  13:../system/src/cortexm/exception_handlers.c ****  * conditions:
+  14:../system/src/cortexm/exception_handlers.c ****  *
+  15:../system/src/cortexm/exception_handlers.c ****  * The above copyright notice and this permission notice shall be
+  16:../system/src/cortexm/exception_handlers.c ****  * included in all copies or substantial portions of the Software.
+  17:../system/src/cortexm/exception_handlers.c ****  *
+  18:../system/src/cortexm/exception_handlers.c ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  19:../system/src/cortexm/exception_handlers.c ****  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  20:../system/src/cortexm/exception_handlers.c ****  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+  21:../system/src/cortexm/exception_handlers.c ****  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+  22:../system/src/cortexm/exception_handlers.c ****  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+  23:../system/src/cortexm/exception_handlers.c ****  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  24:../system/src/cortexm/exception_handlers.c ****  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+  25:../system/src/cortexm/exception_handlers.c ****  * OTHER DEALINGS IN THE SOFTWARE.
+  26:../system/src/cortexm/exception_handlers.c ****  */
+  27:../system/src/cortexm/exception_handlers.c **** 
+  28:../system/src/cortexm/exception_handlers.c **** // ----------------------------------------------------------------------------
+  29:../system/src/cortexm/exception_handlers.c **** 
+  30:../system/src/cortexm/exception_handlers.c **** #include "cortexm/ExceptionHandlers.h"
+  31:../system/src/cortexm/exception_handlers.c **** #include "cmsis_device.h"
+  32:../system/src/cortexm/exception_handlers.c **** #include "arm/semihosting.h"
+  33:../system/src/cortexm/exception_handlers.c **** #include "diag/Trace.h"
+  34:../system/src/cortexm/exception_handlers.c **** #include <string.h>
+  35:../system/src/cortexm/exception_handlers.c **** 
+  36:../system/src/cortexm/exception_handlers.c **** // ----------------------------------------------------------------------------
+  37:../system/src/cortexm/exception_handlers.c **** 
+  38:../system/src/cortexm/exception_handlers.c **** extern void
+  39:../system/src/cortexm/exception_handlers.c **** __attribute__((noreturn,weak))
+  40:../system/src/cortexm/exception_handlers.c **** _start (void);
+  41:../system/src/cortexm/exception_handlers.c **** 
+  42:../system/src/cortexm/exception_handlers.c **** // ----------------------------------------------------------------------------
+  43:../system/src/cortexm/exception_handlers.c **** // Default exception handlers. Override the ones here by defining your own
+  44:../system/src/cortexm/exception_handlers.c **** // handler routines in your application code.
+  45:../system/src/cortexm/exception_handlers.c **** // ----------------------------------------------------------------------------
+  46:../system/src/cortexm/exception_handlers.c **** 
+  47:../system/src/cortexm/exception_handlers.c **** #if defined(DEBUG)
+  48:../system/src/cortexm/exception_handlers.c **** 
+  49:../system/src/cortexm/exception_handlers.c **** // The DEBUG version is not naked, but has a proper stack frame,
+  50:../system/src/cortexm/exception_handlers.c **** // to allow setting breakpoints at Reset_Handler.
+  51:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),noreturn))
+  52:../system/src/cortexm/exception_handlers.c **** Reset_Handler (void)
+  53:../system/src/cortexm/exception_handlers.c **** {
+  26              		.loc 1 53 0
+  27              		.cfi_startproc
+  28              		@ Volatile: function does not return.
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 3, -8
+  34              		.cfi_offset 14, -4
+  54:../system/src/cortexm/exception_handlers.c ****   _start ();
+  35              		.loc 1 54 0
+  36 0002 FFF7FEFF 		bl	_start
+  37              	.LVL0:
+  38              		.cfi_endproc
+  39              	.LFE65:
+  41              		.align	1
+  42              		.weak	NMI_Handler
+  43              		.syntax unified
+  44              		.thumb
+  45              		.thumb_func
+  46              		.fpu softvfp
+  48              	NMI_Handler:
+  49              	.LFB66:
+  55:../system/src/cortexm/exception_handlers.c **** }
+  56:../system/src/cortexm/exception_handlers.c **** 
+  57:../system/src/cortexm/exception_handlers.c **** #else
+  58:../system/src/cortexm/exception_handlers.c **** 
+  59:../system/src/cortexm/exception_handlers.c **** // The Release version is optimised to a quick branch to _start.
+  60:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),naked))
+  61:../system/src/cortexm/exception_handlers.c **** Reset_Handler(void)
+  62:../system/src/cortexm/exception_handlers.c ****   {
+  63:../system/src/cortexm/exception_handlers.c ****     asm volatile
+  64:../system/src/cortexm/exception_handlers.c ****     (
+  65:../system/src/cortexm/exception_handlers.c ****         " ldr     r0,=_start \n"
+  66:../system/src/cortexm/exception_handlers.c ****         " bx      r0"
+  67:../system/src/cortexm/exception_handlers.c ****         :
+  68:../system/src/cortexm/exception_handlers.c ****         :
+  69:../system/src/cortexm/exception_handlers.c ****         :
+  70:../system/src/cortexm/exception_handlers.c ****     );
+  71:../system/src/cortexm/exception_handlers.c ****   }
+  72:../system/src/cortexm/exception_handlers.c **** 
+  73:../system/src/cortexm/exception_handlers.c **** #endif
+  74:../system/src/cortexm/exception_handlers.c **** 
+  75:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak))
+  76:../system/src/cortexm/exception_handlers.c **** NMI_Handler (void)
+  77:../system/src/cortexm/exception_handlers.c **** {
+  50              		.loc 1 77 0
+  51              		.cfi_startproc
+  52              		@ args = 0, pretend = 0, frame = 0
+  53              		@ frame_needed = 0, uses_anonymous_args = 0
+  54              		@ link register save eliminated.
+  78:../system/src/cortexm/exception_handlers.c **** #if defined(DEBUG)
+  79:../system/src/cortexm/exception_handlers.c ****   __DEBUG_BKPT();
+  55              		.loc 1 79 0
+  56              		.syntax unified
+  57              	@ 79 "../system/src/cortexm/exception_handlers.c" 1
+  58 0006 00BE     		bkpt 0
+  59              	@ 0 "" 2
+  60              		.thumb
+  61              		.syntax unified
+  62              	.L4:
+  63 0008 FEE7     		b	.L4
+  64              		.cfi_endproc
+  65              	.LFE66:
+  67              		.section	.text.dumpExceptionStack,"ax",%progbits
+  68              		.align	1
+  69              		.global	dumpExceptionStack
+  70              		.syntax unified
+  71              		.thumb
+  72              		.thumb_func
+  73              		.fpu softvfp
+  75              	dumpExceptionStack:
+  76              	.LFB67:
+  80:../system/src/cortexm/exception_handlers.c **** #endif
+  81:../system/src/cortexm/exception_handlers.c ****   while (1)
+  82:../system/src/cortexm/exception_handlers.c ****     {
+  83:../system/src/cortexm/exception_handlers.c ****     }
+  84:../system/src/cortexm/exception_handlers.c **** }
+  85:../system/src/cortexm/exception_handlers.c **** 
+  86:../system/src/cortexm/exception_handlers.c **** // ----------------------------------------------------------------------------
+  87:../system/src/cortexm/exception_handlers.c **** 
+  88:../system/src/cortexm/exception_handlers.c **** #if defined(TRACE)
+  89:../system/src/cortexm/exception_handlers.c **** 
+  90:../system/src/cortexm/exception_handlers.c **** #if defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)
+  91:../system/src/cortexm/exception_handlers.c **** 
+  92:../system/src/cortexm/exception_handlers.c **** // The values of BFAR and MMFAR stay unchanged if the BFARVALID or
+  93:../system/src/cortexm/exception_handlers.c **** // MMARVALID is set. However, if a new fault occurs during the
+  94:../system/src/cortexm/exception_handlers.c **** // execution of this fault handler, the value of the BFAR and MMFAR
+  95:../system/src/cortexm/exception_handlers.c **** // could potentially be erased. In order to ensure the fault addresses
+  96:../system/src/cortexm/exception_handlers.c **** // accessed are valid, the following procedure should be used:
+  97:../system/src/cortexm/exception_handlers.c **** // 1. Read BFAR/MMFAR.
+  98:../system/src/cortexm/exception_handlers.c **** // 2. Read CFSR to get BFARVALID or MMARVALID. If the value is 0, the
+  99:../system/src/cortexm/exception_handlers.c **** //    value of BFAR or MMFAR accessed can be invalid and can be discarded.
+ 100:../system/src/cortexm/exception_handlers.c **** // 3. Optionally clear BFARVALID or MMARVALID.
+ 101:../system/src/cortexm/exception_handlers.c **** // (See Joseph Yiu's book).
+ 102:../system/src/cortexm/exception_handlers.c **** 
+ 103:../system/src/cortexm/exception_handlers.c **** void
+ 104:../system/src/cortexm/exception_handlers.c **** dumpExceptionStack (ExceptionStackFrame* frame,
+ 105:../system/src/cortexm/exception_handlers.c ****                 uint32_t cfsr, uint32_t mmfar, uint32_t bfar,
+ 106:../system/src/cortexm/exception_handlers.c ****                                         uint32_t lr)
+ 107:../system/src/cortexm/exception_handlers.c **** {
+  77              		.loc 1 107 0
+  78              		.cfi_startproc
+  79              		@ args = 4, pretend = 0, frame = 0
+  80              		@ frame_needed = 0, uses_anonymous_args = 0
+  81              	.LVL1:
+  82 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  83              		.cfi_def_cfa_offset 24
+  84              		.cfi_offset 3, -24
+  85              		.cfi_offset 4, -20
+  86              		.cfi_offset 5, -16
+  87              		.cfi_offset 6, -12
+  88              		.cfi_offset 7, -8
+  89              		.cfi_offset 14, -4
+  90 0002 0446     		mov	r4, r0
+  91 0004 0D46     		mov	r5, r1
+  92 0006 1746     		mov	r7, r2
+  93 0008 1E46     		mov	r6, r3
+ 108:../system/src/cortexm/exception_handlers.c ****   trace_printf ("Stack frame:\n");
+  94              		.loc 1 108 0
+  95 000a 2748     		ldr	r0, .L11
+  96              	.LVL2:
+  97 000c FFF7FEFF 		bl	trace_printf
+  98              	.LVL3:
+ 109:../system/src/cortexm/exception_handlers.c ****   trace_printf (" R0 =  %08X\n", frame->r0);
+  99              		.loc 1 109 0
+ 100 0010 2168     		ldr	r1, [r4]
+ 101 0012 2648     		ldr	r0, .L11+4
+ 102 0014 FFF7FEFF 		bl	trace_printf
+ 103              	.LVL4:
+ 110:../system/src/cortexm/exception_handlers.c ****   trace_printf (" R1 =  %08X\n", frame->r1);
+ 104              		.loc 1 110 0
+ 105 0018 6168     		ldr	r1, [r4, #4]
+ 106 001a 2548     		ldr	r0, .L11+8
+ 107 001c FFF7FEFF 		bl	trace_printf
+ 108              	.LVL5:
+ 111:../system/src/cortexm/exception_handlers.c ****   trace_printf (" R2 =  %08X\n", frame->r2);
+ 109              		.loc 1 111 0
+ 110 0020 A168     		ldr	r1, [r4, #8]
+ 111 0022 2448     		ldr	r0, .L11+12
+ 112 0024 FFF7FEFF 		bl	trace_printf
+ 113              	.LVL6:
+ 112:../system/src/cortexm/exception_handlers.c ****   trace_printf (" R3 =  %08X\n", frame->r3);
+ 114              		.loc 1 112 0
+ 115 0028 E168     		ldr	r1, [r4, #12]
+ 116 002a 2348     		ldr	r0, .L11+16
+ 117 002c FFF7FEFF 		bl	trace_printf
+ 118              	.LVL7:
+ 113:../system/src/cortexm/exception_handlers.c ****   trace_printf (" R12 = %08X\n", frame->r12);
+ 119              		.loc 1 113 0
+ 120 0030 2169     		ldr	r1, [r4, #16]
+ 121 0032 2248     		ldr	r0, .L11+20
+ 122 0034 FFF7FEFF 		bl	trace_printf
+ 123              	.LVL8:
+ 114:../system/src/cortexm/exception_handlers.c ****   trace_printf (" LR =  %08X\n", frame->lr);
+ 124              		.loc 1 114 0
+ 125 0038 6169     		ldr	r1, [r4, #20]
+ 126 003a 2148     		ldr	r0, .L11+24
+ 127 003c FFF7FEFF 		bl	trace_printf
+ 128              	.LVL9:
+ 115:../system/src/cortexm/exception_handlers.c ****   trace_printf (" PC =  %08X\n", frame->pc);
+ 129              		.loc 1 115 0
+ 130 0040 A169     		ldr	r1, [r4, #24]
+ 131 0042 2048     		ldr	r0, .L11+28
+ 132 0044 FFF7FEFF 		bl	trace_printf
+ 133              	.LVL10:
+ 116:../system/src/cortexm/exception_handlers.c ****   trace_printf (" PSR = %08X\n", frame->psr);
+ 134              		.loc 1 116 0
+ 135 0048 E169     		ldr	r1, [r4, #28]
+ 136 004a 1F48     		ldr	r0, .L11+32
+ 137 004c FFF7FEFF 		bl	trace_printf
+ 138              	.LVL11:
+ 117:../system/src/cortexm/exception_handlers.c ****   trace_printf ("FSR/FAR:\n");
+ 139              		.loc 1 117 0
+ 140 0050 1E48     		ldr	r0, .L11+36
+ 141 0052 FFF7FEFF 		bl	trace_printf
+ 142              	.LVL12:
+ 118:../system/src/cortexm/exception_handlers.c ****   trace_printf (" CFSR =  %08X\n", cfsr);
+ 143              		.loc 1 118 0
+ 144 0056 2946     		mov	r1, r5
+ 145 0058 1D48     		ldr	r0, .L11+40
+ 146 005a FFF7FEFF 		bl	trace_printf
+ 147              	.LVL13:
+ 119:../system/src/cortexm/exception_handlers.c ****   trace_printf (" HFSR =  %08X\n", SCB->HFSR);
+ 148              		.loc 1 119 0
+ 149 005e 1D4C     		ldr	r4, .L11+44
+ 150              	.LVL14:
+ 151 0060 E16A     		ldr	r1, [r4, #44]
+ 152 0062 1D48     		ldr	r0, .L11+48
+ 153 0064 FFF7FEFF 		bl	trace_printf
+ 154              	.LVL15:
+ 120:../system/src/cortexm/exception_handlers.c ****   trace_printf (" DFSR =  %08X\n", SCB->DFSR);
+ 155              		.loc 1 120 0
+ 156 0068 216B     		ldr	r1, [r4, #48]
+ 157 006a 1C48     		ldr	r0, .L11+52
+ 158 006c FFF7FEFF 		bl	trace_printf
+ 159              	.LVL16:
+ 121:../system/src/cortexm/exception_handlers.c ****   trace_printf (" AFSR =  %08X\n", SCB->AFSR);
+ 160              		.loc 1 121 0
+ 161 0070 E16B     		ldr	r1, [r4, #60]
+ 162 0072 1B48     		ldr	r0, .L11+56
+ 163 0074 FFF7FEFF 		bl	trace_printf
+ 164              	.LVL17:
+ 122:../system/src/cortexm/exception_handlers.c **** 
+ 123:../system/src/cortexm/exception_handlers.c ****   if (cfsr & (1UL << 7))
+ 165              		.loc 1 123 0
+ 166 0078 15F0800F 		tst	r5, #128
+ 167 007c 0AD1     		bne	.L9
+ 168              	.L6:
+ 124:../system/src/cortexm/exception_handlers.c ****     {
+ 125:../system/src/cortexm/exception_handlers.c ****       trace_printf (" MMFAR = %08X\n", mmfar);
+ 126:../system/src/cortexm/exception_handlers.c ****     }
+ 127:../system/src/cortexm/exception_handlers.c ****   if (cfsr & (1UL << 15))
+ 169              		.loc 1 127 0
+ 170 007e 15F4004F 		tst	r5, #32768
+ 171 0082 0CD1     		bne	.L10
+ 172              	.L7:
+ 128:../system/src/cortexm/exception_handlers.c ****     {
+ 129:../system/src/cortexm/exception_handlers.c ****       trace_printf (" BFAR =  %08X\n", bfar);
+ 130:../system/src/cortexm/exception_handlers.c ****     }
+ 131:../system/src/cortexm/exception_handlers.c ****   trace_printf ("Misc\n");
+ 173              		.loc 1 131 0
+ 174 0084 1748     		ldr	r0, .L11+60
+ 175 0086 FFF7FEFF 		bl	trace_printf
+ 176              	.LVL18:
+ 132:../system/src/cortexm/exception_handlers.c ****   trace_printf (" LR/EXC_RETURN= %08X\n", lr);
+ 177              		.loc 1 132 0
+ 178 008a 0699     		ldr	r1, [sp, #24]
+ 179 008c 1648     		ldr	r0, .L11+64
+ 180 008e FFF7FEFF 		bl	trace_printf
+ 181              	.LVL19:
+ 133:../system/src/cortexm/exception_handlers.c **** }
+ 182              		.loc 1 133 0
+ 183 0092 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 184              	.LVL20:
+ 185              	.L9:
+ 125:../system/src/cortexm/exception_handlers.c ****     }
+ 186              		.loc 1 125 0
+ 187 0094 3946     		mov	r1, r7
+ 188 0096 1548     		ldr	r0, .L11+68
+ 189 0098 FFF7FEFF 		bl	trace_printf
+ 190              	.LVL21:
+ 191 009c EFE7     		b	.L6
+ 192              	.L10:
+ 129:../system/src/cortexm/exception_handlers.c ****     }
+ 193              		.loc 1 129 0
+ 194 009e 3146     		mov	r1, r6
+ 195 00a0 1348     		ldr	r0, .L11+72
+ 196 00a2 FFF7FEFF 		bl	trace_printf
+ 197              	.LVL22:
+ 198 00a6 EDE7     		b	.L7
+ 199              	.L12:
+ 200              		.align	2
+ 201              	.L11:
+ 202 00a8 00000000 		.word	.LC0
+ 203 00ac 10000000 		.word	.LC1
+ 204 00b0 20000000 		.word	.LC2
+ 205 00b4 30000000 		.word	.LC3
+ 206 00b8 40000000 		.word	.LC4
+ 207 00bc 50000000 		.word	.LC5
+ 208 00c0 60000000 		.word	.LC6
+ 209 00c4 70000000 		.word	.LC7
+ 210 00c8 80000000 		.word	.LC8
+ 211 00cc 90000000 		.word	.LC9
+ 212 00d0 9C000000 		.word	.LC10
+ 213 00d4 00ED00E0 		.word	-536810240
+ 214 00d8 AC000000 		.word	.LC11
+ 215 00dc BC000000 		.word	.LC12
+ 216 00e0 CC000000 		.word	.LC13
+ 217 00e4 FC000000 		.word	.LC16
+ 218 00e8 04010000 		.word	.LC17
+ 219 00ec DC000000 		.word	.LC14
+ 220 00f0 EC000000 		.word	.LC15
+ 221              		.cfi_endproc
+ 222              	.LFE67:
+ 224              		.section	.text.isSemihosting,"ax",%progbits
+ 225              		.align	1
+ 226              		.global	isSemihosting
+ 227              		.syntax unified
+ 228              		.thumb
+ 229              		.thumb_func
+ 230              		.fpu softvfp
+ 232              	isSemihosting:
+ 233              	.LFB68:
+ 134:../system/src/cortexm/exception_handlers.c **** 
+ 135:../system/src/cortexm/exception_handlers.c **** #endif // defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)
+ 136:../system/src/cortexm/exception_handlers.c **** 
+ 137:../system/src/cortexm/exception_handlers.c **** #if defined(__ARM_ARCH_6M__)
+ 138:../system/src/cortexm/exception_handlers.c **** 
+ 139:../system/src/cortexm/exception_handlers.c **** void
+ 140:../system/src/cortexm/exception_handlers.c **** dumpExceptionStack (ExceptionStackFrame* frame, uint32_t lr)
+ 141:../system/src/cortexm/exception_handlers.c **** {
+ 142:../system/src/cortexm/exception_handlers.c ****   trace_printf ("Stack frame:\n");
+ 143:../system/src/cortexm/exception_handlers.c ****   trace_printf (" R0 =  %08X\n", frame->r0);
+ 144:../system/src/cortexm/exception_handlers.c ****   trace_printf (" R1 =  %08X\n", frame->r1);
+ 145:../system/src/cortexm/exception_handlers.c ****   trace_printf (" R2 =  %08X\n", frame->r2);
+ 146:../system/src/cortexm/exception_handlers.c ****   trace_printf (" R3 =  %08X\n", frame->r3);
+ 147:../system/src/cortexm/exception_handlers.c ****   trace_printf (" R12 = %08X\n", frame->r12);
+ 148:../system/src/cortexm/exception_handlers.c ****   trace_printf (" LR =  %08X\n", frame->lr);
+ 149:../system/src/cortexm/exception_handlers.c ****   trace_printf (" PC =  %08X\n", frame->pc);
+ 150:../system/src/cortexm/exception_handlers.c ****   trace_printf (" PSR = %08X\n", frame->psr);
+ 151:../system/src/cortexm/exception_handlers.c ****   trace_printf ("Misc\n");
+ 152:../system/src/cortexm/exception_handlers.c ****   trace_printf (" LR/EXC_RETURN= %08X\n", lr);
+ 153:../system/src/cortexm/exception_handlers.c **** }
+ 154:../system/src/cortexm/exception_handlers.c **** 
+ 155:../system/src/cortexm/exception_handlers.c **** #endif // defined(__ARM_ARCH_6M__)
+ 156:../system/src/cortexm/exception_handlers.c **** 
+ 157:../system/src/cortexm/exception_handlers.c **** #endif // defined(TRACE)
+ 158:../system/src/cortexm/exception_handlers.c **** 
+ 159:../system/src/cortexm/exception_handlers.c **** // ----------------------------------------------------------------------------
+ 160:../system/src/cortexm/exception_handlers.c **** 
+ 161:../system/src/cortexm/exception_handlers.c **** #if defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)
+ 162:../system/src/cortexm/exception_handlers.c **** 
+ 163:../system/src/cortexm/exception_handlers.c **** #if defined(OS_USE_SEMIHOSTING) || defined(OS_USE_TRACE_SEMIHOSTING_STDOUT) || defined(OS_USE_TRACE
+ 164:../system/src/cortexm/exception_handlers.c **** 
+ 165:../system/src/cortexm/exception_handlers.c **** int
+ 166:../system/src/cortexm/exception_handlers.c **** isSemihosting (ExceptionStackFrame* frame, uint16_t opCode);
+ 167:../system/src/cortexm/exception_handlers.c **** 
+ 168:../system/src/cortexm/exception_handlers.c **** /**
+ 169:../system/src/cortexm/exception_handlers.c ****  * This function provides the minimum functionality to make a semihosting program execute even with
+ 170:../system/src/cortexm/exception_handlers.c ****  * @param frame pointer to an exception stack frame.
+ 171:../system/src/cortexm/exception_handlers.c ****  * @param opCode the 16-bin word of the BKPT instruction.
+ 172:../system/src/cortexm/exception_handlers.c ****  * @return 1 if the instruction was a valid semihosting call; 0 otherwise.
+ 173:../system/src/cortexm/exception_handlers.c ****  */
+ 174:../system/src/cortexm/exception_handlers.c **** int
+ 175:../system/src/cortexm/exception_handlers.c **** isSemihosting (ExceptionStackFrame* frame, uint16_t opCode)
+ 176:../system/src/cortexm/exception_handlers.c **** {
+ 234              		.loc 1 176 0
+ 235              		.cfi_startproc
+ 236              		@ args = 0, pretend = 0, frame = 0
+ 237              		@ frame_needed = 0, uses_anonymous_args = 0
+ 238              		@ link register save eliminated.
+ 239              	.LVL23:
+ 177:../system/src/cortexm/exception_handlers.c ****   uint16_t* pw = (uint16_t*) frame->pc;
+ 240              		.loc 1 177 0
+ 241 0000 8369     		ldr	r3, [r0, #24]
+ 242              	.LVL24:
+ 178:../system/src/cortexm/exception_handlers.c ****   if (*pw == opCode)
+ 243              		.loc 1 178 0
+ 244 0002 1A88     		ldrh	r2, [r3]
+ 245 0004 8A42     		cmp	r2, r1
+ 246 0006 01D0     		beq	.L18
+ 179:../system/src/cortexm/exception_handlers.c ****     {
+ 180:../system/src/cortexm/exception_handlers.c ****       uint32_t r0 = frame->r0;
+ 181:../system/src/cortexm/exception_handlers.c **** #if defined(OS_DEBUG_SEMIHOSTING_FAULTS) || defined(OS_USE_SEMIHOSTING) || defined(OS_USE_TRACE_SEM
+ 182:../system/src/cortexm/exception_handlers.c ****       uint32_t r1 = frame->r1;
+ 183:../system/src/cortexm/exception_handlers.c **** #endif
+ 184:../system/src/cortexm/exception_handlers.c **** #if defined(OS_USE_SEMIHOSTING) || defined(OS_USE_TRACE_SEMIHOSTING_STDOUT)
+ 185:../system/src/cortexm/exception_handlers.c ****       uint32_t* blk = (uint32_t*) r1;
+ 186:../system/src/cortexm/exception_handlers.c **** #endif
+ 187:../system/src/cortexm/exception_handlers.c **** 
+ 188:../system/src/cortexm/exception_handlers.c **** #if defined(OS_DEBUG_SEMIHOSTING_FAULTS)
+ 189:../system/src/cortexm/exception_handlers.c ****       // trace_printf ("sh r0=%d\n", r0);
+ 190:../system/src/cortexm/exception_handlers.c **** #endif
+ 191:../system/src/cortexm/exception_handlers.c **** 
+ 192:../system/src/cortexm/exception_handlers.c ****       switch (r0)
+ 193:../system/src/cortexm/exception_handlers.c ****         {
+ 194:../system/src/cortexm/exception_handlers.c **** 
+ 195:../system/src/cortexm/exception_handlers.c **** #if defined(OS_USE_SEMIHOSTING)
+ 196:../system/src/cortexm/exception_handlers.c **** 
+ 197:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_CLOCK:
+ 198:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_ELAPSED:
+ 199:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_FLEN:
+ 200:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_GET_CMDLINE:
+ 201:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_REMOVE:
+ 202:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_RENAME:
+ 203:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_SEEK:
+ 204:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_SYSTEM:
+ 205:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_TICKFREQ:
+ 206:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_TMPNAM:
+ 207:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_ISTTY:
+ 208:../system/src/cortexm/exception_handlers.c ****           frame->r0 = (uint32_t)-1; // the call is not successful or not supported
+ 209:../system/src/cortexm/exception_handlers.c ****           break;
+ 210:../system/src/cortexm/exception_handlers.c **** 
+ 211:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_CLOSE:
+ 212:../system/src/cortexm/exception_handlers.c ****           frame->r0 = 0; // call is successful
+ 213:../system/src/cortexm/exception_handlers.c ****           break;
+ 214:../system/src/cortexm/exception_handlers.c **** 
+ 215:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_ERRNO:
+ 216:../system/src/cortexm/exception_handlers.c ****           frame->r0 = 0; // the value of the C library errno variable.
+ 217:../system/src/cortexm/exception_handlers.c ****           break;
+ 218:../system/src/cortexm/exception_handlers.c **** 
+ 219:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_HEAPINFO:
+ 220:../system/src/cortexm/exception_handlers.c ****           blk[0] = 0; // heap_base
+ 221:../system/src/cortexm/exception_handlers.c ****           blk[1] = 0; // heap_limit
+ 222:../system/src/cortexm/exception_handlers.c ****           blk[2] = 0; // stack_base
+ 223:../system/src/cortexm/exception_handlers.c ****           blk[3] = 0; // stack_limit
+ 224:../system/src/cortexm/exception_handlers.c ****           break;
+ 225:../system/src/cortexm/exception_handlers.c **** 
+ 226:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_ISERROR:
+ 227:../system/src/cortexm/exception_handlers.c ****           frame->r0 = 0; // 0 if the status word is not an error indication
+ 228:../system/src/cortexm/exception_handlers.c ****           break;
+ 229:../system/src/cortexm/exception_handlers.c **** 
+ 230:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_READ:
+ 231:../system/src/cortexm/exception_handlers.c ****           // If R0 contains the same value as word 3, the call has
+ 232:../system/src/cortexm/exception_handlers.c ****           // failed and EOF is assumed.
+ 233:../system/src/cortexm/exception_handlers.c ****           frame->r0 = blk[2];
+ 234:../system/src/cortexm/exception_handlers.c ****           break;
+ 235:../system/src/cortexm/exception_handlers.c **** 
+ 236:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_READC:
+ 237:../system/src/cortexm/exception_handlers.c ****           frame->r0 = '\0'; // the byte read from the console.
+ 238:../system/src/cortexm/exception_handlers.c ****           break;
+ 239:../system/src/cortexm/exception_handlers.c **** 
+ 240:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_TIME:
+ 241:../system/src/cortexm/exception_handlers.c ****           frame->r0 = 0; // the number of seconds since 00:00 January 1, 1970.
+ 242:../system/src/cortexm/exception_handlers.c ****           break;
+ 243:../system/src/cortexm/exception_handlers.c **** 
+ 244:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_ReportException:
+ 245:../system/src/cortexm/exception_handlers.c **** 
+ 246:../system/src/cortexm/exception_handlers.c ****           NVIC_SystemReset ();
+ 247:../system/src/cortexm/exception_handlers.c ****           // Should not reach here
+ 248:../system/src/cortexm/exception_handlers.c ****           return 0;
+ 249:../system/src/cortexm/exception_handlers.c **** 
+ 250:../system/src/cortexm/exception_handlers.c **** #endif // defined(OS_USE_SEMIHOSTING)
+ 251:../system/src/cortexm/exception_handlers.c **** 
+ 252:../system/src/cortexm/exception_handlers.c **** #if defined(OS_USE_SEMIHOSTING) || defined(OS_USE_TRACE_SEMIHOSTING_STDOUT)
+ 253:../system/src/cortexm/exception_handlers.c **** 
+ 254:../system/src/cortexm/exception_handlers.c **** #define HANDLER_STDIN   (1)
+ 255:../system/src/cortexm/exception_handlers.c **** #define HANDLER_STDOUT  (2)
+ 256:../system/src/cortexm/exception_handlers.c **** #define HANDLER_STDERR  (3)
+ 257:../system/src/cortexm/exception_handlers.c **** 
+ 258:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_OPEN:
+ 259:../system/src/cortexm/exception_handlers.c ****           // Process only standard io/out/err and return 1/2/3
+ 260:../system/src/cortexm/exception_handlers.c ****           if (strcmp ((char*) blk[0], ":tt") == 0)
+ 261:../system/src/cortexm/exception_handlers.c ****             {
+ 262:../system/src/cortexm/exception_handlers.c ****               if ((blk[1] == 0))
+ 263:../system/src/cortexm/exception_handlers.c ****                 {
+ 264:../system/src/cortexm/exception_handlers.c ****                   frame->r0 = HANDLER_STDIN;
+ 265:../system/src/cortexm/exception_handlers.c ****                   break;
+ 266:../system/src/cortexm/exception_handlers.c ****                 }
+ 267:../system/src/cortexm/exception_handlers.c ****               else if (blk[1] == 4)
+ 268:../system/src/cortexm/exception_handlers.c ****                 {
+ 269:../system/src/cortexm/exception_handlers.c ****                   frame->r0 = HANDLER_STDOUT;
+ 270:../system/src/cortexm/exception_handlers.c ****                   break;
+ 271:../system/src/cortexm/exception_handlers.c ****                 }
+ 272:../system/src/cortexm/exception_handlers.c ****               else if (blk[1] == 8)
+ 273:../system/src/cortexm/exception_handlers.c ****                 {
+ 274:../system/src/cortexm/exception_handlers.c ****                   frame->r0 = HANDLER_STDERR;
+ 275:../system/src/cortexm/exception_handlers.c ****                   break;
+ 276:../system/src/cortexm/exception_handlers.c ****                 }
+ 277:../system/src/cortexm/exception_handlers.c ****             }
+ 278:../system/src/cortexm/exception_handlers.c ****           frame->r0 = (uint32_t)-1; // the call is not successful or not supported
+ 279:../system/src/cortexm/exception_handlers.c ****           break;
+ 280:../system/src/cortexm/exception_handlers.c **** 
+ 281:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_WRITE:
+ 282:../system/src/cortexm/exception_handlers.c ****           // Silently ignore writes to stdout/stderr, fail on all other handler.
+ 283:../system/src/cortexm/exception_handlers.c ****           if ((blk[0] == HANDLER_STDOUT) || (blk[0] == HANDLER_STDERR))
+ 284:../system/src/cortexm/exception_handlers.c ****             {
+ 285:../system/src/cortexm/exception_handlers.c **** #if defined(OS_DEBUG_SEMIHOSTING_FAULTS)
+ 286:../system/src/cortexm/exception_handlers.c ****               frame->r0 = (uint32_t) blk[2]
+ 287:../system/src/cortexm/exception_handlers.c ****                   - trace_write ((char*) blk[1], blk[2]);
+ 288:../system/src/cortexm/exception_handlers.c **** #else
+ 289:../system/src/cortexm/exception_handlers.c ****               frame->r0 = 0; // all sent, no more.
+ 290:../system/src/cortexm/exception_handlers.c **** #endif // defined(OS_DEBUG_SEMIHOSTING_FAULTS)
+ 291:../system/src/cortexm/exception_handlers.c ****             }
+ 292:../system/src/cortexm/exception_handlers.c ****           else
+ 293:../system/src/cortexm/exception_handlers.c ****             {
+ 294:../system/src/cortexm/exception_handlers.c ****               // If other handler, return the total number of bytes
+ 295:../system/src/cortexm/exception_handlers.c ****               // as the number of bytes that are not written.
+ 296:../system/src/cortexm/exception_handlers.c ****               frame->r0 = blk[2];
+ 297:../system/src/cortexm/exception_handlers.c ****             }
+ 298:../system/src/cortexm/exception_handlers.c ****           break;
+ 299:../system/src/cortexm/exception_handlers.c **** 
+ 300:../system/src/cortexm/exception_handlers.c **** #endif // defined(OS_USE_SEMIHOSTING) || defined(OS_USE_TRACE_SEMIHOSTING_STDOUT)
+ 301:../system/src/cortexm/exception_handlers.c **** 
+ 302:../system/src/cortexm/exception_handlers.c **** #if defined(OS_USE_SEMIHOSTING) || defined(OS_USE_TRACE_SEMIHOSTING_STDOUT) || defined(OS_USE_TRACE
+ 303:../system/src/cortexm/exception_handlers.c **** 
+ 304:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_WRITEC:
+ 305:../system/src/cortexm/exception_handlers.c **** #if defined(OS_DEBUG_SEMIHOSTING_FAULTS)
+ 306:../system/src/cortexm/exception_handlers.c ****           {
+ 307:../system/src/cortexm/exception_handlers.c ****             char ch = *((char*) r1);
+ 308:../system/src/cortexm/exception_handlers.c ****             trace_write (&ch, 1);
+ 309:../system/src/cortexm/exception_handlers.c ****           }
+ 310:../system/src/cortexm/exception_handlers.c **** #endif
+ 311:../system/src/cortexm/exception_handlers.c ****           // Register R0 is corrupted.
+ 312:../system/src/cortexm/exception_handlers.c ****           break;
+ 313:../system/src/cortexm/exception_handlers.c **** 
+ 314:../system/src/cortexm/exception_handlers.c ****         case SEMIHOSTING_SYS_WRITE0:
+ 315:../system/src/cortexm/exception_handlers.c **** #if defined(OS_DEBUG_SEMIHOSTING_FAULTS)
+ 316:../system/src/cortexm/exception_handlers.c ****           {
+ 317:../system/src/cortexm/exception_handlers.c ****             char* p = ((char*) r1);
+ 318:../system/src/cortexm/exception_handlers.c ****             trace_write (p, strlen (p));
+ 319:../system/src/cortexm/exception_handlers.c ****           }
+ 320:../system/src/cortexm/exception_handlers.c **** #endif
+ 321:../system/src/cortexm/exception_handlers.c ****           // Register R0 is corrupted.
+ 322:../system/src/cortexm/exception_handlers.c ****           break;
+ 323:../system/src/cortexm/exception_handlers.c **** 
+ 324:../system/src/cortexm/exception_handlers.c **** #endif
+ 325:../system/src/cortexm/exception_handlers.c **** 
+ 326:../system/src/cortexm/exception_handlers.c ****         default:
+ 327:../system/src/cortexm/exception_handlers.c ****           return 0;
+ 328:../system/src/cortexm/exception_handlers.c ****         }
+ 329:../system/src/cortexm/exception_handlers.c **** 
+ 330:../system/src/cortexm/exception_handlers.c ****       // Alter the PC to make the exception returns to
+ 331:../system/src/cortexm/exception_handlers.c ****       // the instruction after the faulty BKPT.
+ 332:../system/src/cortexm/exception_handlers.c ****       frame->pc += 2;
+ 333:../system/src/cortexm/exception_handlers.c ****       return 1;
+ 334:../system/src/cortexm/exception_handlers.c ****     }
+ 335:../system/src/cortexm/exception_handlers.c ****   return 0;
+ 247              		.loc 1 335 0
+ 248 0008 0020     		movs	r0, #0
+ 249              	.LVL25:
+ 250 000a 7047     		bx	lr
+ 251              	.LVL26:
+ 252              	.L18:
+ 253              	.LBB2:
+ 180:../system/src/cortexm/exception_handlers.c **** #if defined(OS_DEBUG_SEMIHOSTING_FAULTS) || defined(OS_USE_SEMIHOSTING) || defined(OS_USE_TRACE_SEM
+ 254              		.loc 1 180 0
+ 255 000c 0268     		ldr	r2, [r0]
+ 256              	.LVL27:
+ 192:../system/src/cortexm/exception_handlers.c ****         {
+ 257              		.loc 1 192 0
+ 258 000e 033A     		subs	r2, r2, #3
+ 259              	.LVL28:
+ 260 0010 012A     		cmp	r2, #1
+ 261 0012 03D8     		bhi	.L17
+ 332:../system/src/cortexm/exception_handlers.c ****       return 1;
+ 262              		.loc 1 332 0
+ 263 0014 0233     		adds	r3, r3, #2
+ 264              	.LVL29:
+ 265 0016 8361     		str	r3, [r0, #24]
+ 266              	.LVL30:
+ 333:../system/src/cortexm/exception_handlers.c ****     }
+ 267              		.loc 1 333 0
+ 268 0018 0120     		movs	r0, #1
+ 269              	.LVL31:
+ 270 001a 7047     		bx	lr
+ 271              	.LVL32:
+ 272              	.L17:
+ 327:../system/src/cortexm/exception_handlers.c ****         }
+ 273              		.loc 1 327 0
+ 274 001c 0020     		movs	r0, #0
+ 275              	.LVL33:
+ 276              	.LBE2:
+ 336:../system/src/cortexm/exception_handlers.c **** }
+ 277              		.loc 1 336 0
+ 278 001e 7047     		bx	lr
+ 279              		.cfi_endproc
+ 280              	.LFE68:
+ 282              		.section	.after_vectors
+ 283              		.align	1
+ 284              		.weak	HardFault_Handler
+ 285              		.syntax unified
+ 286              		.thumb
+ 287              		.thumb_func
+ 288              		.fpu softvfp
+ 290              	HardFault_Handler:
+ 291              	.LFB69:
+ 337:../system/src/cortexm/exception_handlers.c **** 
+ 338:../system/src/cortexm/exception_handlers.c **** #endif
+ 339:../system/src/cortexm/exception_handlers.c **** 
+ 340:../system/src/cortexm/exception_handlers.c **** // Hard Fault handler wrapper in assembly.
+ 341:../system/src/cortexm/exception_handlers.c **** // It extracts the location of stack frame and passes it to handler
+ 342:../system/src/cortexm/exception_handlers.c **** // in C as a pointer. We also pass the LR value as second
+ 343:../system/src/cortexm/exception_handlers.c **** // parameter.
+ 344:../system/src/cortexm/exception_handlers.c **** // (Based on Joseph Yiu's, The Definitive Guide to ARM Cortex-M3 and
+ 345:../system/src/cortexm/exception_handlers.c **** // Cortex-M4 Processors, Third Edition, Chap. 12.8, page 402).
+ 346:../system/src/cortexm/exception_handlers.c **** 
+ 347:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak,naked))
+ 348:../system/src/cortexm/exception_handlers.c **** HardFault_Handler (void)
+ 349:../system/src/cortexm/exception_handlers.c **** {
+ 292              		.loc 1 349 0
+ 293              		.cfi_startproc
+ 294              		@ Naked Function: prologue and epilogue provided by programmer.
+ 295              		@ args = 0, pretend = 0, frame = 0
+ 296              		@ frame_needed = 0, uses_anonymous_args = 0
+ 350:../system/src/cortexm/exception_handlers.c ****   asm volatile(
+ 297              		.loc 1 350 0
+ 298              		.syntax unified
+ 299              	@ 350 "../system/src/cortexm/exception_handlers.c" 1
+ 300 000a 1EF0040F 		 tst lr,#4       
+ 301 000e 0CBF     	 ite eq          
+ 302 0010 EFF30880 	 mrseq r0,msp    
+ 303 0014 EFF30980 	 mrsne r0,psp    
+ 304 0018 7146     	 mov r1,lr       
+ 305 001a 414A     	 ldr r2,=HardFault_Handler_C 
+ 306 001c 1047     	 bx r2
+ 307              	@ 0 "" 2
+ 351:../system/src/cortexm/exception_handlers.c ****       " tst lr,#4       \n"
+ 352:../system/src/cortexm/exception_handlers.c ****       " ite eq          \n"
+ 353:../system/src/cortexm/exception_handlers.c ****       " mrseq r0,msp    \n"
+ 354:../system/src/cortexm/exception_handlers.c ****       " mrsne r0,psp    \n"
+ 355:../system/src/cortexm/exception_handlers.c ****       " mov r1,lr       \n"
+ 356:../system/src/cortexm/exception_handlers.c ****       " ldr r2,=HardFault_Handler_C \n"
+ 357:../system/src/cortexm/exception_handlers.c ****       " bx r2"
+ 358:../system/src/cortexm/exception_handlers.c **** 
+ 359:../system/src/cortexm/exception_handlers.c ****       : /* Outputs */
+ 360:../system/src/cortexm/exception_handlers.c ****       : /* Inputs */
+ 361:../system/src/cortexm/exception_handlers.c ****       : /* Clobbers */
+ 362:../system/src/cortexm/exception_handlers.c ****   );
+ 363:../system/src/cortexm/exception_handlers.c **** }
+ 308              		.loc 1 363 0
+ 309              		.thumb
+ 310              		.syntax unified
+ 311              		.cfi_endproc
+ 312              	.LFE69:
+ 314              		.align	1
+ 315              		.weak	HardFault_Handler_C
+ 316              		.syntax unified
+ 317              		.thumb
+ 318              		.thumb_func
+ 319              		.fpu softvfp
+ 321              	HardFault_Handler_C:
+ 322              	.LFB70:
+ 364:../system/src/cortexm/exception_handlers.c **** 
+ 365:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak,used))
+ 366:../system/src/cortexm/exception_handlers.c **** HardFault_Handler_C (ExceptionStackFrame* frame __attribute__((unused)),
+ 367:../system/src/cortexm/exception_handlers.c ****                      uint32_t lr __attribute__((unused)))
+ 368:../system/src/cortexm/exception_handlers.c **** {
+ 323              		.loc 1 368 0
+ 324              		.cfi_startproc
+ 325              		@ args = 0, pretend = 0, frame = 0
+ 326              		@ frame_needed = 0, uses_anonymous_args = 0
+ 327              	.LVL34:
+ 328 001e 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 329              		.cfi_def_cfa_offset 24
+ 330              		.cfi_offset 4, -24
+ 331              		.cfi_offset 5, -20
+ 332              		.cfi_offset 6, -16
+ 333              		.cfi_offset 7, -12
+ 334              		.cfi_offset 8, -8
+ 335              		.cfi_offset 14, -4
+ 336 0022 82B0     		sub	sp, sp, #8
+ 337              		.cfi_def_cfa_offset 32
+ 338 0024 0446     		mov	r4, r0
+ 339 0026 8846     		mov	r8, r1
+ 369:../system/src/cortexm/exception_handlers.c **** #if defined(TRACE)
+ 370:../system/src/cortexm/exception_handlers.c ****   uint32_t mmfar = SCB->MMFAR; // MemManage Fault Address
+ 340              		.loc 1 370 0
+ 341 0028 124B     		ldr	r3, .L26
+ 342 002a 5E6B     		ldr	r6, [r3, #52]
+ 343              	.LVL35:
+ 371:../system/src/cortexm/exception_handlers.c ****   uint32_t bfar = SCB->BFAR; // Bus Fault Address
+ 344              		.loc 1 371 0
+ 345 002c 9F6B     		ldr	r7, [r3, #56]
+ 346              	.LVL36:
+ 372:../system/src/cortexm/exception_handlers.c ****   uint32_t cfsr = SCB->CFSR; // Configurable Fault Status Registers
+ 347              		.loc 1 372 0
+ 348 002e 9D6A     		ldr	r5, [r3, #40]
+ 349              	.LVL37:
+ 373:../system/src/cortexm/exception_handlers.c **** #endif
+ 374:../system/src/cortexm/exception_handlers.c **** 
+ 375:../system/src/cortexm/exception_handlers.c **** #if defined(OS_USE_SEMIHOSTING) || defined(OS_USE_TRACE_SEMIHOSTING_STDOUT) || defined(OS_USE_TRACE
+ 376:../system/src/cortexm/exception_handlers.c **** 
+ 377:../system/src/cortexm/exception_handlers.c ****   // If the BKPT instruction is executed with C_DEBUGEN == 0 and MON_EN == 0,
+ 378:../system/src/cortexm/exception_handlers.c ****   // it will cause the processor to enter a HardFault exception, with DEBUGEVT
+ 379:../system/src/cortexm/exception_handlers.c ****   // in the Hard Fault Status register (HFSR) set to 1, and BKPT in the
+ 380:../system/src/cortexm/exception_handlers.c ****   // Debug Fault Status register (DFSR) also set to 1.
+ 381:../system/src/cortexm/exception_handlers.c **** 
+ 382:../system/src/cortexm/exception_handlers.c ****   if (((SCB->DFSR & SCB_DFSR_BKPT_Msk) != 0)
+ 350              		.loc 1 382 0
+ 351 0030 1B6B     		ldr	r3, [r3, #48]
+ 352 0032 13F0020F 		tst	r3, #2
+ 353 0036 03D0     		beq	.L21
+ 383:../system/src/cortexm/exception_handlers.c ****       && ((SCB->HFSR & SCB_HFSR_DEBUGEVT_Msk) != 0))
+ 354              		.loc 1 383 0
+ 355 0038 0E4B     		ldr	r3, .L26
+ 356 003a DB6A     		ldr	r3, [r3, #44]
+ 357 003c 002B     		cmp	r3, #0
+ 358 003e 0CDB     		blt	.L25
+ 359              	.LVL38:
+ 360              	.L21:
+ 384:../system/src/cortexm/exception_handlers.c ****     {
+ 385:../system/src/cortexm/exception_handlers.c ****       if (isSemihosting (frame, 0xBE00 + (AngelSWI & 0xFF)))
+ 386:../system/src/cortexm/exception_handlers.c ****         {
+ 387:../system/src/cortexm/exception_handlers.c ****           // Clear the exception cause in exception status.
+ 388:../system/src/cortexm/exception_handlers.c ****           SCB->HFSR = SCB_HFSR_DEBUGEVT_Msk;
+ 389:../system/src/cortexm/exception_handlers.c **** 
+ 390:../system/src/cortexm/exception_handlers.c ****           // Continue after the BKPT
+ 391:../system/src/cortexm/exception_handlers.c ****           return;
+ 392:../system/src/cortexm/exception_handlers.c ****         }
+ 393:../system/src/cortexm/exception_handlers.c ****     }
+ 394:../system/src/cortexm/exception_handlers.c **** 
+ 395:../system/src/cortexm/exception_handlers.c **** #endif
+ 396:../system/src/cortexm/exception_handlers.c **** 
+ 397:../system/src/cortexm/exception_handlers.c **** #if defined(TRACE)
+ 398:../system/src/cortexm/exception_handlers.c ****   trace_printf ("[HardFault]\n");
+ 361              		.loc 1 398 0
+ 362 0040 0D48     		ldr	r0, .L26+4
+ 363 0042 FFF7FEFF 		bl	trace_printf
+ 364              	.LVL39:
+ 399:../system/src/cortexm/exception_handlers.c ****   dumpExceptionStack (frame, cfsr, mmfar, bfar, lr);
+ 365              		.loc 1 399 0
+ 366 0046 CDF80080 		str	r8, [sp]
+ 367 004a 3B46     		mov	r3, r7
+ 368 004c 3246     		mov	r2, r6
+ 369 004e 2946     		mov	r1, r5
+ 370 0050 2046     		mov	r0, r4
+ 371 0052 FFF7FEFF 		bl	dumpExceptionStack
+ 372              	.LVL40:
+ 400:../system/src/cortexm/exception_handlers.c **** #endif // defined(TRACE)
+ 401:../system/src/cortexm/exception_handlers.c **** 
+ 402:../system/src/cortexm/exception_handlers.c **** #if defined(DEBUG)
+ 403:../system/src/cortexm/exception_handlers.c ****   __DEBUG_BKPT();
+ 373              		.loc 1 403 0
+ 374              		.syntax unified
+ 375              	@ 403 "../system/src/cortexm/exception_handlers.c" 1
+ 376 0056 00BE     		bkpt 0
+ 377              	@ 0 "" 2
+ 378              		.thumb
+ 379              		.syntax unified
+ 380              	.L22:
+ 381 0058 FEE7     		b	.L22
+ 382              	.LVL41:
+ 383              	.L25:
+ 385:../system/src/cortexm/exception_handlers.c ****         {
+ 384              		.loc 1 385 0
+ 385 005a 4BF6AB61 		movw	r1, #48811
+ 386              	.LVL42:
+ 387 005e FFF7FEFF 		bl	isSemihosting
+ 388              	.LVL43:
+ 389 0062 0028     		cmp	r0, #0
+ 390 0064 ECD0     		beq	.L21
+ 388:../system/src/cortexm/exception_handlers.c **** 
+ 391              		.loc 1 388 0
+ 392 0066 034B     		ldr	r3, .L26
+ 393 0068 4FF00042 		mov	r2, #-2147483648
+ 394 006c DA62     		str	r2, [r3, #44]
+ 404:../system/src/cortexm/exception_handlers.c **** #endif
+ 405:../system/src/cortexm/exception_handlers.c ****   while (1)
+ 406:../system/src/cortexm/exception_handlers.c ****     {
+ 407:../system/src/cortexm/exception_handlers.c ****     }
+ 408:../system/src/cortexm/exception_handlers.c **** }
+ 395              		.loc 1 408 0
+ 396 006e 02B0     		add	sp, sp, #8
+ 397              		.cfi_def_cfa_offset 24
+ 398              		@ sp needed
+ 399 0070 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 400              	.LVL44:
+ 401              	.L27:
+ 402              		.align	2
+ 403              	.L26:
+ 404 0074 00ED00E0 		.word	-536810240
+ 405 0078 00000000 		.word	.LC18
+ 406              		.cfi_endproc
+ 407              	.LFE70:
+ 409              		.align	1
+ 410              		.weak	MemManage_Handler
+ 411              		.syntax unified
+ 412              		.thumb
+ 413              		.thumb_func
+ 414              		.fpu softvfp
+ 416              	MemManage_Handler:
+ 417              	.LFB71:
+ 409:../system/src/cortexm/exception_handlers.c **** 
+ 410:../system/src/cortexm/exception_handlers.c **** #endif // defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)
+ 411:../system/src/cortexm/exception_handlers.c **** 
+ 412:../system/src/cortexm/exception_handlers.c **** 
+ 413:../system/src/cortexm/exception_handlers.c **** #if defined(__ARM_ARCH_6M__)
+ 414:../system/src/cortexm/exception_handlers.c **** 
+ 415:../system/src/cortexm/exception_handlers.c **** // Hard Fault handler wrapper in assembly.
+ 416:../system/src/cortexm/exception_handlers.c **** // It extracts the location of stack frame and passes it to handler
+ 417:../system/src/cortexm/exception_handlers.c **** // in C as a pointer. We also pass the LR value as second
+ 418:../system/src/cortexm/exception_handlers.c **** // parameter.
+ 419:../system/src/cortexm/exception_handlers.c **** // (Based on Joseph Yiu's, The Definitive Guide to ARM Cortex-M0
+ 420:../system/src/cortexm/exception_handlers.c **** // First Edition, Chap. 12.8, page 402).
+ 421:../system/src/cortexm/exception_handlers.c **** 
+ 422:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak,naked))
+ 423:../system/src/cortexm/exception_handlers.c **** HardFault_Handler (void)
+ 424:../system/src/cortexm/exception_handlers.c **** {
+ 425:../system/src/cortexm/exception_handlers.c ****   asm volatile(
+ 426:../system/src/cortexm/exception_handlers.c ****       " movs r0,#4      \n"
+ 427:../system/src/cortexm/exception_handlers.c ****       " mov r1,lr       \n"
+ 428:../system/src/cortexm/exception_handlers.c ****       " tst r0,r1       \n"
+ 429:../system/src/cortexm/exception_handlers.c ****       " beq 1f          \n"
+ 430:../system/src/cortexm/exception_handlers.c ****       " mrs r0,psp      \n"
+ 431:../system/src/cortexm/exception_handlers.c ****       " b   2f          \n"
+ 432:../system/src/cortexm/exception_handlers.c ****       "1:               \n"
+ 433:../system/src/cortexm/exception_handlers.c ****       " mrs r0,msp      \n"
+ 434:../system/src/cortexm/exception_handlers.c ****       "2:"
+ 435:../system/src/cortexm/exception_handlers.c ****       " mov r1,lr       \n"
+ 436:../system/src/cortexm/exception_handlers.c ****       " ldr r2,=HardFault_Handler_C \n"
+ 437:../system/src/cortexm/exception_handlers.c ****       " bx r2"
+ 438:../system/src/cortexm/exception_handlers.c **** 
+ 439:../system/src/cortexm/exception_handlers.c ****       : /* Outputs */
+ 440:../system/src/cortexm/exception_handlers.c ****       : /* Inputs */
+ 441:../system/src/cortexm/exception_handlers.c ****       : /* Clobbers */
+ 442:../system/src/cortexm/exception_handlers.c ****   );
+ 443:../system/src/cortexm/exception_handlers.c **** }
+ 444:../system/src/cortexm/exception_handlers.c **** 
+ 445:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak,used))
+ 446:../system/src/cortexm/exception_handlers.c **** HardFault_Handler_C (ExceptionStackFrame* frame __attribute__((unused)),
+ 447:../system/src/cortexm/exception_handlers.c ****                      uint32_t lr __attribute__((unused)))
+ 448:../system/src/cortexm/exception_handlers.c **** {
+ 449:../system/src/cortexm/exception_handlers.c ****   // There is no semihosting support for Cortex-M0, since on ARMv6-M
+ 450:../system/src/cortexm/exception_handlers.c ****   // faults are fatal and it is not possible to return from the handler.
+ 451:../system/src/cortexm/exception_handlers.c **** 
+ 452:../system/src/cortexm/exception_handlers.c **** #if defined(TRACE)
+ 453:../system/src/cortexm/exception_handlers.c ****   trace_printf ("[HardFault]\n");
+ 454:../system/src/cortexm/exception_handlers.c ****   dumpExceptionStack (frame, lr);
+ 455:../system/src/cortexm/exception_handlers.c **** #endif // defined(TRACE)
+ 456:../system/src/cortexm/exception_handlers.c **** 
+ 457:../system/src/cortexm/exception_handlers.c **** #if defined(DEBUG)
+ 458:../system/src/cortexm/exception_handlers.c ****   __DEBUG_BKPT();
+ 459:../system/src/cortexm/exception_handlers.c **** #endif
+ 460:../system/src/cortexm/exception_handlers.c ****   while (1)
+ 461:../system/src/cortexm/exception_handlers.c ****     {
+ 462:../system/src/cortexm/exception_handlers.c ****     }
+ 463:../system/src/cortexm/exception_handlers.c **** }
+ 464:../system/src/cortexm/exception_handlers.c **** 
+ 465:../system/src/cortexm/exception_handlers.c **** #endif // defined(__ARM_ARCH_6M__)
+ 466:../system/src/cortexm/exception_handlers.c **** 
+ 467:../system/src/cortexm/exception_handlers.c **** 
+ 468:../system/src/cortexm/exception_handlers.c **** #if defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)
+ 469:../system/src/cortexm/exception_handlers.c **** 
+ 470:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak))
+ 471:../system/src/cortexm/exception_handlers.c **** MemManage_Handler (void)
+ 472:../system/src/cortexm/exception_handlers.c **** {
+ 418              		.loc 1 472 0
+ 419              		.cfi_startproc
+ 420              		@ args = 0, pretend = 0, frame = 0
+ 421              		@ frame_needed = 0, uses_anonymous_args = 0
+ 422              		@ link register save eliminated.
+ 473:../system/src/cortexm/exception_handlers.c **** #if defined(DEBUG)
+ 474:../system/src/cortexm/exception_handlers.c ****   __DEBUG_BKPT();
+ 423              		.loc 1 474 0
+ 424              		.syntax unified
+ 425              	@ 474 "../system/src/cortexm/exception_handlers.c" 1
+ 426 007c 00BE     		bkpt 0
+ 427              	@ 0 "" 2
+ 428              		.thumb
+ 429              		.syntax unified
+ 430              	.L29:
+ 431 007e FEE7     		b	.L29
+ 432              		.cfi_endproc
+ 433              	.LFE71:
+ 435              		.align	1
+ 436              		.weak	BusFault_Handler
+ 437              		.syntax unified
+ 438              		.thumb
+ 439              		.thumb_func
+ 440              		.fpu softvfp
+ 442              	BusFault_Handler:
+ 443              	.LFB72:
+ 475:../system/src/cortexm/exception_handlers.c **** #endif
+ 476:../system/src/cortexm/exception_handlers.c ****   while (1)
+ 477:../system/src/cortexm/exception_handlers.c ****     {
+ 478:../system/src/cortexm/exception_handlers.c ****     }
+ 479:../system/src/cortexm/exception_handlers.c **** }
+ 480:../system/src/cortexm/exception_handlers.c **** 
+ 481:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak,naked))
+ 482:../system/src/cortexm/exception_handlers.c **** BusFault_Handler (void)
+ 483:../system/src/cortexm/exception_handlers.c **** {
+ 444              		.loc 1 483 0
+ 445              		.cfi_startproc
+ 446              		@ Naked Function: prologue and epilogue provided by programmer.
+ 447              		@ args = 0, pretend = 0, frame = 0
+ 448              		@ frame_needed = 0, uses_anonymous_args = 0
+ 484:../system/src/cortexm/exception_handlers.c ****   asm volatile(
+ 449              		.loc 1 484 0
+ 450              		.syntax unified
+ 451              	@ 484 "../system/src/cortexm/exception_handlers.c" 1
+ 452 0080 1EF0040F 		 tst lr,#4       
+ 453 0084 0CBF     	 ite eq          
+ 454 0086 EFF30880 	 mrseq r0,msp    
+ 455 008a EFF30980 	 mrsne r0,psp    
+ 456 008e 7146     	 mov r1,lr       
+ 457 0090 244A     	 ldr r2,=BusFault_Handler_C 
+ 458 0092 1047     	 bx r2
+ 459              	@ 0 "" 2
+ 485:../system/src/cortexm/exception_handlers.c ****       " tst lr,#4       \n"
+ 486:../system/src/cortexm/exception_handlers.c ****       " ite eq          \n"
+ 487:../system/src/cortexm/exception_handlers.c ****       " mrseq r0,msp    \n"
+ 488:../system/src/cortexm/exception_handlers.c ****       " mrsne r0,psp    \n"
+ 489:../system/src/cortexm/exception_handlers.c ****       " mov r1,lr       \n"
+ 490:../system/src/cortexm/exception_handlers.c ****       " ldr r2,=BusFault_Handler_C \n"
+ 491:../system/src/cortexm/exception_handlers.c ****       " bx r2"
+ 492:../system/src/cortexm/exception_handlers.c **** 
+ 493:../system/src/cortexm/exception_handlers.c ****       : /* Outputs */
+ 494:../system/src/cortexm/exception_handlers.c ****       : /* Inputs */
+ 495:../system/src/cortexm/exception_handlers.c ****       : /* Clobbers */
+ 496:../system/src/cortexm/exception_handlers.c ****   );
+ 497:../system/src/cortexm/exception_handlers.c **** }
+ 460              		.loc 1 497 0
+ 461              		.thumb
+ 462              		.syntax unified
+ 463              		.cfi_endproc
+ 464              	.LFE72:
+ 466              		.align	1
+ 467              		.weak	BusFault_Handler_C
+ 468              		.syntax unified
+ 469              		.thumb
+ 470              		.thumb_func
+ 471              		.fpu softvfp
+ 473              	BusFault_Handler_C:
+ 474              	.LFB73:
+ 498:../system/src/cortexm/exception_handlers.c **** 
+ 499:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak,used))
+ 500:../system/src/cortexm/exception_handlers.c **** BusFault_Handler_C (ExceptionStackFrame* frame __attribute__((unused)),
+ 501:../system/src/cortexm/exception_handlers.c ****                     uint32_t lr __attribute__((unused)))
+ 502:../system/src/cortexm/exception_handlers.c **** {
+ 475              		.loc 1 502 0
+ 476              		.cfi_startproc
+ 477              		@ args = 0, pretend = 0, frame = 0
+ 478              		@ frame_needed = 0, uses_anonymous_args = 0
+ 479              	.LVL45:
+ 480 0094 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 481              		.cfi_def_cfa_offset 24
+ 482              		.cfi_offset 4, -24
+ 483              		.cfi_offset 5, -20
+ 484              		.cfi_offset 6, -16
+ 485              		.cfi_offset 7, -12
+ 486              		.cfi_offset 8, -8
+ 487              		.cfi_offset 14, -4
+ 488 0098 82B0     		sub	sp, sp, #8
+ 489              		.cfi_def_cfa_offset 32
+ 490 009a 0446     		mov	r4, r0
+ 491 009c 8846     		mov	r8, r1
+ 503:../system/src/cortexm/exception_handlers.c **** #if defined(TRACE)
+ 504:../system/src/cortexm/exception_handlers.c ****   uint32_t mmfar = SCB->MMFAR; // MemManage Fault Address
+ 492              		.loc 1 504 0
+ 493 009e 084B     		ldr	r3, .L34
+ 494 00a0 5E6B     		ldr	r6, [r3, #52]
+ 495              	.LVL46:
+ 505:../system/src/cortexm/exception_handlers.c ****   uint32_t bfar = SCB->BFAR; // Bus Fault Address
+ 496              		.loc 1 505 0
+ 497 00a2 9F6B     		ldr	r7, [r3, #56]
+ 498              	.LVL47:
+ 506:../system/src/cortexm/exception_handlers.c ****   uint32_t cfsr = SCB->CFSR; // Configurable Fault Status Registers
+ 499              		.loc 1 506 0
+ 500 00a4 9D6A     		ldr	r5, [r3, #40]
+ 501              	.LVL48:
+ 507:../system/src/cortexm/exception_handlers.c **** 
+ 508:../system/src/cortexm/exception_handlers.c ****   trace_printf ("[BusFault]\n");
+ 502              		.loc 1 508 0
+ 503 00a6 0748     		ldr	r0, .L34+4
+ 504              	.LVL49:
+ 505 00a8 FFF7FEFF 		bl	trace_printf
+ 506              	.LVL50:
+ 509:../system/src/cortexm/exception_handlers.c ****   dumpExceptionStack (frame, cfsr, mmfar, bfar, lr);
+ 507              		.loc 1 509 0
+ 508 00ac CDF80080 		str	r8, [sp]
+ 509 00b0 3B46     		mov	r3, r7
+ 510 00b2 3246     		mov	r2, r6
+ 511 00b4 2946     		mov	r1, r5
+ 512 00b6 2046     		mov	r0, r4
+ 513 00b8 FFF7FEFF 		bl	dumpExceptionStack
+ 514              	.LVL51:
+ 510:../system/src/cortexm/exception_handlers.c **** #endif // defined(TRACE)
+ 511:../system/src/cortexm/exception_handlers.c **** 
+ 512:../system/src/cortexm/exception_handlers.c **** #if defined(DEBUG)
+ 513:../system/src/cortexm/exception_handlers.c ****   __DEBUG_BKPT();
+ 515              		.loc 1 513 0
+ 516              		.syntax unified
+ 517              	@ 513 "../system/src/cortexm/exception_handlers.c" 1
+ 518 00bc 00BE     		bkpt 0
+ 519              	@ 0 "" 2
+ 520              		.thumb
+ 521              		.syntax unified
+ 522              	.L32:
+ 523 00be FEE7     		b	.L32
+ 524              	.L35:
+ 525              		.align	2
+ 526              	.L34:
+ 527 00c0 00ED00E0 		.word	-536810240
+ 528 00c4 10000000 		.word	.LC19
+ 529              		.cfi_endproc
+ 530              	.LFE73:
+ 532              		.align	1
+ 533              		.weak	UsageFault_Handler
+ 534              		.syntax unified
+ 535              		.thumb
+ 536              		.thumb_func
+ 537              		.fpu softvfp
+ 539              	UsageFault_Handler:
+ 540              	.LFB74:
+ 514:../system/src/cortexm/exception_handlers.c **** #endif
+ 515:../system/src/cortexm/exception_handlers.c ****   while (1)
+ 516:../system/src/cortexm/exception_handlers.c ****     {
+ 517:../system/src/cortexm/exception_handlers.c ****     }
+ 518:../system/src/cortexm/exception_handlers.c **** }
+ 519:../system/src/cortexm/exception_handlers.c **** 
+ 520:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak,naked))
+ 521:../system/src/cortexm/exception_handlers.c **** UsageFault_Handler (void)
+ 522:../system/src/cortexm/exception_handlers.c **** {
+ 541              		.loc 1 522 0
+ 542              		.cfi_startproc
+ 543              		@ Naked Function: prologue and epilogue provided by programmer.
+ 544              		@ args = 0, pretend = 0, frame = 0
+ 545              		@ frame_needed = 0, uses_anonymous_args = 0
+ 523:../system/src/cortexm/exception_handlers.c ****   asm volatile(
+ 546              		.loc 1 523 0
+ 547              		.syntax unified
+ 548              	@ 523 "../system/src/cortexm/exception_handlers.c" 1
+ 549 00c8 1EF0040F 		 tst lr,#4       
+ 550 00cc 0CBF     	 ite eq          
+ 551 00ce EFF30880 	 mrseq r0,msp    
+ 552 00d2 EFF30980 	 mrsne r0,psp    
+ 553 00d6 7146     	 mov r1,lr       
+ 554 00d8 134A     	 ldr r2,=UsageFault_Handler_C 
+ 555 00da 1047     	 bx r2
+ 556              	@ 0 "" 2
+ 524:../system/src/cortexm/exception_handlers.c ****       " tst lr,#4       \n"
+ 525:../system/src/cortexm/exception_handlers.c ****       " ite eq          \n"
+ 526:../system/src/cortexm/exception_handlers.c ****       " mrseq r0,msp    \n"
+ 527:../system/src/cortexm/exception_handlers.c ****       " mrsne r0,psp    \n"
+ 528:../system/src/cortexm/exception_handlers.c ****       " mov r1,lr       \n"
+ 529:../system/src/cortexm/exception_handlers.c ****       " ldr r2,=UsageFault_Handler_C \n"
+ 530:../system/src/cortexm/exception_handlers.c ****       " bx r2"
+ 531:../system/src/cortexm/exception_handlers.c **** 
+ 532:../system/src/cortexm/exception_handlers.c ****       : /* Outputs */
+ 533:../system/src/cortexm/exception_handlers.c ****       : /* Inputs */
+ 534:../system/src/cortexm/exception_handlers.c ****       : /* Clobbers */
+ 535:../system/src/cortexm/exception_handlers.c ****   );
+ 536:../system/src/cortexm/exception_handlers.c **** }
+ 557              		.loc 1 536 0
+ 558              		.thumb
+ 559              		.syntax unified
+ 560              		.cfi_endproc
+ 561              	.LFE74:
+ 563              		.align	1
+ 564              		.weak	UsageFault_Handler_C
+ 565              		.syntax unified
+ 566              		.thumb
+ 567              		.thumb_func
+ 568              		.fpu softvfp
+ 570              	UsageFault_Handler_C:
+ 571              	.LFB75:
+ 537:../system/src/cortexm/exception_handlers.c **** 
+ 538:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak,used))
+ 539:../system/src/cortexm/exception_handlers.c **** UsageFault_Handler_C (ExceptionStackFrame* frame __attribute__((unused)),
+ 540:../system/src/cortexm/exception_handlers.c ****                       uint32_t lr __attribute__((unused)))
+ 541:../system/src/cortexm/exception_handlers.c **** {
+ 572              		.loc 1 541 0
+ 573              		.cfi_startproc
+ 574              		@ args = 0, pretend = 0, frame = 0
+ 575              		@ frame_needed = 0, uses_anonymous_args = 0
+ 576              	.LVL52:
+ 577 00dc 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 578              		.cfi_def_cfa_offset 24
+ 579              		.cfi_offset 4, -24
+ 580              		.cfi_offset 5, -20
+ 581              		.cfi_offset 6, -16
+ 582              		.cfi_offset 7, -12
+ 583              		.cfi_offset 8, -8
+ 584              		.cfi_offset 14, -4
+ 585 00e0 82B0     		sub	sp, sp, #8
+ 586              		.cfi_def_cfa_offset 32
+ 587 00e2 0446     		mov	r4, r0
+ 588 00e4 8846     		mov	r8, r1
+ 542:../system/src/cortexm/exception_handlers.c **** #if defined(TRACE)
+ 543:../system/src/cortexm/exception_handlers.c ****   uint32_t mmfar = SCB->MMFAR; // MemManage Fault Address
+ 589              		.loc 1 543 0
+ 590 00e6 084B     		ldr	r3, .L40
+ 591 00e8 5E6B     		ldr	r6, [r3, #52]
+ 592              	.LVL53:
+ 544:../system/src/cortexm/exception_handlers.c ****   uint32_t bfar = SCB->BFAR; // Bus Fault Address
+ 593              		.loc 1 544 0
+ 594 00ea 9F6B     		ldr	r7, [r3, #56]
+ 595              	.LVL54:
+ 545:../system/src/cortexm/exception_handlers.c ****   uint32_t cfsr = SCB->CFSR; // Configurable Fault Status Registers
+ 596              		.loc 1 545 0
+ 597 00ec 9D6A     		ldr	r5, [r3, #40]
+ 598              	.LVL55:
+ 546:../system/src/cortexm/exception_handlers.c **** #endif
+ 547:../system/src/cortexm/exception_handlers.c **** 
+ 548:../system/src/cortexm/exception_handlers.c **** #if defined(OS_DEBUG_SEMIHOSTING_FAULTS)
+ 549:../system/src/cortexm/exception_handlers.c **** 
+ 550:../system/src/cortexm/exception_handlers.c ****   if ((cfsr & (1UL << 16)) != 0) // UNDEFINSTR
+ 551:../system/src/cortexm/exception_handlers.c ****     {
+ 552:../system/src/cortexm/exception_handlers.c ****       // For testing purposes, instead of BKPT use 'setend be'.
+ 553:../system/src/cortexm/exception_handlers.c ****       if (isSemihosting (frame, AngelSWITestFaultOpCode))
+ 554:../system/src/cortexm/exception_handlers.c ****         {
+ 555:../system/src/cortexm/exception_handlers.c ****           return;
+ 556:../system/src/cortexm/exception_handlers.c ****         }
+ 557:../system/src/cortexm/exception_handlers.c ****     }
+ 558:../system/src/cortexm/exception_handlers.c **** 
+ 559:../system/src/cortexm/exception_handlers.c **** #endif
+ 560:../system/src/cortexm/exception_handlers.c **** 
+ 561:../system/src/cortexm/exception_handlers.c **** #if defined(TRACE)
+ 562:../system/src/cortexm/exception_handlers.c ****   trace_printf ("[UsageFault]\n");
+ 599              		.loc 1 562 0
+ 600 00ee 0748     		ldr	r0, .L40+4
+ 601              	.LVL56:
+ 602 00f0 FFF7FEFF 		bl	trace_printf
+ 603              	.LVL57:
+ 563:../system/src/cortexm/exception_handlers.c ****   dumpExceptionStack (frame, cfsr, mmfar, bfar, lr);
+ 604              		.loc 1 563 0
+ 605 00f4 CDF80080 		str	r8, [sp]
+ 606 00f8 3B46     		mov	r3, r7
+ 607 00fa 3246     		mov	r2, r6
+ 608 00fc 2946     		mov	r1, r5
+ 609 00fe 2046     		mov	r0, r4
+ 610 0100 FFF7FEFF 		bl	dumpExceptionStack
+ 611              	.LVL58:
+ 564:../system/src/cortexm/exception_handlers.c **** #endif // defined(TRACE)
+ 565:../system/src/cortexm/exception_handlers.c **** 
+ 566:../system/src/cortexm/exception_handlers.c **** #if defined(DEBUG)
+ 567:../system/src/cortexm/exception_handlers.c ****   __DEBUG_BKPT();
+ 612              		.loc 1 567 0
+ 613              		.syntax unified
+ 614              	@ 567 "../system/src/cortexm/exception_handlers.c" 1
+ 615 0104 00BE     		bkpt 0
+ 616              	@ 0 "" 2
+ 617              		.thumb
+ 618              		.syntax unified
+ 619              	.L38:
+ 620 0106 FEE7     		b	.L38
+ 621              	.L41:
+ 622              		.align	2
+ 623              	.L40:
+ 624 0108 00ED00E0 		.word	-536810240
+ 625 010c 1C000000 		.word	.LC20
+ 626              		.cfi_endproc
+ 627              	.LFE75:
+ 629              		.align	1
+ 630              		.weak	SVC_Handler
+ 631              		.syntax unified
+ 632              		.thumb
+ 633              		.thumb_func
+ 634              		.fpu softvfp
+ 636              	SVC_Handler:
+ 637              	.LFB76:
+ 568:../system/src/cortexm/exception_handlers.c **** #endif
+ 569:../system/src/cortexm/exception_handlers.c ****   while (1)
+ 570:../system/src/cortexm/exception_handlers.c ****     {
+ 571:../system/src/cortexm/exception_handlers.c ****     }
+ 572:../system/src/cortexm/exception_handlers.c **** }
+ 573:../system/src/cortexm/exception_handlers.c **** 
+ 574:../system/src/cortexm/exception_handlers.c **** #endif
+ 575:../system/src/cortexm/exception_handlers.c **** 
+ 576:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak))
+ 577:../system/src/cortexm/exception_handlers.c **** SVC_Handler (void)
+ 578:../system/src/cortexm/exception_handlers.c **** {
+ 638              		.loc 1 578 0
+ 639              		.cfi_startproc
+ 640              		@ args = 0, pretend = 0, frame = 0
+ 641              		@ frame_needed = 0, uses_anonymous_args = 0
+ 642              		@ link register save eliminated.
+ 579:../system/src/cortexm/exception_handlers.c **** #if defined(DEBUG)
+ 580:../system/src/cortexm/exception_handlers.c ****   __DEBUG_BKPT();
+ 643              		.loc 1 580 0
+ 644              		.syntax unified
+ 645              	@ 580 "../system/src/cortexm/exception_handlers.c" 1
+ 646 0110 00BE     		bkpt 0
+ 647              	@ 0 "" 2
+ 648              		.thumb
+ 649              		.syntax unified
+ 650              	.L43:
+ 651 0112 FEE7     		b	.L43
+ 652              		.cfi_endproc
+ 653              	.LFE76:
+ 655              		.align	1
+ 656              		.weak	DebugMon_Handler
+ 657              		.syntax unified
+ 658              		.thumb
+ 659              		.thumb_func
+ 660              		.fpu softvfp
+ 662              	DebugMon_Handler:
+ 663              	.LFB77:
+ 581:../system/src/cortexm/exception_handlers.c **** #endif
+ 582:../system/src/cortexm/exception_handlers.c ****   while (1)
+ 583:../system/src/cortexm/exception_handlers.c ****     {
+ 584:../system/src/cortexm/exception_handlers.c ****     }
+ 585:../system/src/cortexm/exception_handlers.c **** }
+ 586:../system/src/cortexm/exception_handlers.c **** 
+ 587:../system/src/cortexm/exception_handlers.c **** #if defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)
+ 588:../system/src/cortexm/exception_handlers.c **** 
+ 589:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak))
+ 590:../system/src/cortexm/exception_handlers.c **** DebugMon_Handler (void)
+ 591:../system/src/cortexm/exception_handlers.c **** {
+ 664              		.loc 1 591 0
+ 665              		.cfi_startproc
+ 666              		@ args = 0, pretend = 0, frame = 0
+ 667              		@ frame_needed = 0, uses_anonymous_args = 0
+ 668              		@ link register save eliminated.
+ 592:../system/src/cortexm/exception_handlers.c **** #if defined(DEBUG)
+ 593:../system/src/cortexm/exception_handlers.c ****   __DEBUG_BKPT();
+ 669              		.loc 1 593 0
+ 670              		.syntax unified
+ 671              	@ 593 "../system/src/cortexm/exception_handlers.c" 1
+ 672 0114 00BE     		bkpt 0
+ 673              	@ 0 "" 2
+ 674              		.thumb
+ 675              		.syntax unified
+ 676              	.L45:
+ 677 0116 FEE7     		b	.L45
+ 678              		.cfi_endproc
+ 679              	.LFE77:
+ 681              		.align	1
+ 682              		.weak	PendSV_Handler
+ 683              		.syntax unified
+ 684              		.thumb
+ 685              		.thumb_func
+ 686              		.fpu softvfp
+ 688              	PendSV_Handler:
+ 689              	.LFB78:
+ 594:../system/src/cortexm/exception_handlers.c **** #endif
+ 595:../system/src/cortexm/exception_handlers.c ****   while (1)
+ 596:../system/src/cortexm/exception_handlers.c ****     {
+ 597:../system/src/cortexm/exception_handlers.c ****     }
+ 598:../system/src/cortexm/exception_handlers.c **** }
+ 599:../system/src/cortexm/exception_handlers.c **** 
+ 600:../system/src/cortexm/exception_handlers.c **** #endif
+ 601:../system/src/cortexm/exception_handlers.c **** 
+ 602:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak))
+ 603:../system/src/cortexm/exception_handlers.c **** PendSV_Handler (void)
+ 604:../system/src/cortexm/exception_handlers.c **** {
+ 690              		.loc 1 604 0
+ 691              		.cfi_startproc
+ 692              		@ args = 0, pretend = 0, frame = 0
+ 693              		@ frame_needed = 0, uses_anonymous_args = 0
+ 694              		@ link register save eliminated.
+ 605:../system/src/cortexm/exception_handlers.c **** #if defined(DEBUG)
+ 606:../system/src/cortexm/exception_handlers.c ****   __DEBUG_BKPT();
+ 695              		.loc 1 606 0
+ 696              		.syntax unified
+ 697              	@ 606 "../system/src/cortexm/exception_handlers.c" 1
+ 698 0118 00BE     		bkpt 0
+ 699              	@ 0 "" 2
+ 700              		.thumb
+ 701              		.syntax unified
+ 702              	.L47:
+ 703 011a FEE7     		b	.L47
+ 704              		.cfi_endproc
+ 705              	.LFE78:
+ 707              		.align	1
+ 708              		.weak	SysTick_Handler
+ 709              		.syntax unified
+ 710              		.thumb
+ 711              		.thumb_func
+ 712              		.fpu softvfp
+ 714              	SysTick_Handler:
+ 715              	.LFB79:
+ 607:../system/src/cortexm/exception_handlers.c **** #endif
+ 608:../system/src/cortexm/exception_handlers.c ****   while (1)
+ 609:../system/src/cortexm/exception_handlers.c ****     {
+ 610:../system/src/cortexm/exception_handlers.c ****     }
+ 611:../system/src/cortexm/exception_handlers.c **** }
+ 612:../system/src/cortexm/exception_handlers.c **** 
+ 613:../system/src/cortexm/exception_handlers.c **** void __attribute__ ((section(".after_vectors"),weak))
+ 614:../system/src/cortexm/exception_handlers.c **** SysTick_Handler (void)
+ 615:../system/src/cortexm/exception_handlers.c **** {
+ 716              		.loc 1 615 0
+ 717              		.cfi_startproc
+ 718              		@ args = 0, pretend = 0, frame = 0
+ 719              		@ frame_needed = 0, uses_anonymous_args = 0
+ 720              		@ link register save eliminated.
+ 616:../system/src/cortexm/exception_handlers.c ****   // DO NOT loop, just return.
+ 617:../system/src/cortexm/exception_handlers.c ****   // Useful in case someone (like STM HAL) inadvertently enables SysTick.
+ 618:../system/src/cortexm/exception_handlers.c ****   ;
+ 619:../system/src/cortexm/exception_handlers.c **** }
+ 721              		.loc 1 619 0
+ 722 011c 7047     		bx	lr
+ 723              		.cfi_endproc
+ 724              	.LFE79:
+ 726 011e 0000     		.section	.rodata.dumpExceptionStack.str1.4,"aMS",%progbits,1
+ 727              		.align	2
+ 728              	.LC0:
+ 729 0000 53746163 		.ascii	"Stack frame:\012\000"
+ 729      6B206672 
+ 729      616D653A 
+ 729      0A00
+ 730 000e 0000     		.space	2
+ 731              	.LC1:
+ 732 0010 20523020 		.ascii	" R0 =  %08X\012\000"
+ 732      3D202025 
+ 732      3038580A 
+ 732      00
+ 733 001d 000000   		.space	3
+ 734              	.LC2:
+ 735 0020 20523120 		.ascii	" R1 =  %08X\012\000"
+ 735      3D202025 
+ 735      3038580A 
+ 735      00
+ 736 002d 000000   		.space	3
+ 737              	.LC3:
+ 738 0030 20523220 		.ascii	" R2 =  %08X\012\000"
+ 738      3D202025 
+ 738      3038580A 
+ 738      00
+ 739 003d 000000   		.space	3
+ 740              	.LC4:
+ 741 0040 20523320 		.ascii	" R3 =  %08X\012\000"
+ 741      3D202025 
+ 741      3038580A 
+ 741      00
+ 742 004d 000000   		.space	3
+ 743              	.LC5:
+ 744 0050 20523132 		.ascii	" R12 = %08X\012\000"
+ 744      203D2025 
+ 744      3038580A 
+ 744      00
+ 745 005d 000000   		.space	3
+ 746              	.LC6:
+ 747 0060 204C5220 		.ascii	" LR =  %08X\012\000"
+ 747      3D202025 
+ 747      3038580A 
+ 747      00
+ 748 006d 000000   		.space	3
+ 749              	.LC7:
+ 750 0070 20504320 		.ascii	" PC =  %08X\012\000"
+ 750      3D202025 
+ 750      3038580A 
+ 750      00
+ 751 007d 000000   		.space	3
+ 752              	.LC8:
+ 753 0080 20505352 		.ascii	" PSR = %08X\012\000"
+ 753      203D2025 
+ 753      3038580A 
+ 753      00
+ 754 008d 000000   		.space	3
+ 755              	.LC9:
+ 756 0090 4653522F 		.ascii	"FSR/FAR:\012\000"
+ 756      4641523A 
+ 756      0A00
+ 757 009a 0000     		.space	2
+ 758              	.LC10:
+ 759 009c 20434653 		.ascii	" CFSR =  %08X\012\000"
+ 759      52203D20 
+ 759      20253038 
+ 759      580A00
+ 760 00ab 00       		.space	1
+ 761              	.LC11:
+ 762 00ac 20484653 		.ascii	" HFSR =  %08X\012\000"
+ 762      52203D20 
+ 762      20253038 
+ 762      580A00
+ 763 00bb 00       		.space	1
+ 764              	.LC12:
+ 765 00bc 20444653 		.ascii	" DFSR =  %08X\012\000"
+ 765      52203D20 
+ 765      20253038 
+ 765      580A00
+ 766 00cb 00       		.space	1
+ 767              	.LC13:
+ 768 00cc 20414653 		.ascii	" AFSR =  %08X\012\000"
+ 768      52203D20 
+ 768      20253038 
+ 768      580A00
+ 769 00db 00       		.space	1
+ 770              	.LC14:
+ 771 00dc 204D4D46 		.ascii	" MMFAR = %08X\012\000"
+ 771      4152203D 
+ 771      20253038 
+ 771      580A00
+ 772 00eb 00       		.space	1
+ 773              	.LC15:
+ 774 00ec 20424641 		.ascii	" BFAR =  %08X\012\000"
+ 774      52203D20 
+ 774      20253038 
+ 774      580A00
+ 775 00fb 00       		.space	1
+ 776              	.LC16:
+ 777 00fc 4D697363 		.ascii	"Misc\012\000"
+ 777      0A00
+ 778 0102 0000     		.space	2
+ 779              	.LC17:
+ 780 0104 204C522F 		.ascii	" LR/EXC_RETURN= %08X\012\000"
+ 780      4558435F 
+ 780      52455455 
+ 780      524E3D20 
+ 780      25303858 
+ 781              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 782              		.align	2
+ 783              	.LC18:
+ 784 0000 5B486172 		.ascii	"[HardFault]\012\000"
+ 784      64466175 
+ 784      6C745D0A 
+ 784      00
+ 785 000d 000000   		.space	3
+ 786              	.LC19:
+ 787 0010 5B427573 		.ascii	"[BusFault]\012\000"
+ 787      4661756C 
+ 787      745D0A00 
+ 788              	.LC20:
+ 789 001c 5B557361 		.ascii	"[UsageFault]\012\000"
+ 789      67654661 
+ 789      756C745D 
+ 789      0A00
+ 790              		.weak	_start
+ 791              		.text
+ 792              	.Letext0:
+ 793              		.file 2 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 794              		.file 3 "../system/include/cortexm/ExceptionHandlers.h"
+ 795              		.file 4 "../system/include/cmsis/core_cm3.h"
+ 796              		.file 5 "../system/include/cmsis/system_stm32f10x.h"
+ 797              		.file 6 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 798              		.file 7 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 799              		.file 8 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 800              		.file 9 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 801              		.file 10 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\
+ 802              		.file 11 "../system/include/diag/Trace.h"
+ 803              		.file 12 "../system/include/arm/semihosting.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 exception_handlers.c
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:16     .after_vectors:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:23     .after_vectors:00000000 Reset_Handler
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:48     .after_vectors:00000006 NMI_Handler
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:68     .text.dumpExceptionStack:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:75     .text.dumpExceptionStack:00000000 dumpExceptionStack
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:202    .text.dumpExceptionStack:000000a8 $d
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:225    .text.isSemihosting:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:232    .text.isSemihosting:00000000 isSemihosting
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:290    .after_vectors:0000000a HardFault_Handler
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:321    .after_vectors:0000001e HardFault_Handler_C
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:404    .after_vectors:00000074 $d
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:409    .after_vectors:0000007c $t
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:416    .after_vectors:0000007c MemManage_Handler
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:442    .after_vectors:00000080 BusFault_Handler
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:473    .after_vectors:00000094 BusFault_Handler_C
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:527    .after_vectors:000000c0 $d
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:532    .after_vectors:000000c8 $t
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:539    .after_vectors:000000c8 UsageFault_Handler
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:570    .after_vectors:000000dc UsageFault_Handler_C
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:624    .after_vectors:00000108 $d
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:629    .after_vectors:00000110 $t
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:636    .after_vectors:00000110 SVC_Handler
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:662    .after_vectors:00000114 DebugMon_Handler
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:688    .after_vectors:00000118 PendSV_Handler
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:714    .after_vectors:0000011c SysTick_Handler
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:727    .rodata.dumpExceptionStack.str1.4:00000000 $d
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:782    .rodata.str1.4:00000000 $d
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:726    .after_vectors:0000011e $d
+C:\Users\ahmed\AppData\Local\Temp\ccCxaBpg.s:46846  .after_vectors:00000120 $d
+                           .group:00000000 wm4.0.c450a18b2a29049e2cbb4137d58ca9b1
+                           .group:00000000 wm4.stdintgcc.h.29.6d480f4ba0f60596e88234283d42444f
+                           .group:00000000 wm4.stm32f10x.h.51.c58ea26c5150470d52680f0bbaa7049c
+                           .group:00000000 wm4.core_cm3.h.42.c33bb1302bf53de0580fb6140a46f2eb
+                           .group:00000000 wm4.cmsis_gcc.h.36.67d2dcde6a14ff518eedc1d545d89a76
+                           .group:00000000 wm4.core_cm3.h.183.ecfd9c316d6f10b73648f6e579b02c8b
+                           .group:00000000 wm4.stm32f10x.h.522.9a9f642c8c562acb4a63ad5d933b7c01
+                           .group:00000000 wm4.stm32f10x_adc.h.89.9f2b285fa0070185d48a05b61a05798c
+                           .group:00000000 wm4.stm32f10x_bkp.h.25.4622919f1e30efdad5eb44e12edd5513
+                           .group:00000000 wm4.stm32f10x_can.h.25.e5e43f6bbc8fc7c8aa30ef2bc5610ced
+                           .group:00000000 wm4.stm32f10x_cec.h.25.8f03450e7bbb704d96e7bc73ec0f66a7
+                           .group:00000000 wm4.stm32f10x_dac.h.25.6e7f2924f39c60c10815105b99b8b446
+                           .group:00000000 wm4.stm32f10x_dbgmcu.h.25.d3351200fc7f9c8615d1ae81d40db08a
+                           .group:00000000 wm4.stm32f10x_dma.h.25.94e36204daa98cae5dcc70a10a9694d5
+                           .group:00000000 wm4.stm32f10x_exti.h.25.f52c69aad7d1994be5b2c4e2b8f4c595
+                           .group:00000000 wm4.stm32f10x_flash.h.25.4be61fcb02863962a1e006449d310650
+                           .group:00000000 wm4.stm32f10x_fsmc.h.25.bca154da2699cdb6024c0c6c4fc5aa89
+                           .group:00000000 wm4.stm32f10x_gpio.h.25.80c981af0e637567395034c576cfb3ce
+                           .group:00000000 wm4.stm32f10x_i2c.h.25.b124ac2c620f8ebddd92b6d95ca62176
+                           .group:00000000 wm4.stm32f10x_iwdg.h.25.da9374ab9856795610487f312ccf3122
+                           .group:00000000 wm4.stm32f10x_pwr.h.25.37ef75009f751ef5fe27910e0bf00a62
+                           .group:00000000 wm4.stm32f10x_rcc.h.25.968bcf08d813e68e57c280a4da69fa5a
+                           .group:00000000 wm4.stm32f10x_rtc.h.25.361142606ba98ddcd10369f321f6e636
+                           .group:00000000 wm4.stm32f10x_sdio.h.25.fb0db079f5c1412c40f359319f7c40b0
+                           .group:00000000 wm4.stm32f10x_spi.h.25.3f6dfa4abe177efb3c6f5a717c06b323
+                           .group:00000000 wm4.stm32f10x_tim.h.25.f709106ba77b314e6b070693f89f3c56
+                           .group:00000000 wm4.stm32f10x_usart.h.25.2e65e396239d0cc41fd0bf6faa2a32cb
+                           .group:00000000 wm4.stm32f10x_wwdg.h.25.dde12201d86b5aa9ecaafb5eccdc6549
+                           .group:00000000 wm4.misc.h.25.068e106f368fa5369a681ef57c106f4b
+                           .group:00000000 wm4.stm32f10x.h.8317.9a8e476d96d33bb2df9a9ad0775bd4a7
+                           .group:00000000 wm4.semihosting.h.29.e1653dbea6634b93ff8fe25df9a0d7b2
+                           .group:00000000 wm4._newlib_version.h.4.3572908597b70d672d181fc7fc501c19
+                           .group:00000000 wm4.newlib.h.21.64e14ed41172bf448383d50cbb14725e
+                           .group:00000000 wm4.ieeefp.h.77.49bcce8a603f3d93a95080d6a3573782
+                           .group:00000000 wm4.features.h.22.5cdadbb3efe495d1c9e38350b8c376c7
+                           .group:00000000 wm4.config.h.220.6cac6a9685cfce5e83c17784171638d9
+                           .group:00000000 wm4._ansi.h.23.9f8fcfa20193763fcf364fb91705c94b
+                           .group:00000000 wm4.unistd.h.9.2709ac388e61c5728907bf928c890ff7
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4.stddef.h.137.87f4223e19f53e7620a07a017dcd2e0a
+                           .group:00000000 wm4.cdefs.h.47.d5f52c0838d768c139d665d47892271a
+                           .group:00000000 wm4.types.h.40.e8c16e7ec36ba55f133d0616070e25fc
+                           .group:00000000 wm4.stddef.h.39.79ae3d254e9e71fbd4877f77aa50f4ea
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4._types.h.125.5cf8a495f1f7ef36777ad868a1e32068
+                           .group:00000000 wm4.stddef.h.161.5349cb105733e8777bfb0cf53c4e3f34
+                           .group:00000000 wm4._types.h.184.7120b8bb2e0149e2359704f4e2251b68
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4._endian.h.31.65a10590763c3dde1ac4a7f66d7d4891
+                           .group:00000000 wm4.endian.h.9.49f3a4695c1b61e8a0808de3c4a106cb
+                           .group:00000000 wm4._timeval.h.30.0e8bfd94e85db17dda3286ee81496fe6
+                           .group:00000000 wm4.timespec.h.41.d855182eb0e690443ab8651bcedca6e1
+                           .group:00000000 wm4.select.h.30.bbece7fa40993a78092dcc5805132560
+                           .group:00000000 wm4.types.h.69.ed3eae3cf73030a737515151ebcab7a1
+                           .group:00000000 wm4.sched.h.22.c60982713a5c428609783c78f9c78d95
+                           .group:00000000 wm4._pthreadtypes.h.36.fcee9961c35163dde6267ef772ad1972
+                           .group:00000000 wm4.unistd.h.156.9a9035c10111809e94aa612639fe2ed9
+                           .group:00000000 wm4.reent.h.17.87376802c2b370b32a762f0a30482d9e
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.161.19e15733342b50ead2919490b095303e
+
+UNDEFINED SYMBOLS
+_start
+trace_printf

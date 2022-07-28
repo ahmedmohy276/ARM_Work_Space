@@ -1,0 +1,271 @@
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"assert.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.__assert_func,"ax",%progbits
+  16              		.align	1
+  17              		.global	__assert_func
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	__assert_func:
+  24              	.LFB0:
+  25              		.file 1 "../system/src/newlib/assert.c"
+   1:../system/src/newlib/assert.c **** /*
+   2:../system/src/newlib/assert.c ****  * This file is part of the µOS++ distribution.
+   3:../system/src/newlib/assert.c ****  *   (https://github.com/micro-os-plus)
+   4:../system/src/newlib/assert.c ****  * Copyright (c) 2014 Liviu Ionescu.
+   5:../system/src/newlib/assert.c ****  *
+   6:../system/src/newlib/assert.c ****  * Permission is hereby granted, free of charge, to any person
+   7:../system/src/newlib/assert.c ****  * obtaining a copy of this software and associated documentation
+   8:../system/src/newlib/assert.c ****  * files (the "Software"), to deal in the Software without
+   9:../system/src/newlib/assert.c ****  * restriction, including without limitation the rights to use,
+  10:../system/src/newlib/assert.c ****  * copy, modify, merge, publish, distribute, sublicense, and/or
+  11:../system/src/newlib/assert.c ****  * sell copies of the Software, and to permit persons to whom
+  12:../system/src/newlib/assert.c ****  * the Software is furnished to do so, subject to the following
+  13:../system/src/newlib/assert.c ****  * conditions:
+  14:../system/src/newlib/assert.c ****  *
+  15:../system/src/newlib/assert.c ****  * The above copyright notice and this permission notice shall be
+  16:../system/src/newlib/assert.c ****  * included in all copies or substantial portions of the Software.
+  17:../system/src/newlib/assert.c ****  *
+  18:../system/src/newlib/assert.c ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  19:../system/src/newlib/assert.c ****  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  20:../system/src/newlib/assert.c ****  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+  21:../system/src/newlib/assert.c ****  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+  22:../system/src/newlib/assert.c ****  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+  23:../system/src/newlib/assert.c ****  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  24:../system/src/newlib/assert.c ****  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+  25:../system/src/newlib/assert.c ****  * OTHER DEALINGS IN THE SOFTWARE.
+  26:../system/src/newlib/assert.c ****  */
+  27:../system/src/newlib/assert.c **** 
+  28:../system/src/newlib/assert.c **** #include <assert.h>
+  29:../system/src/newlib/assert.c **** #include <stdlib.h>
+  30:../system/src/newlib/assert.c **** #include <stdint.h>
+  31:../system/src/newlib/assert.c **** 
+  32:../system/src/newlib/assert.c **** #include "diag/Trace.h"
+  33:../system/src/newlib/assert.c **** 
+  34:../system/src/newlib/assert.c **** // ----------------------------------------------------------------------------
+  35:../system/src/newlib/assert.c **** 
+  36:../system/src/newlib/assert.c **** void
+  37:../system/src/newlib/assert.c **** __attribute__((noreturn))
+  38:../system/src/newlib/assert.c **** __assert_func (const char *file, int line, const char *func,
+  39:../system/src/newlib/assert.c ****                const char *failedexpr)
+  40:../system/src/newlib/assert.c **** {
+  26              		.loc 1 40 0
+  27              		.cfi_startproc
+  28              		@ Volatile: function does not return.
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 00B5     		push	{lr}
+  33              		.cfi_def_cfa_offset 4
+  34              		.cfi_offset 14, -4
+  35 0002 83B0     		sub	sp, sp, #12
+  36              		.cfi_def_cfa_offset 16
+  37 0004 0C46     		mov	r4, r1
+  38 0006 1946     		mov	r1, r3
+  39              	.LVL1:
+  41:../system/src/newlib/assert.c ****   trace_printf ("assertion \"%s\" failed: file \"%s\", line %d%s%s\n",
+  40              		.loc 1 41 0
+  41 0008 1346     		mov	r3, r2
+  42              	.LVL2:
+  43 000a 52B1     		cbz	r2, .L4
+  44 000c 074A     		ldr	r2, .L8
+  45              	.LVL3:
+  46              	.L2:
+  47              		.loc 1 41 0 is_stmt 0 discriminator 4
+  48 000e 53B1     		cbz	r3, .L7
+  49              	.LVL4:
+  50              	.L3:
+  51              		.loc 1 41 0 discriminator 8
+  52 0010 0193     		str	r3, [sp, #4]
+  53 0012 0092     		str	r2, [sp]
+  54 0014 2346     		mov	r3, r4
+  55 0016 0246     		mov	r2, r0
+  56 0018 0548     		ldr	r0, .L8+4
+  57              	.LVL5:
+  58 001a FFF7FEFF 		bl	trace_printf
+  59              	.LVL6:
+  42:../system/src/newlib/assert.c ****                 failedexpr, file, line, func ? ", function: " : "",
+  43:../system/src/newlib/assert.c ****                 func ? func : "");
+  44:../system/src/newlib/assert.c ****   abort ();
+  60              		.loc 1 44 0 is_stmt 1 discriminator 8
+  61 001e FFF7FEFF 		bl	abort
+  62              	.LVL7:
+  63              	.L4:
+  41:../system/src/newlib/assert.c ****   trace_printf ("assertion \"%s\" failed: file \"%s\", line %d%s%s\n",
+  64              		.loc 1 41 0
+  65 0022 044A     		ldr	r2, .L8+8
+  66              	.LVL8:
+  67 0024 F3E7     		b	.L2
+  68              	.L7:
+  69 0026 034B     		ldr	r3, .L8+8
+  70              	.LVL9:
+  71 0028 F2E7     		b	.L3
+  72              	.L9:
+  73 002a 00BF     		.align	2
+  74              	.L8:
+  75 002c 00000000 		.word	.LC0
+  76 0030 14000000 		.word	.LC2
+  77 0034 10000000 		.word	.LC1
+  78              		.cfi_endproc
+  79              	.LFE0:
+  81              		.section	.text.assert_failed,"ax",%progbits
+  82              		.align	1
+  83              		.weak	assert_failed
+  84              		.syntax unified
+  85              		.thumb
+  86              		.thumb_func
+  87              		.fpu softvfp
+  89              	assert_failed:
+  90              	.LFB1:
+  45:../system/src/newlib/assert.c ****   /* NOTREACHED */
+  46:../system/src/newlib/assert.c **** }
+  47:../system/src/newlib/assert.c **** 
+  48:../system/src/newlib/assert.c **** // ----------------------------------------------------------------------------
+  49:../system/src/newlib/assert.c **** 
+  50:../system/src/newlib/assert.c **** // This is STM32 specific, but can be used on other platforms too.
+  51:../system/src/newlib/assert.c **** // If you need it, add the following to your application header:
+  52:../system/src/newlib/assert.c **** 
+  53:../system/src/newlib/assert.c **** //#ifdef  USE_FULL_ASSERT
+  54:../system/src/newlib/assert.c **** //#define assert_param(expr) ((expr) ? (void)0 : assert_failed((uint8_t *)__FILE__, __LINE__))
+  55:../system/src/newlib/assert.c **** //void assert_failed(uint8_t* file, uint32_t line);
+  56:../system/src/newlib/assert.c **** //#else
+  57:../system/src/newlib/assert.c **** //#define assert_param(expr) ((void)0)
+  58:../system/src/newlib/assert.c **** //#endif // USE_FULL_ASSERT
+  59:../system/src/newlib/assert.c **** 
+  60:../system/src/newlib/assert.c **** #if defined(USE_FULL_ASSERT)
+  61:../system/src/newlib/assert.c **** 
+  62:../system/src/newlib/assert.c **** void
+  63:../system/src/newlib/assert.c **** assert_failed (uint8_t* file, uint32_t line);
+  64:../system/src/newlib/assert.c **** 
+  65:../system/src/newlib/assert.c **** // Called from the assert_param() macro, usually defined in the stm32f*_conf.h
+  66:../system/src/newlib/assert.c **** void
+  67:../system/src/newlib/assert.c **** __attribute__((noreturn, weak))
+  68:../system/src/newlib/assert.c **** assert_failed (uint8_t* file, uint32_t line)
+  69:../system/src/newlib/assert.c **** {
+  91              		.loc 1 69 0
+  92              		.cfi_startproc
+  93              		@ Volatile: function does not return.
+  94              		@ args = 0, pretend = 0, frame = 0
+  95              		@ frame_needed = 0, uses_anonymous_args = 0
+  96              	.LVL10:
+  97 0000 08B5     		push	{r3, lr}
+  98              		.cfi_def_cfa_offset 8
+  99              		.cfi_offset 3, -8
+ 100              		.cfi_offset 14, -4
+  70:../system/src/newlib/assert.c ****   trace_printf ("assert_param() failed: file \"%s\", line %d\n", file, line);
+ 101              		.loc 1 70 0
+ 102 0002 0A46     		mov	r2, r1
+ 103 0004 0146     		mov	r1, r0
+ 104              	.LVL11:
+ 105 0006 0248     		ldr	r0, .L12
+ 106              	.LVL12:
+ 107 0008 FFF7FEFF 		bl	trace_printf
+ 108              	.LVL13:
+  71:../system/src/newlib/assert.c ****   abort ();
+ 109              		.loc 1 71 0
+ 110 000c FFF7FEFF 		bl	abort
+ 111              	.LVL14:
+ 112              	.L13:
+ 113              		.align	2
+ 114              	.L12:
+ 115 0010 00000000 		.word	.LC3
+ 116              		.cfi_endproc
+ 117              	.LFE1:
+ 119              		.section	.rodata.__assert_func.str1.4,"aMS",%progbits,1
+ 120              		.align	2
+ 121              	.LC0:
+ 122 0000 2C206675 		.ascii	", function: \000"
+ 122      6E637469 
+ 122      6F6E3A20 
+ 122      00
+ 123 000d 000000   		.space	3
+ 124              	.LC1:
+ 125 0010 00       		.ascii	"\000"
+ 126 0011 000000   		.space	3
+ 127              	.LC2:
+ 128 0014 61737365 		.ascii	"assertion \"%s\" failed: file \"%s\", line %d%s%s\012"
+ 128      7274696F 
+ 128      6E202225 
+ 128      73222066 
+ 128      61696C65 
+ 129 0042 00       		.ascii	"\000"
+ 130              		.section	.rodata.assert_failed.str1.4,"aMS",%progbits,1
+ 131              		.align	2
+ 132              	.LC3:
+ 133 0000 61737365 		.ascii	"assert_param() failed: file \"%s\", line %d\012\000"
+ 133      72745F70 
+ 133      6172616D 
+ 133      28292066 
+ 133      61696C65 
+ 134              		.text
+ 135              	.Letext0:
+ 136              		.file 2 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 137              		.file 3 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 138              		.file 4 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 139              		.file 5 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 140              		.file 6 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 141              		.file 7 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 142              		.file 8 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 143              		.file 9 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 144              		.file 10 "../system/include/diag/Trace.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 assert.c
+C:\Users\ahmed\AppData\Local\Temp\ccmrhKm9.s:16     .text.__assert_func:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\ccmrhKm9.s:23     .text.__assert_func:00000000 __assert_func
+C:\Users\ahmed\AppData\Local\Temp\ccmrhKm9.s:75     .text.__assert_func:0000002c $d
+C:\Users\ahmed\AppData\Local\Temp\ccmrhKm9.s:82     .text.assert_failed:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\ccmrhKm9.s:89     .text.assert_failed:00000000 assert_failed
+C:\Users\ahmed\AppData\Local\Temp\ccmrhKm9.s:115    .text.assert_failed:00000010 $d
+C:\Users\ahmed\AppData\Local\Temp\ccmrhKm9.s:120    .rodata.__assert_func.str1.4:00000000 $d
+C:\Users\ahmed\AppData\Local\Temp\ccmrhKm9.s:131    .rodata.assert_failed.str1.4:00000000 $d
+                           .group:00000000 wm4.0.c450a18b2a29049e2cbb4137d58ca9b1
+                           .group:00000000 wm4._newlib_version.h.4.3572908597b70d672d181fc7fc501c19
+                           .group:00000000 wm4.newlib.h.21.64e14ed41172bf448383d50cbb14725e
+                           .group:00000000 wm4.ieeefp.h.77.49bcce8a603f3d93a95080d6a3573782
+                           .group:00000000 wm4.features.h.22.5cdadbb3efe495d1c9e38350b8c376c7
+                           .group:00000000 wm4.config.h.220.6cac6a9685cfce5e83c17784171638d9
+                           .group:00000000 wm4._ansi.h.23.9f8fcfa20193763fcf364fb91705c94b
+                           .group:00000000 wm4.assert.h.11.db24e541f16414db224bf986d21017e2
+                           .group:00000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:00000000 wm4.stddef.h.187.e1c83cba2098ce92b68f6311de19e6b1
+                           .group:00000000 wm4.stddef.h.39.57db33e786ccd422e31be63a26e19309
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4._types.h.125.5cf8a495f1f7ef36777ad868a1e32068
+                           .group:00000000 wm4.stddef.h.161.5349cb105733e8777bfb0cf53c4e3f34
+                           .group:00000000 wm4._types.h.184.7120b8bb2e0149e2359704f4e2251b68
+                           .group:00000000 wm4.reent.h.17.87376802c2b370b32a762f0a30482d9e
+                           .group:00000000 wm4.cdefs.h.47.d5f52c0838d768c139d665d47892271a
+                           .group:00000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:00000000 wm4.stdlib.h.56.d4493cd3736e51e9d56335045f26df45
+                           .group:00000000 wm4.stdintgcc.h.29.6d480f4ba0f60596e88234283d42444f
+                           .group:00000000 wm4.unistd.h.2.39165d5b7784d1815ef4b0c4be6df560
+                           .group:00000000 wm4.types.h.40.e8c16e7ec36ba55f133d0616070e25fc
+                           .group:00000000 wm4.stddef.h.161.19e15733342b50ead2919490b095303e
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4._endian.h.31.65a10590763c3dde1ac4a7f66d7d4891
+                           .group:00000000 wm4.endian.h.9.49f3a4695c1b61e8a0808de3c4a106cb
+                           .group:00000000 wm4._timeval.h.30.0e8bfd94e85db17dda3286ee81496fe6
+                           .group:00000000 wm4.timespec.h.41.d855182eb0e690443ab8651bcedca6e1
+                           .group:00000000 wm4.select.h.30.bbece7fa40993a78092dcc5805132560
+                           .group:00000000 wm4.types.h.69.ed3eae3cf73030a737515151ebcab7a1
+                           .group:00000000 wm4.sched.h.22.c60982713a5c428609783c78f9c78d95
+                           .group:00000000 wm4._pthreadtypes.h.36.fcee9961c35163dde6267ef772ad1972
+                           .group:00000000 wm4.unistd.h.156.9a9035c10111809e94aa612639fe2ed9
+
+UNDEFINED SYMBOLS
+trace_printf
+abort

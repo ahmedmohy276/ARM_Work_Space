@@ -1,0 +1,722 @@
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"misc.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.NVIC_PriorityGroupConfig,"ax",%progbits
+  16              		.align	1
+  17              		.global	NVIC_PriorityGroupConfig
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	NVIC_PriorityGroupConfig:
+  24              	.LFB63:
+  25              		.file 1 "../system/src/stm32f1-stdperiph/misc.c"
+   1:../system/src/stm32f1-stdperiph/misc.c **** /**
+   2:../system/src/stm32f1-stdperiph/misc.c ****   ******************************************************************************
+   3:../system/src/stm32f1-stdperiph/misc.c ****   * @file    misc.c
+   4:../system/src/stm32f1-stdperiph/misc.c ****   * @author  MCD Application Team
+   5:../system/src/stm32f1-stdperiph/misc.c ****   * @version V3.5.0
+   6:../system/src/stm32f1-stdperiph/misc.c ****   * @date    11-March-2011
+   7:../system/src/stm32f1-stdperiph/misc.c ****   * @brief   This file provides all the miscellaneous firmware functions (add-on
+   8:../system/src/stm32f1-stdperiph/misc.c ****   *          to CMSIS functions).
+   9:../system/src/stm32f1-stdperiph/misc.c ****   ******************************************************************************
+  10:../system/src/stm32f1-stdperiph/misc.c ****   * @attention
+  11:../system/src/stm32f1-stdperiph/misc.c ****   *
+  12:../system/src/stm32f1-stdperiph/misc.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  13:../system/src/stm32f1-stdperiph/misc.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  14:../system/src/stm32f1-stdperiph/misc.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  15:../system/src/stm32f1-stdperiph/misc.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  16:../system/src/stm32f1-stdperiph/misc.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  17:../system/src/stm32f1-stdperiph/misc.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  18:../system/src/stm32f1-stdperiph/misc.c ****   *
+  19:../system/src/stm32f1-stdperiph/misc.c ****   * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+  20:../system/src/stm32f1-stdperiph/misc.c ****   ******************************************************************************
+  21:../system/src/stm32f1-stdperiph/misc.c ****   */
+  22:../system/src/stm32f1-stdperiph/misc.c **** 
+  23:../system/src/stm32f1-stdperiph/misc.c **** /* Includes ------------------------------------------------------------------*/
+  24:../system/src/stm32f1-stdperiph/misc.c **** #include "misc.h"
+  25:../system/src/stm32f1-stdperiph/misc.c **** 
+  26:../system/src/stm32f1-stdperiph/misc.c **** /** @addtogroup STM32F10x_StdPeriph_Driver
+  27:../system/src/stm32f1-stdperiph/misc.c ****   * @{
+  28:../system/src/stm32f1-stdperiph/misc.c ****   */
+  29:../system/src/stm32f1-stdperiph/misc.c **** 
+  30:../system/src/stm32f1-stdperiph/misc.c **** /** @defgroup MISC 
+  31:../system/src/stm32f1-stdperiph/misc.c ****   * @brief MISC driver modules
+  32:../system/src/stm32f1-stdperiph/misc.c ****   * @{
+  33:../system/src/stm32f1-stdperiph/misc.c ****   */
+  34:../system/src/stm32f1-stdperiph/misc.c **** 
+  35:../system/src/stm32f1-stdperiph/misc.c **** /** @defgroup MISC_Private_TypesDefinitions
+  36:../system/src/stm32f1-stdperiph/misc.c ****   * @{
+  37:../system/src/stm32f1-stdperiph/misc.c ****   */
+  38:../system/src/stm32f1-stdperiph/misc.c **** 
+  39:../system/src/stm32f1-stdperiph/misc.c **** /**
+  40:../system/src/stm32f1-stdperiph/misc.c ****   * @}
+  41:../system/src/stm32f1-stdperiph/misc.c ****   */ 
+  42:../system/src/stm32f1-stdperiph/misc.c **** 
+  43:../system/src/stm32f1-stdperiph/misc.c **** /** @defgroup MISC_Private_Defines
+  44:../system/src/stm32f1-stdperiph/misc.c ****   * @{
+  45:../system/src/stm32f1-stdperiph/misc.c ****   */
+  46:../system/src/stm32f1-stdperiph/misc.c **** 
+  47:../system/src/stm32f1-stdperiph/misc.c **** #define AIRCR_VECTKEY_MASK    ((uint32_t)0x05FA0000)
+  48:../system/src/stm32f1-stdperiph/misc.c **** /**
+  49:../system/src/stm32f1-stdperiph/misc.c ****   * @}
+  50:../system/src/stm32f1-stdperiph/misc.c ****   */
+  51:../system/src/stm32f1-stdperiph/misc.c **** 
+  52:../system/src/stm32f1-stdperiph/misc.c **** /** @defgroup MISC_Private_Macros
+  53:../system/src/stm32f1-stdperiph/misc.c ****   * @{
+  54:../system/src/stm32f1-stdperiph/misc.c ****   */
+  55:../system/src/stm32f1-stdperiph/misc.c **** 
+  56:../system/src/stm32f1-stdperiph/misc.c **** /**
+  57:../system/src/stm32f1-stdperiph/misc.c ****   * @}
+  58:../system/src/stm32f1-stdperiph/misc.c ****   */
+  59:../system/src/stm32f1-stdperiph/misc.c **** 
+  60:../system/src/stm32f1-stdperiph/misc.c **** /** @defgroup MISC_Private_Variables
+  61:../system/src/stm32f1-stdperiph/misc.c ****   * @{
+  62:../system/src/stm32f1-stdperiph/misc.c ****   */
+  63:../system/src/stm32f1-stdperiph/misc.c **** 
+  64:../system/src/stm32f1-stdperiph/misc.c **** /**
+  65:../system/src/stm32f1-stdperiph/misc.c ****   * @}
+  66:../system/src/stm32f1-stdperiph/misc.c ****   */
+  67:../system/src/stm32f1-stdperiph/misc.c **** 
+  68:../system/src/stm32f1-stdperiph/misc.c **** /** @defgroup MISC_Private_FunctionPrototypes
+  69:../system/src/stm32f1-stdperiph/misc.c ****   * @{
+  70:../system/src/stm32f1-stdperiph/misc.c ****   */
+  71:../system/src/stm32f1-stdperiph/misc.c **** 
+  72:../system/src/stm32f1-stdperiph/misc.c **** /**
+  73:../system/src/stm32f1-stdperiph/misc.c ****   * @}
+  74:../system/src/stm32f1-stdperiph/misc.c ****   */
+  75:../system/src/stm32f1-stdperiph/misc.c **** 
+  76:../system/src/stm32f1-stdperiph/misc.c **** /** @defgroup MISC_Private_Functions
+  77:../system/src/stm32f1-stdperiph/misc.c ****   * @{
+  78:../system/src/stm32f1-stdperiph/misc.c ****   */
+  79:../system/src/stm32f1-stdperiph/misc.c **** 
+  80:../system/src/stm32f1-stdperiph/misc.c **** /**
+  81:../system/src/stm32f1-stdperiph/misc.c ****   * @brief  Configures the priority grouping: pre-emption priority and subpriority.
+  82:../system/src/stm32f1-stdperiph/misc.c ****   * @param  NVIC_PriorityGroup: specifies the priority grouping bits length. 
+  83:../system/src/stm32f1-stdperiph/misc.c ****   *   This parameter can be one of the following values:
+  84:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg NVIC_PriorityGroup_0: 0 bits for pre-emption priority
+  85:../system/src/stm32f1-stdperiph/misc.c ****   *                                4 bits for subpriority
+  86:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg NVIC_PriorityGroup_1: 1 bits for pre-emption priority
+  87:../system/src/stm32f1-stdperiph/misc.c ****   *                                3 bits for subpriority
+  88:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg NVIC_PriorityGroup_2: 2 bits for pre-emption priority
+  89:../system/src/stm32f1-stdperiph/misc.c ****   *                                2 bits for subpriority
+  90:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg NVIC_PriorityGroup_3: 3 bits for pre-emption priority
+  91:../system/src/stm32f1-stdperiph/misc.c ****   *                                1 bits for subpriority
+  92:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg NVIC_PriorityGroup_4: 4 bits for pre-emption priority
+  93:../system/src/stm32f1-stdperiph/misc.c ****   *                                0 bits for subpriority
+  94:../system/src/stm32f1-stdperiph/misc.c ****   * @retval None
+  95:../system/src/stm32f1-stdperiph/misc.c ****   */
+  96:../system/src/stm32f1-stdperiph/misc.c **** void NVIC_PriorityGroupConfig(uint32_t NVIC_PriorityGroup)
+  97:../system/src/stm32f1-stdperiph/misc.c **** {
+  26              		.loc 1 97 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              	.LVL0:
+  31 0000 10B5     		push	{r4, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 4, -8
+  34              		.cfi_offset 14, -4
+  35 0002 0446     		mov	r4, r0
+  98:../system/src/stm32f1-stdperiph/misc.c ****   /* Check the parameters */
+  99:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_NVIC_PRIORITY_GROUP(NVIC_PriorityGroup));
+  36              		.loc 1 99 0
+  37 0004 B0F5E06F 		cmp	r0, #1792
+  38 0008 0FD0     		beq	.L2
+  39              		.loc 1 99 0 is_stmt 0 discriminator 1
+  40 000a B0F5C06F 		cmp	r0, #1536
+  41 000e 0CD0     		beq	.L2
+  42              		.loc 1 99 0 discriminator 2
+  43 0010 B0F5A06F 		cmp	r0, #1280
+  44 0014 09D0     		beq	.L2
+  45              		.loc 1 99 0 discriminator 3
+  46 0016 B0F5806F 		cmp	r0, #1024
+  47 001a 06D0     		beq	.L2
+  48              		.loc 1 99 0 discriminator 4
+  49 001c B0F5407F 		cmp	r0, #768
+  50 0020 03D0     		beq	.L2
+  51              		.loc 1 99 0 discriminator 5
+  52 0022 6321     		movs	r1, #99
+  53 0024 0448     		ldr	r0, .L4
+  54              	.LVL1:
+  55 0026 FFF7FEFF 		bl	assert_failed
+  56              	.LVL2:
+  57              	.L2:
+ 100:../system/src/stm32f1-stdperiph/misc.c ****   
+ 101:../system/src/stm32f1-stdperiph/misc.c ****   /* Set the PRIGROUP[10:8] bits according to NVIC_PriorityGroup value */
+ 102:../system/src/stm32f1-stdperiph/misc.c ****   SCB->AIRCR = AIRCR_VECTKEY_MASK | NVIC_PriorityGroup;
+  58              		.loc 1 102 0 is_stmt 1
+  59 002a 44F0BF64 		orr	r4, r4, #100139008
+  60              	.LVL3:
+  61 002e 44F40034 		orr	r4, r4, #131072
+  62 0032 024B     		ldr	r3, .L4+4
+  63 0034 DC60     		str	r4, [r3, #12]
+ 103:../system/src/stm32f1-stdperiph/misc.c **** }
+  64              		.loc 1 103 0
+  65 0036 10BD     		pop	{r4, pc}
+  66              	.L5:
+  67              		.align	2
+  68              	.L4:
+  69 0038 00000000 		.word	.LC0
+  70 003c 00ED00E0 		.word	-536810240
+  71              		.cfi_endproc
+  72              	.LFE63:
+  74              		.section	.text.NVIC_Init,"ax",%progbits
+  75              		.align	1
+  76              		.global	NVIC_Init
+  77              		.syntax unified
+  78              		.thumb
+  79              		.thumb_func
+  80              		.fpu softvfp
+  82              	NVIC_Init:
+  83              	.LFB64:
+ 104:../system/src/stm32f1-stdperiph/misc.c **** 
+ 105:../system/src/stm32f1-stdperiph/misc.c **** /**
+ 106:../system/src/stm32f1-stdperiph/misc.c ****   * @brief  Initializes the NVIC peripheral according to the specified
+ 107:../system/src/stm32f1-stdperiph/misc.c ****   *         parameters in the NVIC_InitStruct.
+ 108:../system/src/stm32f1-stdperiph/misc.c ****   * @param  NVIC_InitStruct: pointer to a NVIC_InitTypeDef structure that contains
+ 109:../system/src/stm32f1-stdperiph/misc.c ****   *         the configuration information for the specified NVIC peripheral.
+ 110:../system/src/stm32f1-stdperiph/misc.c ****   * @retval None
+ 111:../system/src/stm32f1-stdperiph/misc.c ****   */
+ 112:../system/src/stm32f1-stdperiph/misc.c **** void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct)
+ 113:../system/src/stm32f1-stdperiph/misc.c **** {
+  84              		.loc 1 113 0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              	.LVL4:
+  89 0000 10B5     		push	{r4, lr}
+  90              		.cfi_def_cfa_offset 8
+  91              		.cfi_offset 4, -8
+  92              		.cfi_offset 14, -4
+  93 0002 0446     		mov	r4, r0
+  94              	.LVL5:
+ 114:../system/src/stm32f1-stdperiph/misc.c ****   uint32_t tmppriority = 0x00, tmppre = 0x00, tmpsub = 0x0F;
+ 115:../system/src/stm32f1-stdperiph/misc.c ****   
+ 116:../system/src/stm32f1-stdperiph/misc.c ****   /* Check the parameters */
+ 117:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_FUNCTIONAL_STATE(NVIC_InitStruct->NVIC_IRQChannelCmd));
+  95              		.loc 1 117 0
+  96 0004 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+  97 0006 012B     		cmp	r3, #1
+  98 0008 12D8     		bhi	.L13
+  99              	.LVL6:
+ 100              	.L7:
+ 118:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_NVIC_PREEMPTION_PRIORITY(NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority));  
+ 101              		.loc 1 118 0
+ 102 000a 6378     		ldrb	r3, [r4, #1]	@ zero_extendqisi2
+ 103 000c 0F2B     		cmp	r3, #15
+ 104 000e 14D8     		bhi	.L14
+ 105              	.L8:
+ 119:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_NVIC_SUB_PRIORITY(NVIC_InitStruct->NVIC_IRQChannelSubPriority));
+ 106              		.loc 1 119 0
+ 107 0010 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 108 0012 0F2B     		cmp	r3, #15
+ 109 0014 16D8     		bhi	.L15
+ 110              	.L9:
+ 120:../system/src/stm32f1-stdperiph/misc.c ****     
+ 121:../system/src/stm32f1-stdperiph/misc.c ****   if (NVIC_InitStruct->NVIC_IRQChannelCmd != DISABLE)
+ 111              		.loc 1 121 0
+ 112 0016 E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
+ 113 0018 CBB9     		cbnz	r3, .L16
+ 122:../system/src/stm32f1-stdperiph/misc.c ****   {
+ 123:../system/src/stm32f1-stdperiph/misc.c ****     /* Compute the Corresponding IRQ Priority --------------------------------*/    
+ 124:../system/src/stm32f1-stdperiph/misc.c ****     tmppriority = (0x700 - ((SCB->AIRCR) & (uint32_t)0x700))>> 0x08;
+ 125:../system/src/stm32f1-stdperiph/misc.c ****     tmppre = (0x4 - tmppriority);
+ 126:../system/src/stm32f1-stdperiph/misc.c ****     tmpsub = tmpsub >> tmppriority;
+ 127:../system/src/stm32f1-stdperiph/misc.c **** 
+ 128:../system/src/stm32f1-stdperiph/misc.c ****     tmppriority = (uint32_t)NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority << tmppre;
+ 129:../system/src/stm32f1-stdperiph/misc.c ****     tmppriority |=  NVIC_InitStruct->NVIC_IRQChannelSubPriority & tmpsub;
+ 130:../system/src/stm32f1-stdperiph/misc.c ****     tmppriority = tmppriority << 0x04;
+ 131:../system/src/stm32f1-stdperiph/misc.c ****         
+ 132:../system/src/stm32f1-stdperiph/misc.c ****     // [ILG]
+ 133:../system/src/stm32f1-stdperiph/misc.c ****     #if defined ( __GNUC__ )
+ 134:../system/src/stm32f1-stdperiph/misc.c ****     #pragma GCC diagnostic push
+ 135:../system/src/stm32f1-stdperiph/misc.c ****     #pragma GCC diagnostic ignored "-Wconversion"
+ 136:../system/src/stm32f1-stdperiph/misc.c ****     #endif
+ 137:../system/src/stm32f1-stdperiph/misc.c **** 
+ 138:../system/src/stm32f1-stdperiph/misc.c ****     NVIC->IP[NVIC_InitStruct->NVIC_IRQChannel] = tmppriority;
+ 139:../system/src/stm32f1-stdperiph/misc.c **** 
+ 140:../system/src/stm32f1-stdperiph/misc.c ****     // [ILG]
+ 141:../system/src/stm32f1-stdperiph/misc.c ****     #if defined ( __GNUC__ )
+ 142:../system/src/stm32f1-stdperiph/misc.c ****     #pragma GCC diagnostic pop
+ 143:../system/src/stm32f1-stdperiph/misc.c ****     #endif
+ 144:../system/src/stm32f1-stdperiph/misc.c ****     
+ 145:../system/src/stm32f1-stdperiph/misc.c ****     /* Enable the Selected IRQ Channels --------------------------------------*/
+ 146:../system/src/stm32f1-stdperiph/misc.c ****     NVIC->ISER[NVIC_InitStruct->NVIC_IRQChannel >> 0x05] =
+ 147:../system/src/stm32f1-stdperiph/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 148:../system/src/stm32f1-stdperiph/misc.c ****   }
+ 149:../system/src/stm32f1-stdperiph/misc.c ****   else
+ 150:../system/src/stm32f1-stdperiph/misc.c ****   {
+ 151:../system/src/stm32f1-stdperiph/misc.c ****     /* Disable the Selected IRQ Channels -------------------------------------*/
+ 152:../system/src/stm32f1-stdperiph/misc.c ****     NVIC->ICER[NVIC_InitStruct->NVIC_IRQChannel >> 0x05] =
+ 153:../system/src/stm32f1-stdperiph/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 114              		.loc 1 153 0
+ 115 001a 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 116 001c 03F01F01 		and	r1, r3, #31
+ 152:../system/src/stm32f1-stdperiph/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 117              		.loc 1 152 0
+ 118 0020 5B09     		lsrs	r3, r3, #5
+ 119              		.loc 1 153 0
+ 120 0022 0122     		movs	r2, #1
+ 121 0024 8A40     		lsls	r2, r2, r1
+ 152:../system/src/stm32f1-stdperiph/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 122              		.loc 1 152 0
+ 123 0026 2033     		adds	r3, r3, #32
+ 124 0028 1849     		ldr	r1, .L17
+ 125 002a 41F82320 		str	r2, [r1, r3, lsl #2]
+ 126              	.LVL7:
+ 127              	.L6:
+ 154:../system/src/stm32f1-stdperiph/misc.c ****   }
+ 155:../system/src/stm32f1-stdperiph/misc.c **** }
+ 128              		.loc 1 155 0
+ 129 002e 10BD     		pop	{r4, pc}
+ 130              	.LVL8:
+ 131              	.L13:
+ 117:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_NVIC_PREEMPTION_PRIORITY(NVIC_InitStruct->NVIC_IRQChannelPreemptionPriority));  
+ 132              		.loc 1 117 0 discriminator 1
+ 133 0030 7521     		movs	r1, #117
+ 134 0032 1748     		ldr	r0, .L17+4
+ 135              	.LVL9:
+ 136 0034 FFF7FEFF 		bl	assert_failed
+ 137              	.LVL10:
+ 138 0038 E7E7     		b	.L7
+ 139              	.L14:
+ 118:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_NVIC_SUB_PRIORITY(NVIC_InitStruct->NVIC_IRQChannelSubPriority));
+ 140              		.loc 1 118 0 discriminator 1
+ 141 003a 7621     		movs	r1, #118
+ 142 003c 1448     		ldr	r0, .L17+4
+ 143 003e FFF7FEFF 		bl	assert_failed
+ 144              	.LVL11:
+ 145 0042 E5E7     		b	.L8
+ 146              	.L15:
+ 119:../system/src/stm32f1-stdperiph/misc.c ****     
+ 147              		.loc 1 119 0 discriminator 1
+ 148 0044 7721     		movs	r1, #119
+ 149 0046 1248     		ldr	r0, .L17+4
+ 150 0048 FFF7FEFF 		bl	assert_failed
+ 151              	.LVL12:
+ 152 004c E3E7     		b	.L9
+ 153              	.L16:
+ 124:../system/src/stm32f1-stdperiph/misc.c ****     tmppre = (0x4 - tmppriority);
+ 154              		.loc 1 124 0
+ 155 004e 114B     		ldr	r3, .L17+8
+ 156 0050 DA68     		ldr	r2, [r3, #12]
+ 157 0052 D243     		mvns	r2, r2
+ 158 0054 C2F30222 		ubfx	r2, r2, #8, #3
+ 159              	.LVL13:
+ 125:../system/src/stm32f1-stdperiph/misc.c ****     tmpsub = tmpsub >> tmppriority;
+ 160              		.loc 1 125 0
+ 161 0058 C2F10400 		rsb	r0, r2, #4
+ 162              	.LVL14:
+ 126:../system/src/stm32f1-stdperiph/misc.c **** 
+ 163              		.loc 1 126 0
+ 164 005c 0F23     		movs	r3, #15
+ 165 005e 23FA02F2 		lsr	r2, r3, r2
+ 166              	.LVL15:
+ 128:../system/src/stm32f1-stdperiph/misc.c ****     tmppriority |=  NVIC_InitStruct->NVIC_IRQChannelSubPriority & tmpsub;
+ 167              		.loc 1 128 0
+ 168 0062 6178     		ldrb	r1, [r4, #1]	@ zero_extendqisi2
+ 169 0064 8140     		lsls	r1, r1, r0
+ 170              	.LVL16:
+ 129:../system/src/stm32f1-stdperiph/misc.c ****     tmppriority = tmppriority << 0x04;
+ 171              		.loc 1 129 0
+ 172 0066 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 173 0068 1340     		ands	r3, r3, r2
+ 174 006a 0B43     		orrs	r3, r3, r1
+ 175              	.LVL17:
+ 130:../system/src/stm32f1-stdperiph/misc.c ****         
+ 176              		.loc 1 130 0
+ 177 006c 1B01     		lsls	r3, r3, #4
+ 178              	.LVL18:
+ 138:../system/src/stm32f1-stdperiph/misc.c **** 
+ 179              		.loc 1 138 0
+ 180 006e 2278     		ldrb	r2, [r4]	@ zero_extendqisi2
+ 181              	.LVL19:
+ 182 0070 DBB2     		uxtb	r3, r3
+ 183              	.LVL20:
+ 184 0072 0649     		ldr	r1, .L17
+ 185 0074 0A44     		add	r2, r2, r1
+ 186 0076 82F80033 		strb	r3, [r2, #768]
+ 147:../system/src/stm32f1-stdperiph/misc.c ****   }
+ 187              		.loc 1 147 0
+ 188 007a 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 189 007c 03F01F00 		and	r0, r3, #31
+ 190              	.LVL21:
+ 146:../system/src/stm32f1-stdperiph/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 191              		.loc 1 146 0
+ 192 0080 5B09     		lsrs	r3, r3, #5
+ 147:../system/src/stm32f1-stdperiph/misc.c ****   }
+ 193              		.loc 1 147 0
+ 194 0082 0122     		movs	r2, #1
+ 195 0084 8240     		lsls	r2, r2, r0
+ 146:../system/src/stm32f1-stdperiph/misc.c ****       (uint32_t)0x01 << (NVIC_InitStruct->NVIC_IRQChannel & (uint8_t)0x1F);
+ 196              		.loc 1 146 0
+ 197 0086 41F82320 		str	r2, [r1, r3, lsl #2]
+ 198 008a D0E7     		b	.L6
+ 199              	.L18:
+ 200              		.align	2
+ 201              	.L17:
+ 202 008c 00E100E0 		.word	-536813312
+ 203 0090 00000000 		.word	.LC0
+ 204 0094 00ED00E0 		.word	-536810240
+ 205              		.cfi_endproc
+ 206              	.LFE64:
+ 208              		.section	.text.NVIC_SetVectorTable,"ax",%progbits
+ 209              		.align	1
+ 210              		.global	NVIC_SetVectorTable
+ 211              		.syntax unified
+ 212              		.thumb
+ 213              		.thumb_func
+ 214              		.fpu softvfp
+ 216              	NVIC_SetVectorTable:
+ 217              	.LFB65:
+ 156:../system/src/stm32f1-stdperiph/misc.c **** 
+ 157:../system/src/stm32f1-stdperiph/misc.c **** /**
+ 158:../system/src/stm32f1-stdperiph/misc.c ****   * @brief  Sets the vector table location and Offset.
+ 159:../system/src/stm32f1-stdperiph/misc.c ****   * @param  NVIC_VectTab: specifies if the vector table is in RAM or FLASH memory.
+ 160:../system/src/stm32f1-stdperiph/misc.c ****   *   This parameter can be one of the following values:
+ 161:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg NVIC_VectTab_RAM
+ 162:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg NVIC_VectTab_FLASH
+ 163:../system/src/stm32f1-stdperiph/misc.c ****   * @param  Offset: Vector Table base offset field. This value must be a multiple 
+ 164:../system/src/stm32f1-stdperiph/misc.c ****   *         of 0x200.
+ 165:../system/src/stm32f1-stdperiph/misc.c ****   * @retval None
+ 166:../system/src/stm32f1-stdperiph/misc.c ****   */
+ 167:../system/src/stm32f1-stdperiph/misc.c **** void NVIC_SetVectorTable(uint32_t NVIC_VectTab, uint32_t Offset)
+ 168:../system/src/stm32f1-stdperiph/misc.c **** { 
+ 218              		.loc 1 168 0
+ 219              		.cfi_startproc
+ 220              		@ args = 0, pretend = 0, frame = 0
+ 221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 222              	.LVL22:
+ 223 0000 38B5     		push	{r3, r4, r5, lr}
+ 224              		.cfi_def_cfa_offset 16
+ 225              		.cfi_offset 3, -16
+ 226              		.cfi_offset 4, -12
+ 227              		.cfi_offset 5, -8
+ 228              		.cfi_offset 14, -4
+ 229 0002 0546     		mov	r5, r0
+ 230 0004 0C46     		mov	r4, r1
+ 169:../system/src/stm32f1-stdperiph/misc.c ****   /* Check the parameters */
+ 170:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_NVIC_VECTTAB(NVIC_VectTab));
+ 231              		.loc 1 170 0
+ 232 0006 B0F1005F 		cmp	r0, #536870912
+ 233 000a 02D0     		beq	.L20
+ 234              		.loc 1 170 0 is_stmt 0 discriminator 1
+ 235 000c B0F1006F 		cmp	r0, #134217728
+ 236 0010 0AD1     		bne	.L23
+ 237              	.LVL23:
+ 238              	.L20:
+ 171:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_NVIC_OFFSET(Offset));  
+ 239              		.loc 1 171 0 is_stmt 1
+ 240 0012 0A4B     		ldr	r3, .L25
+ 241 0014 9C42     		cmp	r4, r3
+ 242 0016 0CD8     		bhi	.L24
+ 243              	.L21:
+ 172:../system/src/stm32f1-stdperiph/misc.c ****    
+ 173:../system/src/stm32f1-stdperiph/misc.c ****   SCB->VTOR = NVIC_VectTab | (Offset & (uint32_t)0x1FFFFF80);
+ 244              		.loc 1 173 0
+ 245 0018 24F06041 		bic	r1, r4, #-536870912
+ 246 001c 21F07F01 		bic	r1, r1, #127
+ 247 0020 2943     		orrs	r1, r1, r5
+ 248 0022 074B     		ldr	r3, .L25+4
+ 249 0024 9960     		str	r1, [r3, #8]
+ 174:../system/src/stm32f1-stdperiph/misc.c **** }
+ 250              		.loc 1 174 0
+ 251 0026 38BD     		pop	{r3, r4, r5, pc}
+ 252              	.LVL24:
+ 253              	.L23:
+ 170:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_NVIC_OFFSET(Offset));  
+ 254              		.loc 1 170 0 discriminator 2
+ 255 0028 AA21     		movs	r1, #170
+ 256              	.LVL25:
+ 257 002a 0648     		ldr	r0, .L25+8
+ 258              	.LVL26:
+ 259 002c FFF7FEFF 		bl	assert_failed
+ 260              	.LVL27:
+ 261 0030 EFE7     		b	.L20
+ 262              	.L24:
+ 171:../system/src/stm32f1-stdperiph/misc.c ****    
+ 263              		.loc 1 171 0 discriminator 1
+ 264 0032 AB21     		movs	r1, #171
+ 265 0034 0348     		ldr	r0, .L25+8
+ 266 0036 FFF7FEFF 		bl	assert_failed
+ 267              	.LVL28:
+ 268 003a EDE7     		b	.L21
+ 269              	.L26:
+ 270              		.align	2
+ 271              	.L25:
+ 272 003c FEFF0F00 		.word	1048574
+ 273 0040 00ED00E0 		.word	-536810240
+ 274 0044 00000000 		.word	.LC0
+ 275              		.cfi_endproc
+ 276              	.LFE65:
+ 278              		.section	.text.NVIC_SystemLPConfig,"ax",%progbits
+ 279              		.align	1
+ 280              		.global	NVIC_SystemLPConfig
+ 281              		.syntax unified
+ 282              		.thumb
+ 283              		.thumb_func
+ 284              		.fpu softvfp
+ 286              	NVIC_SystemLPConfig:
+ 287              	.LFB66:
+ 175:../system/src/stm32f1-stdperiph/misc.c **** 
+ 176:../system/src/stm32f1-stdperiph/misc.c **** /**
+ 177:../system/src/stm32f1-stdperiph/misc.c ****   * @brief  Selects the condition for the system to enter low power mode.
+ 178:../system/src/stm32f1-stdperiph/misc.c ****   * @param  LowPowerMode: Specifies the new mode for the system to enter low power mode.
+ 179:../system/src/stm32f1-stdperiph/misc.c ****   *   This parameter can be one of the following values:
+ 180:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg NVIC_LP_SEVONPEND
+ 181:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg NVIC_LP_SLEEPDEEP
+ 182:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg NVIC_LP_SLEEPONEXIT
+ 183:../system/src/stm32f1-stdperiph/misc.c ****   * @param  NewState: new state of LP condition. This parameter can be: ENABLE or DISABLE.
+ 184:../system/src/stm32f1-stdperiph/misc.c ****   * @retval None
+ 185:../system/src/stm32f1-stdperiph/misc.c ****   */
+ 186:../system/src/stm32f1-stdperiph/misc.c **** void NVIC_SystemLPConfig(uint8_t LowPowerMode, FunctionalState NewState)
+ 187:../system/src/stm32f1-stdperiph/misc.c **** {
+ 288              		.loc 1 187 0
+ 289              		.cfi_startproc
+ 290              		@ args = 0, pretend = 0, frame = 0
+ 291              		@ frame_needed = 0, uses_anonymous_args = 0
+ 292              	.LVL29:
+ 293 0000 38B5     		push	{r3, r4, r5, lr}
+ 294              		.cfi_def_cfa_offset 16
+ 295              		.cfi_offset 3, -16
+ 296              		.cfi_offset 4, -12
+ 297              		.cfi_offset 5, -8
+ 298              		.cfi_offset 14, -4
+ 299 0002 0446     		mov	r4, r0
+ 300 0004 0D46     		mov	r5, r1
+ 188:../system/src/stm32f1-stdperiph/misc.c ****   /* Check the parameters */
+ 189:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_NVIC_LP(LowPowerMode));
+ 301              		.loc 1 189 0
+ 302 0006 1028     		cmp	r0, #16
+ 303 0008 03D0     		beq	.L28
+ 304              		.loc 1 189 0 is_stmt 0 discriminator 1
+ 305 000a 0428     		cmp	r0, #4
+ 306 000c 01D0     		beq	.L28
+ 307              		.loc 1 189 0 discriminator 2
+ 308 000e 0228     		cmp	r0, #2
+ 309 0010 08D1     		bne	.L33
+ 310              	.LVL30:
+ 311              	.L28:
+ 190:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));  
+ 312              		.loc 1 190 0 is_stmt 1
+ 313 0012 012D     		cmp	r5, #1
+ 314 0014 0BD8     		bhi	.L34
+ 315              	.L29:
+ 191:../system/src/stm32f1-stdperiph/misc.c ****   
+ 192:../system/src/stm32f1-stdperiph/misc.c ****   if (NewState != DISABLE)
+ 316              		.loc 1 192 0
+ 317 0016 7DB9     		cbnz	r5, .L35
+ 193:../system/src/stm32f1-stdperiph/misc.c ****   {
+ 194:../system/src/stm32f1-stdperiph/misc.c ****     SCB->SCR |= LowPowerMode;
+ 195:../system/src/stm32f1-stdperiph/misc.c ****   }
+ 196:../system/src/stm32f1-stdperiph/misc.c ****   else
+ 197:../system/src/stm32f1-stdperiph/misc.c ****   {
+ 198:../system/src/stm32f1-stdperiph/misc.c ****     SCB->SCR &= (uint32_t)(~(uint32_t)LowPowerMode);
+ 318              		.loc 1 198 0
+ 319 0018 0A4A     		ldr	r2, .L36
+ 320 001a 1369     		ldr	r3, [r2, #16]
+ 321 001c 23EA0404 		bic	r4, r3, r4
+ 322 0020 1461     		str	r4, [r2, #16]
+ 323              	.L27:
+ 199:../system/src/stm32f1-stdperiph/misc.c ****   }
+ 200:../system/src/stm32f1-stdperiph/misc.c **** }
+ 324              		.loc 1 200 0
+ 325 0022 38BD     		pop	{r3, r4, r5, pc}
+ 326              	.LVL31:
+ 327              	.L33:
+ 189:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));  
+ 328              		.loc 1 189 0 discriminator 3
+ 329 0024 BD21     		movs	r1, #189
+ 330              	.LVL32:
+ 331 0026 0848     		ldr	r0, .L36+4
+ 332              	.LVL33:
+ 333 0028 FFF7FEFF 		bl	assert_failed
+ 334              	.LVL34:
+ 335 002c F1E7     		b	.L28
+ 336              	.L34:
+ 190:../system/src/stm32f1-stdperiph/misc.c ****   
+ 337              		.loc 1 190 0 discriminator 1
+ 338 002e BE21     		movs	r1, #190
+ 339 0030 0548     		ldr	r0, .L36+4
+ 340 0032 FFF7FEFF 		bl	assert_failed
+ 341              	.LVL35:
+ 342 0036 EEE7     		b	.L29
+ 343              	.L35:
+ 194:../system/src/stm32f1-stdperiph/misc.c ****   }
+ 344              		.loc 1 194 0
+ 345 0038 024B     		ldr	r3, .L36
+ 346 003a 1A69     		ldr	r2, [r3, #16]
+ 347 003c 1443     		orrs	r4, r4, r2
+ 348 003e 1C61     		str	r4, [r3, #16]
+ 349 0040 EFE7     		b	.L27
+ 350              	.L37:
+ 351 0042 00BF     		.align	2
+ 352              	.L36:
+ 353 0044 00ED00E0 		.word	-536810240
+ 354 0048 00000000 		.word	.LC0
+ 355              		.cfi_endproc
+ 356              	.LFE66:
+ 358              		.section	.text.SysTick_CLKSourceConfig,"ax",%progbits
+ 359              		.align	1
+ 360              		.global	SysTick_CLKSourceConfig
+ 361              		.syntax unified
+ 362              		.thumb
+ 363              		.thumb_func
+ 364              		.fpu softvfp
+ 366              	SysTick_CLKSourceConfig:
+ 367              	.LFB67:
+ 201:../system/src/stm32f1-stdperiph/misc.c **** 
+ 202:../system/src/stm32f1-stdperiph/misc.c **** /**
+ 203:../system/src/stm32f1-stdperiph/misc.c ****   * @brief  Configures the SysTick clock source.
+ 204:../system/src/stm32f1-stdperiph/misc.c ****   * @param  SysTick_CLKSource: specifies the SysTick clock source.
+ 205:../system/src/stm32f1-stdperiph/misc.c ****   *   This parameter can be one of the following values:
+ 206:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg SysTick_CLKSource_HCLK_Div8: AHB clock divided by 8 selected as SysTick clock source.
+ 207:../system/src/stm32f1-stdperiph/misc.c ****   *     @arg SysTick_CLKSource_HCLK: AHB clock selected as SysTick clock source.
+ 208:../system/src/stm32f1-stdperiph/misc.c ****   * @retval None
+ 209:../system/src/stm32f1-stdperiph/misc.c ****   */
+ 210:../system/src/stm32f1-stdperiph/misc.c **** void SysTick_CLKSourceConfig(uint32_t SysTick_CLKSource)
+ 211:../system/src/stm32f1-stdperiph/misc.c **** {
+ 368              		.loc 1 211 0
+ 369              		.cfi_startproc
+ 370              		@ args = 0, pretend = 0, frame = 0
+ 371              		@ frame_needed = 0, uses_anonymous_args = 0
+ 372              	.LVL36:
+ 373 0000 10B5     		push	{r4, lr}
+ 374              		.cfi_def_cfa_offset 8
+ 375              		.cfi_offset 4, -8
+ 376              		.cfi_offset 14, -4
+ 377 0002 0446     		mov	r4, r0
+ 212:../system/src/stm32f1-stdperiph/misc.c ****   /* Check the parameters */
+ 213:../system/src/stm32f1-stdperiph/misc.c ****   assert_param(IS_SYSTICK_CLK_SOURCE(SysTick_CLKSource));
+ 378              		.loc 1 213 0
+ 379 0004 0428     		cmp	r0, #4
+ 380 0006 02D0     		beq	.L39
+ 381              		.loc 1 213 0 is_stmt 0 discriminator 1
+ 382 0008 10F1050F 		cmn	r0, #5
+ 383 000c 07D1     		bne	.L43
+ 384              	.LVL37:
+ 385              	.L39:
+ 214:../system/src/stm32f1-stdperiph/misc.c ****   if (SysTick_CLKSource == SysTick_CLKSource_HCLK)
+ 386              		.loc 1 214 0 is_stmt 1
+ 387 000e 042C     		cmp	r4, #4
+ 388 0010 0AD0     		beq	.L44
+ 215:../system/src/stm32f1-stdperiph/misc.c ****   {
+ 216:../system/src/stm32f1-stdperiph/misc.c ****     SysTick->CTRL |= SysTick_CLKSource_HCLK;
+ 217:../system/src/stm32f1-stdperiph/misc.c ****   }
+ 218:../system/src/stm32f1-stdperiph/misc.c ****   else
+ 219:../system/src/stm32f1-stdperiph/misc.c ****   {
+ 220:../system/src/stm32f1-stdperiph/misc.c ****     SysTick->CTRL &= SysTick_CLKSource_HCLK_Div8;
+ 389              		.loc 1 220 0
+ 390 0012 084A     		ldr	r2, .L45
+ 391 0014 1368     		ldr	r3, [r2]
+ 392 0016 23F00403 		bic	r3, r3, #4
+ 393 001a 1360     		str	r3, [r2]
+ 394              	.L38:
+ 221:../system/src/stm32f1-stdperiph/misc.c ****   }
+ 222:../system/src/stm32f1-stdperiph/misc.c **** }
+ 395              		.loc 1 222 0
+ 396 001c 10BD     		pop	{r4, pc}
+ 397              	.LVL38:
+ 398              	.L43:
+ 213:../system/src/stm32f1-stdperiph/misc.c ****   if (SysTick_CLKSource == SysTick_CLKSource_HCLK)
+ 399              		.loc 1 213 0 discriminator 2
+ 400 001e D521     		movs	r1, #213
+ 401 0020 0548     		ldr	r0, .L45+4
+ 402              	.LVL39:
+ 403 0022 FFF7FEFF 		bl	assert_failed
+ 404              	.LVL40:
+ 405 0026 F2E7     		b	.L39
+ 406              	.L44:
+ 216:../system/src/stm32f1-stdperiph/misc.c ****   }
+ 407              		.loc 1 216 0
+ 408 0028 024A     		ldr	r2, .L45
+ 409 002a 1368     		ldr	r3, [r2]
+ 410 002c 43F00403 		orr	r3, r3, #4
+ 411 0030 1360     		str	r3, [r2]
+ 412 0032 F3E7     		b	.L38
+ 413              	.L46:
+ 414              		.align	2
+ 415              	.L45:
+ 416 0034 10E000E0 		.word	-536813552
+ 417 0038 00000000 		.word	.LC0
+ 418              		.cfi_endproc
+ 419              	.LFE67:
+ 421              		.section	.rodata.NVIC_PriorityGroupConfig.str1.4,"aMS",%progbits,1
+ 422              		.align	2
+ 423              	.LC0:
+ 424 0000 2E2E2F73 		.ascii	"../system/src/stm32f1-stdperiph/misc.c\000"
+ 424      79737465 
+ 424      6D2F7372 
+ 424      632F7374 
+ 424      6D333266 
+ 425              		.text
+ 426              	.Letext0:
+ 427              		.file 2 "e:\\imt arm embedded system diploma\\04-arm tools\\03- imt sdk\\imt_sdk_win_64\\winarm\\a
+ 428              		.file 3 "../system/include/cmsis/core_cm3.h"
+ 429              		.file 4 "../system/include/cmsis/system_stm32f10x.h"
+ 430              		.file 5 "../system/include/cmsis/stm32f10x.h"
+ 431              		.file 6 "../system/include/stm32f1-stdperiph/misc.h"
+ 432              		.file 7 "../include/stm32f10x_conf.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 misc.c
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:16     .text.NVIC_PriorityGroupConfig:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:23     .text.NVIC_PriorityGroupConfig:00000000 NVIC_PriorityGroupConfig
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:69     .text.NVIC_PriorityGroupConfig:00000038 $d
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:75     .text.NVIC_Init:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:82     .text.NVIC_Init:00000000 NVIC_Init
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:202    .text.NVIC_Init:0000008c $d
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:209    .text.NVIC_SetVectorTable:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:216    .text.NVIC_SetVectorTable:00000000 NVIC_SetVectorTable
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:272    .text.NVIC_SetVectorTable:0000003c $d
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:279    .text.NVIC_SystemLPConfig:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:286    .text.NVIC_SystemLPConfig:00000000 NVIC_SystemLPConfig
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:353    .text.NVIC_SystemLPConfig:00000044 $d
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:359    .text.SysTick_CLKSourceConfig:00000000 $t
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:366    .text.SysTick_CLKSourceConfig:00000000 SysTick_CLKSourceConfig
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:416    .text.SysTick_CLKSourceConfig:00000034 $d
+C:\Users\ahmed\AppData\Local\Temp\cceX9Hpb.s:422    .rodata.NVIC_PriorityGroupConfig.str1.4:00000000 $d
+                           .group:00000000 wm4.0.c450a18b2a29049e2cbb4137d58ca9b1
+                           .group:00000000 wm4.stm32f10x.h.51.c58ea26c5150470d52680f0bbaa7049c
+                           .group:00000000 wm4.stdintgcc.h.29.6d480f4ba0f60596e88234283d42444f
+                           .group:00000000 wm4.core_cm3.h.82.57a0f9dd004efa579f86574376281d2f
+                           .group:00000000 wm4.cmsis_gcc.h.36.67d2dcde6a14ff518eedc1d545d89a76
+                           .group:00000000 wm4.core_cm3.h.183.ecfd9c316d6f10b73648f6e579b02c8b
+                           .group:00000000 wm4.stm32f10x.h.522.9a9f642c8c562acb4a63ad5d933b7c01
+                           .group:00000000 wm4.stm32f10x_adc.h.89.9f2b285fa0070185d48a05b61a05798c
+                           .group:00000000 wm4.stm32f10x_bkp.h.25.4622919f1e30efdad5eb44e12edd5513
+                           .group:00000000 wm4.stm32f10x_can.h.25.e5e43f6bbc8fc7c8aa30ef2bc5610ced
+                           .group:00000000 wm4.stm32f10x_cec.h.25.8f03450e7bbb704d96e7bc73ec0f66a7
+                           .group:00000000 wm4.stm32f10x_dac.h.25.6e7f2924f39c60c10815105b99b8b446
+                           .group:00000000 wm4.stm32f10x_dbgmcu.h.25.d3351200fc7f9c8615d1ae81d40db08a
+                           .group:00000000 wm4.stm32f10x_dma.h.25.94e36204daa98cae5dcc70a10a9694d5
+                           .group:00000000 wm4.stm32f10x_exti.h.25.f52c69aad7d1994be5b2c4e2b8f4c595
+                           .group:00000000 wm4.stm32f10x_flash.h.25.4be61fcb02863962a1e006449d310650
+                           .group:00000000 wm4.stm32f10x_fsmc.h.25.bca154da2699cdb6024c0c6c4fc5aa89
+                           .group:00000000 wm4.stm32f10x_gpio.h.25.80c981af0e637567395034c576cfb3ce
+                           .group:00000000 wm4.stm32f10x_i2c.h.25.b124ac2c620f8ebddd92b6d95ca62176
+                           .group:00000000 wm4.stm32f10x_iwdg.h.25.da9374ab9856795610487f312ccf3122
+                           .group:00000000 wm4.stm32f10x_pwr.h.25.37ef75009f751ef5fe27910e0bf00a62
+                           .group:00000000 wm4.stm32f10x_rcc.h.25.968bcf08d813e68e57c280a4da69fa5a
+                           .group:00000000 wm4.stm32f10x_rtc.h.25.361142606ba98ddcd10369f321f6e636
+                           .group:00000000 wm4.stm32f10x_sdio.h.25.fb0db079f5c1412c40f359319f7c40b0
+                           .group:00000000 wm4.stm32f10x_spi.h.25.3f6dfa4abe177efb3c6f5a717c06b323
+                           .group:00000000 wm4.stm32f10x_tim.h.25.f709106ba77b314e6b070693f89f3c56
+                           .group:00000000 wm4.stm32f10x_usart.h.25.2e65e396239d0cc41fd0bf6faa2a32cb
+                           .group:00000000 wm4.stm32f10x_wwdg.h.25.dde12201d86b5aa9ecaafb5eccdc6549
+                           .group:00000000 wm4.stm32f10x.h.8317.9a8e476d96d33bb2df9a9ad0775bd4a7
+                           .group:00000000 wm4.misc.h.115.eee4bbee250a7a433045d30c57e593d8
+
+UNDEFINED SYMBOLS
+assert_failed

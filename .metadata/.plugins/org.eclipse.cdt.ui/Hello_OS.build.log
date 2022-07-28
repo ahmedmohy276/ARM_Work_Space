@@ -1,0 +1,11 @@
+23:04:30 **** Incremental Build of configuration Debug for project Hello_OS ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "Hello_OS.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5259	    176	    460	   5895	   1707	Hello_OS.elf
+Finished building: Hello_OS.siz
+ 
+
+23:04:30 Build Finished (took 451ms)
+
